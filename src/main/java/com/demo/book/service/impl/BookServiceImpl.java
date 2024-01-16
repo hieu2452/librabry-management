@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
+
 @Service
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class BookServiceImpl implements BookService {
@@ -27,7 +29,7 @@ public class BookServiceImpl implements BookService {
     private FileHandlerFactory fileHandlerFactory;
     @Transactional
     @Override
-    public void createbook(MultipartFile file, String model) throws IOException {
+    public Book createBook(MultipartFile file, String model) throws IOException {
         long start = System.currentTimeMillis();
         Book book = new ObjectMapper().readValue(model, Book.class);
         Book newBook;
@@ -47,10 +49,17 @@ public class BookServiceImpl implements BookService {
         bookRepository.save(newBook);
         long end = System.currentTimeMillis();
         log.info("time took to save entity " + (end - start));
+        return newBook;
     }
 
+    @Override
+    public List<Book> findAll() {
+        return bookRepository.findAll();
+    }
 
-    public void test(){
+    @Override
+    public Book findById(long id) {
+        return bookRepository.findById(id).orElse(null);
+    }
 
-    };
 }
