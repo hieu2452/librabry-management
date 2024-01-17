@@ -68,10 +68,7 @@ public class BookServiceImpl<T> implements BookService<T> {
 
     @Override
     public List<T> findByType(String type) {
-
-        BookAbstractFactory<T> abstractFactory = bookFactory.getFactory(type);
-
-        return (List<T>) abstractFactory.createBook().getBook();
+        return null;
     }
 
 

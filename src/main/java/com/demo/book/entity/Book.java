@@ -72,6 +72,34 @@ public class Book {
         this.author = builder.author;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setSubTitle(String subTitle) {
+        this.subTitle = subTitle;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     public long getId() {
         return id;
     }
@@ -103,6 +131,7 @@ public class Book {
     public String getImageUrl() {
         return imageUrl;
     }
+
 
 //    public List<Category> getCategories() {
 //        return categories;

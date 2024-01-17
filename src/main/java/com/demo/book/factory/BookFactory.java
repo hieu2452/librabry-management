@@ -6,18 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class BookFactory<T>{
-    @Autowired
-    private BookAbstractFactory<LectureBook> lecturerBookFactory;
-    @Autowired
-    private BookAbstractFactory<ScienceBook> scienceBookFactory;
+public class BookFactory{
     public BookAbstractFactory getFactory(String bookType){
         switch (bookType) {
             case "lecturer" -> {
-                return lecturerBookFactory;
+                return new LecturerBookFactory();
             }
             case "science" -> {
-                return scienceBookFactory;
+                return new ScienceBookFactory();
             }
             default -> {return null;}
         }
