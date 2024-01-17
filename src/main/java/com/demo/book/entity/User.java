@@ -28,6 +28,10 @@ public class User {
         inverseJoinColumns = @JoinColumn(name = "role_id",referencedColumnName = "id"))
     private List<Role> roles = new ArrayList<>();
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private List<Bill> bills = new ArrayList<>();
+
     public static class Builder {
         private final String username;
         private final String password;
@@ -46,6 +50,7 @@ public class User {
             this.age = age;
             return this;
         }
+
         public User build() {
             return new User(this);
         }
@@ -81,6 +86,17 @@ public class User {
 
     public List<Role> getRoles() {
         return roles;
+    }
+
+    public List<Bill> getBills() {
+        return bills;
+    }
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
+    public void setBills(List<Bill> bills) {
+        this.bills = bills;
     }
 }
 

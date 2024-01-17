@@ -1,14 +1,16 @@
 package com.demo.book.factory;
 
+import com.demo.book.entity.LectureBook;
+import com.demo.book.entity.ScienceBook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class BookFactory{
+public class BookFactory<T>{
     @Autowired
-    private LecturerBookFactory lecturerBookFactory;
+    private BookAbstractFactory<LectureBook> lecturerBookFactory;
     @Autowired
-    private ScienceBookFactory scienceBookFactory;
+    private BookAbstractFactory<ScienceBook> scienceBookFactory;
     public BookAbstractFactory getFactory(String bookType){
         switch (bookType) {
             case "lecturer" -> {

@@ -1,6 +1,7 @@
 package com.demo.book.controller;
 
 import com.demo.book.entity.Book;
+import com.demo.book.entity.enums.BookType;
 import com.demo.book.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,20 +11,23 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/book")
+@RequestMapping("/api")
 public class BookController {
     @Autowired
     private BookService bookService;
 
 
-    @PostMapping(value = "/create-book",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/book/create-book",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createBook(@RequestParam(value = "file",required = false) MultipartFile file, @RequestParam("model") String model) throws IOException {
         bookService.createBook(file,model);
         return ResponseEntity.ok(bookService.createBook(file,model));
     }
-    @GetMapping("/get-all")
+    @GetMapping("/book/get-all")
     public ResponseEntity<?> getAllBooks() {
         return ResponseEntity.ok(bookService.findAll());
     }
@@ -38,5 +42,11 @@ public class BookController {
     @GetMapping("get/book/type/{type}")
     public ResponseEntity<?> getBookByType(@PathVariable String type) {
         return ResponseEntity.ok(bookService.findByType(type));
+    }
+
+    @GetMapping("/book/get-type")
+    public ResponseEntity<?> getBookTypes() {
+        List<BookType> bookTypes = Arrays.asList(BookType.values());
+        return ResponseEntity.ok(bookTypes);
     }
 }

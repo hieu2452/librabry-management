@@ -1,7 +1,6 @@
 package com.demo.book.service.impl;
 
 import com.demo.book.entity.Book;
-import com.demo.book.entity.LecturerBook;
 import com.demo.book.factory.BookAbstractFactory;
 import com.demo.book.factory.BookFactory;
 import com.demo.book.repository.BookRepository;

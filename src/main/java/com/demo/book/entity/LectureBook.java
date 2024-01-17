@@ -5,15 +5,13 @@ import jakarta.persistence.Entity;
 
 @Entity
 @DiscriminatorValue("LECTURER")
-public class LecturerBook extends Book {
+public class LectureBook extends Book {
     private String subject;
-    private String institution;
-    public LecturerBook() {
+    public LectureBook() {
 
     }
     public static class BookBuilder extends Builder {
         private String subject;
-        private String institution;
         public BookBuilder(String title, float price, String author) {
             super(title, price, author);
         }
@@ -22,16 +20,11 @@ public class LecturerBook extends Book {
             this.subject = subject;
             return this;
         }
-        public BookBuilder institution(String institution) {
-            this.institution = institution;
-            return this;
-        }
-        public LecturerBook build() { return new LecturerBook(this); }
+        public LectureBook build() { return new LectureBook(this); }
     }
 
-    private LecturerBook(BookBuilder builder) {
+    private LectureBook(BookBuilder builder) {
         super(builder);
-        this.institution = builder.institution;
         this.subject = builder.subject;
     }
 
@@ -39,7 +32,4 @@ public class LecturerBook extends Book {
         return subject;
     }
 
-    public String getInstitution() {
-        return institution;
-    }
 }
