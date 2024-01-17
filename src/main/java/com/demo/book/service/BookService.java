@@ -6,8 +6,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
-public interface BookService {
+public interface BookService <T>{
     Book createBook(MultipartFile file, String model) throws IOException;
     List<Book> findAll();
     Book findById(long id);
+    List<T> findByType(String type);
 }

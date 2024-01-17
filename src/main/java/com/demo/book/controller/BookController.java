@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/book")
@@ -35,5 +34,9 @@ public class BookController {
         if(book!=null)
             return new ResponseEntity<>(book, HttpStatus.OK);
         return new ResponseEntity<>("Book not found", HttpStatus.NOT_FOUND);
+    }
+    @GetMapping("get/book/type/{type}")
+    public ResponseEntity<?> getBookByType(@PathVariable String type) {
+        return ResponseEntity.ok(bookService.findByType(type));
     }
 }

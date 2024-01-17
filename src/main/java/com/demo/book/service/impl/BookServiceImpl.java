@@ -1,6 +1,9 @@
 package com.demo.book.service.impl;
 
 import com.demo.book.entity.Book;
+import com.demo.book.entity.LecturerBook;
+import com.demo.book.factory.BookAbstractFactory;
+import com.demo.book.factory.BookFactory;
 import com.demo.book.repository.BookRepository;
 import com.demo.book.service.BookService;
 import com.demo.book.service.FileHandlerFactory;
@@ -19,7 +22,7 @@ import java.util.List;
 
 @Service
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-public class BookServiceImpl implements BookService {
+public class BookServiceImpl<T> implements BookService<T> {
     private final Logger log = LoggerFactory.getLogger(BookServiceImpl.class);
     @Autowired
     private BookRepository bookRepository;
@@ -27,6 +30,8 @@ public class BookServiceImpl implements BookService {
     private CloudinaryFileUpload imageUpload;
     @Autowired
     private FileHandlerFactory fileHandlerFactory;
+    @Autowired
+    private BookFactory bookFactory;
     @Transactional
     @Override
     public Book createBook(MultipartFile file, String model) throws IOException {
@@ -34,13 +39,13 @@ public class BookServiceImpl implements BookService {
         Book book = new ObjectMapper().readValue(model, Book.class);
         Book newBook;
         if(file == null ) {
-            newBook = new Book.Builder(book.getTitle(),book.getPrice())
+            newBook = new Book.Builder(book.getTitle(),book.getPrice(),book.getAuthor())
                     .subTitle(book.getSubTitle())
                     .description(book.getDescription())
                     .build();
         } else {
             String url = fileHandlerFactory.createFileUpload().uploadFile(file);
-            newBook = new Book.Builder(book.getTitle(),book.getPrice())
+            newBook = new Book.Builder(book.getTitle(),book.getPrice(),book.getAuthor())
                     .subTitle(book.getSubTitle())
                     .description(book.getDescription())
                     .imageUrl(url)
@@ -61,5 +66,14 @@ public class BookServiceImpl implements BookService {
     public Book findById(long id) {
         return bookRepository.findById(id).orElse(null);
     }
+
+    @Override
+    public List<T> findByType(String type) {
+
+        BookAbstractFactory<T> abstractFactory = bookFactory.getFactory(type);
+
+        return (List<T>) abstractFactory.createBook().getBook();
+    }
+
 
 }
