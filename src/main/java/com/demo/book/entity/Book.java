@@ -8,9 +8,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "books")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name="book_type",
-        discriminatorType = DiscriminatorType.STRING)
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,10 +22,11 @@ public class Book {
     public Book() {
 
     }
-//    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    @JoinTable(name = "book_category", joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "id"),
-//            inverseJoinColumns = @JoinColumn(name = "category_id",referencedColumnName = "id"))
-//    private List<Category> categories = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "book_category", joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id",referencedColumnName = "id"))
+    private List<Category> categories = new ArrayList<>();
+
 
     public static class Builder {
         private final String title;
@@ -37,7 +35,7 @@ public class Book {
         private String description;
         private final float price;
         private String imageUrl;
-
+        private List<Category> categories;
         public Builder(String title,float price, String author) {
             this.title = title;
             this.price = price;
@@ -56,6 +54,10 @@ public class Book {
             this.imageUrl = imageUrl;
             return this;
         }
+        public Builder categories(List<Category> categories) {
+            this.categories = categories;
+            return this;
+        }
 
         public Book build() {
             return new Book(this);
@@ -70,6 +72,7 @@ public class Book {
         this.description = builder.description;
         this.imageUrl = builder.imageUrl;
         this.author = builder.author;
+        this.categories = builder.categories;
     }
 
     public void setId(long id) {
@@ -133,9 +136,13 @@ public class Book {
     }
 
 
-//    public List<Category> getCategories() {
-//        return categories;
-//    }
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
+    }
 
 }
 

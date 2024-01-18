@@ -11,6 +11,8 @@ public class Bill {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private final LocalDateTime createdDate = LocalDateTime.now();
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
 
     public Bill() {
 
@@ -21,5 +23,17 @@ public class Bill {
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

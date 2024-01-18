@@ -6,11 +6,18 @@ import jakarta.persistence.Embeddable;
 import java.io.Serializable;
 
 @Embeddable
-public class BorrowedBookKey implements Serializable {
-    @Column(name = "user_id",nullable = false)
-    private long userId;
+public class BillDetailKey implements Serializable {
+    @Column(name = "bill_id",nullable = false)
+    private long billId;
     @Column(name = "book_id",nullable = false)
     private long bookId;
+    public BillDetailKey() {
+
+    }
+    public BillDetailKey(long billId, long bookId) {
+        this.billId = billId;
+        this.bookId = bookId;
+    }
 
     @Override
     public int hashCode() {
@@ -22,12 +29,12 @@ public class BorrowedBookKey implements Serializable {
         return super.equals(obj);
     }
 
-    public long getUserId() {
-        return userId;
+    public long getBillId() {
+        return billId;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setBillId(long billId) {
+        this.billId = billId;
     }
 
     public long getBookId() {
