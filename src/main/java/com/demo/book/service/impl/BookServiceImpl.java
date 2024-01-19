@@ -47,13 +47,11 @@ public class BookServiceImpl implements BookService {
         BookDto bookDto = new ObjectMapper().readValue(model, BookDto.class);
         Book book;
 
-        if(file == null ) {
-            book = factory.createIBook().createBook(bookDto);
-        } else {
+        if (file != null) {
             String url = fileHandlerFactory.createFileUpload().uploadFile(file);
             bookDto.setImageUrl(url);
-            book = factory.createIBook().createBook(bookDto);
         }
+        book = factory.createIBook().createBook(bookDto);
         return book;
     }
 
