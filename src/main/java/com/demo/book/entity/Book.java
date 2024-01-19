@@ -1,6 +1,7 @@
 package com.demo.book.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "books")
+@Data
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,6 +21,8 @@ public class Book {
     private float price;
     private String author;
     private String imageUrl;
+    private String language;
+    private int quantity;
     public Book() {
 
     }
@@ -32,16 +36,22 @@ public class Book {
         private final String title;
         private final String author;
         private String subTitle;
+        private String language;
         private String description;
         private final float price;
         private String imageUrl;
         private List<Category> categories;
-        public Builder(String title,float price, String author) {
+        private final int quantity;
+        public Builder(String title,float price, String author,int quantity) {
             this.title = title;
             this.price = price;
             this.author = author;
+            this.quantity = quantity;
         }
-
+        public Builder language(String language) {
+            this.language = language;
+            return this;
+        }
         public Builder subTitle(String subTitle) {
             this.subTitle = subTitle;
             return this;
@@ -73,75 +83,8 @@ public class Book {
         this.imageUrl = builder.imageUrl;
         this.author = builder.author;
         this.categories = builder.categories;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setSubTitle(String subTitle) {
-        this.subTitle = subTitle;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setPrice(float price) {
-        this.price = price;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getSubTitle() {
-        return subTitle;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-
-    public LocalDateTime getAddedDate() {
-        return addedDate;
-    }
-    public String getAuthor() {
-        return author;
-    }
-
-    public float getPrice() {
-        return price;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-
-    public List<Category> getCategories() {
-        return categories;
-    }
-
-    public void setCategories(List<Category> categories) {
-        this.categories = categories;
+        this.quantity = builder.quantity;
+        this.language = builder.language;
     }
 
 }

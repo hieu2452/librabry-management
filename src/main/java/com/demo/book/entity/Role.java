@@ -1,12 +1,14 @@
 package com.demo.book.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "roles")
+@Data
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,15 +36,5 @@ public class Role {
     private Role(Builder builder) {
         this.role = builder.role;
     }
-    public long getId() {
-        return id;
-    }
 
-    public String getRole() {
-        return role;
-    }
-
-    public List<Permission> getPermissions() {
-        return permissions;
-    }
 }

@@ -2,9 +2,13 @@ package com.demo.book.entity;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @DiscriminatorValue("ADMIN")
+@Data
 public class Admin extends User{
     private String username;
     private String password;
@@ -12,18 +16,5 @@ public class Admin extends User{
     public Admin() {
         super();
     }
-    public String getUsername() {
-        return username;
-    }
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }

@@ -11,9 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class IBookImpl implements IBook{
@@ -24,11 +22,16 @@ public class IBookImpl implements IBook{
     private CategoryRepository categoryRepository;
     @Override
     public Book createBook(BookDto bookDto) {
-        Category category = categoryRepository.findByCategoryName(bookDto.getType());
-        Book book = new Book.Builder(bookDto.getTitle(), bookDto.getPrice(), bookDto.getAuthor())
+        List<Category> categories = new ArrayList<>();
+        for(String name : bookDto.getCategories()) {
+            Category category = categoryRepository.findByCategoryName(name);
+            if(category != null) categories.add(category);
+        }
+        Book book = new Book.Builder(bookDto.getTitle(), bookDto.getPrice(), bookDto.getAuthor(),bookDto.getQuantity())
                 .description(bookDto.getDescription())
                 .subTitle(bookDto.getSubTitle())
-                .categories(Collections.singletonList(category))
+                .categories(categories)
+                .language(bookDto.getLanguage())
                 .build();
         return bookRepository.save(book);
     }
@@ -59,4 +62,5 @@ public class IBookImpl implements IBook{
     public Optional<Book> findBookById(long id) {
         return bookRepository.findById(id);
     }
+
 }

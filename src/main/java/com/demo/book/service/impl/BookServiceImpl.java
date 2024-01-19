@@ -2,8 +2,10 @@ package com.demo.book.service.impl;
 
 import com.demo.book.dto.BookDto;
 import com.demo.book.entity.Book;
+import com.demo.book.entity.Category;
 import com.demo.book.factory.ServiceAbstractFactory;
 import com.demo.book.repository.BookRepository;
+import com.demo.book.repository.CategoryRepository;
 import com.demo.book.service.BookService;
 import com.demo.book.service.FileHandlerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,6 +20,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -29,17 +32,21 @@ public class BookServiceImpl implements BookService {
     @Autowired
     private BookRepository bookRepository;
     @Autowired
+    private CategoryRepository categoryRepository;
+    @Autowired
     private CloudinaryFileUpload imageUpload;
     @Autowired
     private FileHandlerFactory fileHandlerFactory;
     @Autowired
     private ServiceAbstractFactory factory;
+
     @Transactional
     @Override
     public Book createBook(MultipartFile file, String model) throws IOException {
         long start = System.currentTimeMillis();
         BookDto bookDto = new ObjectMapper().readValue(model, BookDto.class);
         Book book;
+
         if(file == null ) {
             book = factory.createIBook().createBook(bookDto);
         } else {
@@ -79,5 +86,6 @@ public class BookServiceImpl implements BookService {
     public void delete(long id) {
         factory.createIBook().deleteBook(id);
     }
+
 
 }

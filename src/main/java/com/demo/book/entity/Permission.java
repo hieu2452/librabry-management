@@ -1,9 +1,11 @@
 package com.demo.book.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
 @Table(name = "permission")
+@Data
 public class Permission {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,11 +30,4 @@ public class Permission {
         this.permission = builder.permission;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public String getPermission() {
-        return permission;
-    }
 }

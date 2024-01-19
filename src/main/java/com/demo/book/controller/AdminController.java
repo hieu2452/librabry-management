@@ -1,6 +1,7 @@
 package com.demo.book.controller;
 
 import com.demo.book.entity.Librarian;
+import com.demo.book.entity.Member;
 import com.demo.book.entity.User;
 import com.demo.book.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,12 @@ public class AdminController {
     private AdminService adminService;
 
     @PostMapping("/create-librarian")
-    public ResponseEntity<?> createUser(@RequestBody Librarian user) {
+    public ResponseEntity<?> createLibrarianUser(@RequestBody Librarian user) {
         return ResponseEntity.ok(adminService.createLibrarianUser(user));
+    }
+
+    @PostMapping("/create-member")
+    public ResponseEntity<?> createMemberUser(@RequestBody Member user) {
+        return ResponseEntity.ok(adminService.createMemberUser(user));
     }
 }

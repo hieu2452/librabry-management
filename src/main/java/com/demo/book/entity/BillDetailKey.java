@@ -2,10 +2,12 @@ package com.demo.book.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import lombok.Data;
 
 import java.io.Serializable;
 
 @Embeddable
+@Data
 public class BillDetailKey implements Serializable {
     @Column(name = "bill_id",nullable = false)
     private long billId;
@@ -29,19 +31,4 @@ public class BillDetailKey implements Serializable {
         return super.equals(obj);
     }
 
-    public long getBillId() {
-        return billId;
-    }
-
-    public void setBillId(long billId) {
-        this.billId = billId;
-    }
-
-    public long getBookId() {
-        return bookId;
-    }
-
-    public void setBookId(long bookId) {
-        this.bookId = bookId;
-    }
 }
