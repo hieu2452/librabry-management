@@ -2,7 +2,6 @@ package com.demo.book.service.impl;
 
 import com.demo.book.dto.BookDto;
 import com.demo.book.entity.Book;
-import com.demo.book.entity.Category;
 import com.demo.book.factory.ServiceAbstractFactory;
 import com.demo.book.repository.BookRepository;
 import com.demo.book.repository.CategoryRepository;
@@ -16,13 +15,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @org.springframework.stereotype.Service
