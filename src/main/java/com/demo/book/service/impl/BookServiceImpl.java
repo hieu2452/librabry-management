@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 @org.springframework.stereotype.Service
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -75,11 +76,18 @@ public class BookServiceImpl implements BookService {
         }
         return updatedBook;
     }
+
+    @Override
+    public List<Book> findByCategory(String type){
+        return bookRepository.findByCategory(type);
+    }
+
     @Transactional
     @Override
     public void delete(long id) {
         factory.createIBook().deleteBook(id);
     }
+
 
 
 }

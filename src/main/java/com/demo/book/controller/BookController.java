@@ -44,10 +44,10 @@ public class BookController {
             return new ResponseEntity<>(book, HttpStatus.OK);
         return new ResponseEntity<>("Book not found", HttpStatus.NOT_FOUND);
     }
-//    @GetMapping("get/book/type/{type}")
-//    public ResponseEntity<?> getBookByType(@PathVariable String type) {
-//        return ResponseEntity.ok(bookService.findByType(type));
-//    }
+    @GetMapping("get/type/{type}")
+    public ResponseEntity<?> getBookByType(@PathVariable String type) {
+        return ResponseEntity.ok(bookService.findByCategory(type));
+    }
 
     @GetMapping("/get/get-type")
     public ResponseEntity<?> getBookTypes() {

@@ -6,6 +6,7 @@ import com.demo.book.entity.*;
 import com.demo.book.entity.enums.BorrowedBookStatus;
 import com.demo.book.repository.*;
 import com.demo.book.service.BillService;
+import com.demo.book.utils.EmailUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,8 @@ public class BillServiceImpl implements BillService {
     private BookRepository bookRepository;
     @Autowired
     private BillDetailRepository billDetailRepository;
-
+    @Autowired
+    private EmailUtils emailUtils;
     @Transactional
     @Override
     public String createBill(BillDto billDto) {
@@ -53,6 +55,8 @@ public class BillServiceImpl implements BillService {
             BillDetail billDetail = new BillDetail(billDetailKey,book.getQuantity(), BorrowedBookStatus.BORROWED,newBill,book1);
             billDetailRepository.save(billDetail);
         }
+        if(user.getEmail() != null)
+            emailUtils.sendInvoiceEmail(user.getEmail(),"Borrow book");
 
         return "Borrow successfully";
     }
