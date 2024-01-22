@@ -37,7 +37,7 @@ public class BillServiceImpl implements BillService {
             total += book.getQuantity();
         }
 
-        if(libraryCard.getBookAvailable() < total) {
+        if(libraryCard.getBookAvailable() < total || libraryCard.getStatus().equalsIgnoreCase("EXPIRED")) {
             return "Unable to borrow book ";
         }
 

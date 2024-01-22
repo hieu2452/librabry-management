@@ -1,5 +1,6 @@
 package com.demo.book.controller;
 
+import com.demo.book.adapter.BookLanguage;
 import com.demo.book.entity.Book;
 import com.demo.book.entity.enums.BookType;
 import com.demo.book.service.BookService;
@@ -20,7 +21,8 @@ import java.util.List;
 public class BookController {
     @Autowired
     private BookService bookService;
-
+    @Autowired
+    private BookLanguage bookLanguage;
 
     @PostMapping(value = "/create-book",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createBook(@RequestParam(value = "file",required = false) MultipartFile file, @RequestParam("model") String model) throws IOException {
@@ -63,5 +65,10 @@ public class BookController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("Unable to delete this Book");
         }
+    }
+
+    @GetMapping("/get/type-lg/{type}")
+    public ResponseEntity<?> getBookByTypeAndLanguage(@PathVariable String type, @RequestParam String lang) {
+        return ResponseEntity.ok(bookLanguage.getBookByTypeAndLanguage(type,lang));
     }
 }

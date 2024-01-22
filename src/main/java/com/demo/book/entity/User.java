@@ -7,17 +7,19 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
 @Table(name = "users")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name="user_type",
         discriminatorType = DiscriminatorType.STRING)
 @DiscriminatorValue("GENERIC")
 @Data
-public class User {
+public class User  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -32,21 +34,13 @@ public class User {
 
     }
 
-    @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id",referencedColumnName = "id"))
-    private List<Role> roles = new ArrayList<>();
+
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private List<Bill> bills = new ArrayList<>();
 
-    @JsonIgnore
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "libraryCard_id", referencedColumnName = "id")
-    private LibraryCard libraryCard;
 
 }
 

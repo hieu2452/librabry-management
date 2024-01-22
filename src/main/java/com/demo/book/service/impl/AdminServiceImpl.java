@@ -3,10 +3,9 @@ package com.demo.book.service.impl;
 import com.demo.book.dto.UserDto;
 import com.demo.book.entity.*;
 import com.demo.book.entity.enums.UserType;
-import com.demo.book.factory.ServiceAbstractFactory;
 import com.demo.book.factory.UserFactory.UserAbstractFactory;
 import com.demo.book.factory.UserFactory.UserFactory;
-import com.demo.book.repository.LibrarianRepository;
+import com.demo.book.repository.StaffRepository;
 import com.demo.book.repository.MemberRepository;
 import com.demo.book.repository.RoleRepository;
 import com.demo.book.repository.UserRepository;
@@ -15,7 +14,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,7 +23,7 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private LibrarianRepository librarianRepository;
+    private StaffRepository staffRepository;
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
@@ -37,22 +35,22 @@ public class AdminServiceImpl implements AdminService {
 
     @Transactional
     @Override
-    public Librarian createLibrarianUser(Librarian user) {
-        UserAbstractFactory factory = UserFactory.getFactory(UserType.LIBRARIAN);
+    public Staff createLibrarianUser(Staff user) {
+        UserAbstractFactory factory = UserFactory.getFactory(UserType.STAFF);
 
-        Librarian librarian = (Librarian) factory.createUser();
-        Role role1 = roleRepository.findByRole("MEMBER");
+        Staff staff = (Staff) factory.createUser();
+//        Role role1 = roleRepository.findByRole("MEMBER");
         Role role2 = roleRepository.findByRole("LIBRARIAN");
 
-        librarian.setFullName(user.getFullName());
-        librarian.setAddress(user.getAddress());
-        librarian.setDisplayName(user.getDisplayName());
-        librarian.setAge(user.getAge());
-        librarian.setUsername(user.getUsername());
-        librarian.setPassword(user.getPassword());
-        librarian.setRoles(Arrays.asList(role1,role2));
+        staff.setFullName(user.getFullName());
+        staff.setAddress(user.getAddress());
+        staff.setDisplayName(user.getDisplayName());
+        staff.setAge(user.getAge());
+        staff.setUsername(user.getUsername());
+        staff.setPassword(user.getPassword());
+        staff.setRoles(Collections.singletonList(role2));
 
-        return librarianRepository.save(librarian);
+        return staffRepository.save(staff);
     }
     @Transactional
     @Override
@@ -60,11 +58,11 @@ public class AdminServiceImpl implements AdminService {
         UserAbstractFactory factory = UserFactory.getFactory(UserType.MEMBER);
 
         Member newMember = (Member) factory.createUser();
-        Role role = roleRepository.findByRole("MEMBER");
+//        Role role = roleRepository.findByRole("MEMBER");
 
         newMember.setDisplayName(member.getDisplayName());
         newMember.setAge(member.getAge());
-        newMember.setRoles(Collections.singletonList(role));
+//        newMember.setRoles(Collections.singletonList(role));
 
         return memberRepository.save(newMember);
     }
