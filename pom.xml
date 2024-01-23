@@ -71,6 +71,16 @@
 			<artifactId>spring-aspects</artifactId>
 			<version>6.0.13</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate.orm</groupId>
+			<artifactId>hibernate-hikaricp</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>

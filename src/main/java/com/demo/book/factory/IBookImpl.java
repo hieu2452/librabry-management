@@ -22,15 +22,12 @@ public class IBookImpl implements IBook{
     private CategoryRepository categoryRepository;
     @Override
     public Book createBook(BookDto bookDto) {
-        List<Category> categories = new ArrayList<>();
-        for(String name : bookDto.getCategories()) {
-            Category category = categoryRepository.findByCategoryName(name);
-            if(category != null) categories.add(category);
-        }
-        Book book = new Book.Builder(bookDto.getTitle(), bookDto.getPrice(), bookDto.getAuthor(),bookDto.getQuantity())
+        Category category = categoryRepository.findByCategoryName(bookDto.getCategory());
+
+        Book book = new Book.Builder(bookDto.getTitle(),bookDto.getAuthor(),bookDto.getQuantity())
                 .description(bookDto.getDescription())
                 .subTitle(bookDto.getSubTitle())
-                .categories(categories)
+                .category(category)
                 .language(bookDto.getLanguage())
                 .build();
         return bookRepository.save(book);

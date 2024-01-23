@@ -18,7 +18,6 @@ public class Book {
     private String subTitle;
     private String description;
     private final LocalDateTime addedDate = LocalDateTime.now();
-    private float price;
     private String author;
     private String imageUrl;
     private String language;
@@ -26,10 +25,9 @@ public class Book {
     public Book() {
 
     }
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "book_category", joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id",referencedColumnName = "id"))
-    private List<Category> categories = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
 
     public static class Builder {
@@ -38,13 +36,11 @@ public class Book {
         private String subTitle;
         private String language;
         private String description;
-        private final float price;
         private String imageUrl;
-        private List<Category> categories;
+        private Category category;
         private final int quantity;
-        public Builder(String title,float price, String author,int quantity) {
+        public Builder(String title, String author,int quantity) {
             this.title = title;
-            this.price = price;
             this.author = author;
             this.quantity = quantity;
         }
@@ -64,8 +60,8 @@ public class Book {
             this.imageUrl = imageUrl;
             return this;
         }
-        public Builder categories(List<Category> categories) {
-            this.categories = categories;
+        public Builder category(Category category) {
+            this.category = category;
             return this;
         }
 
@@ -77,12 +73,11 @@ public class Book {
 
     public Book(Builder builder) {
         this.title = builder.title;
-        this.price = builder.price;
         this.subTitle = builder.subTitle;
         this.description = builder.description;
         this.imageUrl = builder.imageUrl;
         this.author = builder.author;
-        this.categories = builder.categories;
+        this.category = builder.category;
         this.quantity = builder.quantity;
         this.language = builder.language;
     }

@@ -1,0 +1,23 @@
+<div>
+    <mat-toolbar color="primary">
+        <span>My App</span>
+        <span class="example-spacer"></span>
+    </mat-toolbar>
+    <mat-sidenav-container class="dashboard-container">
+        <mat-sidenav mode="side" opened>
+            <mat-nav-list>
+                @for (menuitem of menuItems; track menuitem) {
+                <mat-list-item routerLinkActive="selected">
+                    <a class="" [routerLink]="['/dashboard/', menuitem.state]">
+                        <mat-icon>{{menuitem.icon}}</mat-icon>
+                        <span>{{menuitem.name}}</span>
+                    </a>
+                </mat-list-item>
+                }
+            </mat-nav-list>
+        </mat-sidenav>
+        <mat-sidenav-content>
+            <router-outlet ></router-outlet>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</div>

@@ -1,0 +1,92 @@
+<mat-toolbar color="primary">
+    <mat-toolbar-row fxfLayout="row">
+        <span>{{dialogData.action}} Product</span>
+        <span class="spacer"></span>
+    </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-dialog-content class="mat-typography">
+    <form [formGroup]="bookForm">
+        <div fxFlex fxLayout="column">
+            <div *ngIf="action == 'Edit'" fxLayout="row wrap">
+                <mat-form-field fxFlex>
+                    <mat-label>Id</mat-label>
+                    <input matInput formControlName="id" required [readonly]="true">
+                </mat-form-field>
+            </div>
+            <div fxLayout="row wrap">
+                <mat-form-field fxFlex>
+                    <mat-label>Title</mat-label>
+                    <input matInput formControlName="title" required>
+
+                </mat-form-field>
+            </div>
+            <div fxLayout="row wrap">
+                <mat-form-field fxFlex>
+                    <mat-label>Author</mat-label>
+                    <input matInput formControlName="author" required>
+
+                </mat-form-field>
+            </div>
+            <div fxLayout="row wrap">
+                <mat-form-field fxFlex>
+                    <mat-label>Subtitle</mat-label>
+                    <input matInput formControlName="subTitle" type="text">
+
+                </mat-form-field>
+            </div>
+            <div fxLayout="row wrap">
+                <mat-form-field fxFlex>
+                    <mat-label>Quantity</mat-label>
+                    <input matInput formControlName="quantity" type="number" required>
+
+                </mat-form-field>
+                <mat-form-field fxFlex>
+                    <mat-label>Language</mat-label>
+                    <mat-select formControlName="language">
+                        <mat-option *ngFor="let language of languages"
+                            [value]="language">{{language}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field fxFlex>
+                    <mat-label>Category</mat-label>
+                    <mat-select formControlName="category">
+                        <mat-option *ngFor="let category of categories"
+                            [value]="category.categoryName">{{category.categoryName}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div fxLayout="row wrap">
+                <mat-form-field fxFlex>
+                    <mat-label>Description</mat-label>
+                    <input matInput formControlName="description">
+                </mat-form-field>
+            </div>
+
+            <!-- <mat-card-content>
+                <br><br>
+                <mat-form-field style="width: 100%;">
+                    <mat-label>File matInput</mat-label>
+                    <button mat-icon-button matPrefix (click)="f_input.click()">
+                        <mat-icon>attach_file</mat-icon>
+                    </button>
+                    <input type="text" readonly matInput [formControl]="display" />
+                    <input type="file" multiple hidden #f_input (change)="handleFileInputChange(f_input.files!)" />
+                    <input type="file" nbInput fullWidth fieldSize="small" (change)="onFileSelected($event)">
+                </mat-form-field>
+                <br><br>
+            </mat-card-content> -->
+
+        </div>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button mat-raised-button color="primary" type="submit" (click)="handleSubmit()" [disabled]="validateForm()">
+        <mat-icon>save</mat-icon> {{action}}
+    </button>
+    <button mat-raised-button color="warn" mat-dialog-close>
+        <mat-icon>cancel</mat-icon> Close
+    </button>
+</mat-dialog-actions>

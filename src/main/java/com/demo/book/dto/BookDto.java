@@ -10,11 +10,10 @@ public class BookDto {
     private String title;
     private String subTitle;
     private String description;
-    private float price;
     private String author;
     private String type;
     private String imageUrl;
-    private List<String> categories;
+    private String category;
     private int quantity;
     private String language;
 }

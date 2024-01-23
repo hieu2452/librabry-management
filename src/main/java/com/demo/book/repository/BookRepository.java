@@ -10,6 +10,6 @@ public interface BookRepository extends JpaRepository<Book,Long> {
 
     Book findByTitle(String title);
 
-    @Query("SELECT b FROM Book b JOIN b.categories c WHERE c.categoryName LIKE ?1")
+    @Query("SELECT b FROM Book b JOIN b.category c WHERE c.categoryName LIKE ?1")
     List<Book> findByCategory(String type);
 }

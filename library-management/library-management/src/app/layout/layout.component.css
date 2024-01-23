@@ -1,0 +1,14 @@
+mat-sidenav-container {
+    height: 889px;
+    max-height: 889px;
+}
+
+mat-list-item {
+    width: 200px;
+    background-color: #7b1fa2;
+    /* border: solid 1px lightgray; */
+}
+a{
+    color: white;
+    text-decoration: none;
+}
