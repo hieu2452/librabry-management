@@ -1,6 +1,7 @@
 package com.demo.book.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -25,10 +26,13 @@ public class Book {
     public Book() {
 
     }
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
+    @Valid
     private Category category;
-
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "publisher_id")
+    private Publisher publisher;
 
     public static class Builder {
         private final String title;

@@ -1,6 +1,5 @@
 package com.demo.book.dao.BaseDaoClass;
 
-import com.demo.book.entity.Category;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.SharedCacheMode;
 import jakarta.persistence.ValidationMode;
@@ -12,12 +11,11 @@ import java.net.URL;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.net.URL;
 import java.util.*;
 
 import static org.hibernate.cfg.AvailableSettings.*;
 
-public abstract class Dao<T,K >{
+public abstract class BaseRepository<T,K >{
     protected EntityManagerFactory emf = new HibernatePersistenceProvider().createContainerEntityManagerFactory(archiverPersistenceUnitInfo(), config());
 
 	/*
@@ -26,13 +24,13 @@ public abstract class Dao<T,K >{
 		protected EntityManagerFactory emf = Persistence.createEntityManagerFactory("com.codspire.db.mgmt");
 	 */
 
-    private static final String PERSISTENCE_UNIT_NAME = "com.codspire.db.mgmt";
+    private static final String PERSISTENCE_UNIT_NAME = "com.demo.book.dao";
 
-    abstract Optional<T> save(T obj);
+    public abstract Optional<T> save(T obj);
 
-    abstract Optional<T> findById(K key);
+    public abstract Optional<T> findById(K key);
 
-    abstract void delete(T obj);
+    public abstract void delete(T obj);
 
     public void close() {
         emf.close();
@@ -41,13 +39,13 @@ public abstract class Dao<T,K >{
     private Map<String, Object> config() {
         Map<String, Object> map = new HashMap<>();
 
-        map.put(JPA_JDBC_DRIVER, "org.h2.Driver");
+        map.put(JPA_JDBC_DRIVER, "com.mysql.cj.jdbc.Driver");
         map.put(JPA_JDBC_URL, "jdbc:mysql://localhost:3306/library_management_db");
         map.put(JPA_JDBC_USER, "root");
         map.put(JPA_JDBC_PASSWORD, "12345");
-        map.put(DIALECT, org.hibernate.dialect.H2Dialect.class);
+        map.put(DIALECT, org.hibernate.dialect.MySQLDialect.class);
 //		map.put(DIALECT, "org.hibernate.dialect.H2Dialect");
-        map.put(HBM2DDL_AUTO, "create");
+//        map.put(HBM2DDL_AUTO, "create");
         map.put(SHOW_SQL, "true");
         map.put(QUERY_STARTUP_CHECKING, "false");
         map.put(GENERATE_STATISTICS, "false");
@@ -160,5 +158,4 @@ public abstract class Dao<T,K >{
         };
     }
 
-    public abstract Optional<Category> save(Category person);
 }

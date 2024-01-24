@@ -1,8 +1,6 @@
 package com.demo.book.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -25,17 +23,16 @@ public class User  {
     private long id;
     @Column(name = "user_type", insertable = false,updatable = false)
     private String userType;
+    @Column(name = "display_name")
     private String displayName;
     private String email;
     private int age;
     private String address;
+    @Column(name = "full_name")
     private String fullName;
     public User() {
 
     }
-
-
-
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")

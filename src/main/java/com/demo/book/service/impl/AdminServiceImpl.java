@@ -12,6 +12,7 @@ import com.demo.book.repository.UserRepository;
 import com.demo.book.service.AdminService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -28,7 +29,8 @@ public class AdminServiceImpl implements AdminService {
     private RoleRepository roleRepository;
     @Autowired
     private MemberRepository memberRepository;
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     public AdminServiceImpl() {
 
     }
@@ -47,7 +49,7 @@ public class AdminServiceImpl implements AdminService {
         staff.setDisplayName(user.getDisplayName());
         staff.setAge(user.getAge());
         staff.setUsername(user.getUsername());
-        staff.setPassword(user.getPassword());
+        staff.setPassword(passwordEncoder.encode(user.getPassword()));
         staff.setRoles(Collections.singletonList(role2));
 
         return staffRepository.save(staff);
@@ -70,7 +72,8 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public List<UserDto> getUsers() {
         return userRepository.findAll().stream().map(
-                user -> new UserDto(user.getId(),user.getUserType(),user.getDisplayName(),user.getAge())
-        ).collect(Collectors.toList());
+                user -> new UserDto.Builder().id(user.getId()).address(user.getAddress()).userType(user.getUserType())
+                        .email(user.getEmail()).age(user.getAge()).displayName(user.getDisplayName()).fullName(user.getFullName())
+                        .build()).collect(Collectors.toList());
     }
 }

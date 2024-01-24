@@ -3,6 +3,7 @@ package com.demo.book.controller;
 import com.demo.book.entity.Staff;
 import com.demo.book.entity.Member;
 import com.demo.book.service.AdminService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +18,7 @@ public class AdminController {
     private AdminService adminService;
 
     @PostMapping("/create-librarian")
-    public ResponseEntity<?> createLibrarianUser(@RequestBody Staff user) {
+    public ResponseEntity<?> createLibrarianUser(@Valid @RequestBody Staff user) {
         return ResponseEntity.ok(adminService.createLibrarianUser(user));
     }
 
