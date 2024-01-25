@@ -32,7 +32,7 @@ public class JwtGenerator {
                 .setClaims(extractClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 500000))
+                .setExpiration(new Date(System.currentTimeMillis() + 1800000))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

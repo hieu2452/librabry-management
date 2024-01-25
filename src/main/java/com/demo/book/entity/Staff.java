@@ -44,9 +44,12 @@ public class Staff extends User implements UserDetails {
 
         for(Role role : getRoles())
         {
-            authorities.add(new SimpleGrantedAuthority(role.getRole()));
+            authorities.add(new SimpleGrantedAuthority("ROLE_"+role.getRole()));
+            for(Permission permission: role.getPermissions()){
+                String role_permission = role.getRole()+"_"+permission.getPermission();
+                authorities.add(new SimpleGrantedAuthority(role_permission));
+            }
         }
-
 
         return authorities;
     }

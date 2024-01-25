@@ -13,5 +13,9 @@ export const DASHBOARD_ROUTES: Routes = [
     {
         path: 'book',
         loadComponent: () => import('../manage-book/manage-book.component').then(a => a.ManageBookComponent),
+    },
+    {
+        path: 'member',
+        loadComponent: () => import('../manage-member/manage-member.component').then(a => a.ManageMemberComponent),
     }
 ];

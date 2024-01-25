@@ -43,7 +43,7 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public Book createBook(MultipartFile file, String model) throws IOException {
-        long start = System.currentTimeMillis();
+         long start = System.currentTimeMillis();
         BookDto bookDto = new ObjectMapper().readValue(model, BookDto.class);
         Book book;
 
@@ -59,11 +59,14 @@ public class BookServiceImpl implements BookService {
     public PageableResponse<Book> findAll(BookFilter bookFilters) {
         PageRequest pageable = PageRequest.of(bookFilters.getPageNumber(), bookFilters.getPageSize());
         Specification<Book> spec = Specification.where(null);
-        if(bookFilters.getCategory()!=null) {
-            spec = spec.and(BookSpecification.hasCategory(bookFilters.getCategory()));
+        if(bookFilters.getCategory()!=null && !bookFilters.getCategory().equals("all")) {
+            spec = spec.and(BookSpecification.byCategory(bookFilters.getCategory()));
         }
-        if(bookFilters.getPublisher()!=null) {
-            spec = spec.and(BookSpecification.hasPublisher(bookFilters.getPublisher()));
+        if(bookFilters.getPublisher()!=null && !bookFilters.getPublisher().equals("all")) {
+            spec = spec.and(BookSpecification.byPublisher(bookFilters.getPublisher()));
+        }
+        if(bookFilters.getLanguage()!=null && !bookFilters.getLanguage().equals("all")) {
+            spec = spec.and(BookSpecification.byLanguage(bookFilters.getLanguage()));
         }
 
         return PageMapper.mapPageable(bookRepository.findAll(spec,pageable));
@@ -79,7 +82,7 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public Book update(MultipartFile file, String model) throws IOException {
-        Book book = new ObjectMapper().registerModule(new JavaTimeModule()).readValue(model, Book.class);
+        BookDto book = new ObjectMapper().registerModule(new JavaTimeModule()).readValue(model, BookDto.class);
         Book updatedBook;
         if(file == null ) {
             updatedBook = factory.createIBook().updateBook(book);

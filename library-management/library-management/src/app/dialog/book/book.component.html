@@ -55,6 +55,13 @@
                             [value]="category.categoryName">{{category.categoryName}}</mat-option>
                     </mat-select>
                 </mat-form-field>
+                <mat-form-field fxFlex>
+                    <mat-label>Publisher</mat-label>
+                    <mat-select formControlName="publisher">
+                        <mat-option *ngFor="let publisher of publishers"
+                            [value]="publisher.name">{{publisher.name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
             </div>
 
             <div fxLayout="row wrap">

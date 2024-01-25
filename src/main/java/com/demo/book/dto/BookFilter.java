@@ -8,8 +8,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class BookFilter {
-    String category;
-    String publisher;
+    String category = "all";
+    String publisher = "all";
+    String language ="all";
     int pageSize = 10;
     int pageNumber = 0;
 }

@@ -23,6 +23,7 @@ export class BookComponent {
   action: any = "Add";
   responseMessage: any;
   categories: any = [];
+  publishers: any = [];
   display: FormControl = new FormControl("", Validators.required);
   file_store: FileList | undefined;
   file_list: Array<string> = [];
@@ -48,6 +49,7 @@ export class BookComponent {
       language: [null, Validators.required],
       quantity: [null, Validators.required],
       description: [null],
+      publisher: [null, Validators.required],
     });
     if (this.dialogData.action === 'Edit') {
       this.dialogAction = "Edit";
@@ -79,6 +81,15 @@ export class BookComponent {
       next: (response : any) => {
         console.log(response)
         this.categories = response;
+      },
+      error: error => {
+        console.log(error);
+      }
+    })
+    this.categoryService.getpublisher().subscribe({
+      next: (response : any) => {
+        console.log(response)
+        this.publishers = response;
       },
       error: error => {
         console.log(error);
@@ -144,15 +155,8 @@ export class BookComponent {
   edit() {
     const form_Data: FormData = new FormData();
     var formData = this.bookForm.value;
-    console.log(this.dialogData.data);
-    var data = {
-      id: this.dialogData.data.id,
-      name: formData.name,
-      category: formData.category,
-      price: formData.price,
-      description: formData.description,
-    }
-    this.data = data;
+    
+    var data = {...formData}
     if (this.file_store) {
       form_Data.append('file', this.file_store[0]);
     }
@@ -160,10 +164,10 @@ export class BookComponent {
     form_Data.append('model', JSON
       .stringify(data));
 
-    this.bookService.addBook(form_Data).subscribe({
+    this.bookService.updateBook(form_Data).subscribe({
       next: (response: any) => {
         this.dialogRef.close();
-        this.onAddProduct.emit();
+        this.onEditProduct.emit();
       },
       error: error => {
         this.dialogRef.close();

@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface IBook {
     Book createBook(BookDto BookDto);
     Book getByCategory(String category);
-    Book updateBook(Book book);
+    Book updateBook(BookDto book);
     void deleteBook(long id);
     Optional<Book> findBookById(long id);
 }

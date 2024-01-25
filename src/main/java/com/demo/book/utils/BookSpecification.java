@@ -15,17 +15,21 @@ public class BookSpecification {
         return null;
     }
 
-    public static Specification<Book> hasCategory(String category) {
+    public static Specification<Book> byCategory(String category) {
         return (root, query, cb) -> {
             Join<Category,Book> join = root.join("category", JoinType.LEFT);
             return cb.equal(join.get("categoryName"),category);
         };
     }
 
-    public static Specification<Book> hasPublisher(String publisher) {
+    public static Specification<Book> byPublisher(String publisher) {
         return (root, query, cb) -> {
             Join<Category,Book> join = root.join("publisher", JoinType.LEFT);
             return cb.like(join.get("name"),publisher);
         };
+    }
+
+    public static Specification<Book> byLanguage(String language) {
+        return (root, query, cb) -> cb.equal(root.get("language"),language);
     }
 }

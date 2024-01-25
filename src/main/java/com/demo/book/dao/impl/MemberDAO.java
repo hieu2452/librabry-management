@@ -83,6 +83,8 @@ public class MemberDAO extends BaseRepository<User,Long> {
 
         List<Predicate> predicates = new ArrayList<>();
 
+        predicates.add(criteriaBuilder.equal(root.get("userType"), "MEMBER"));
+
         if (minAge > 0) {
             predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("age"), minAge));
         }

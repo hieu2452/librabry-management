@@ -35,6 +35,7 @@ public class Book {
     private Publisher publisher;
 
     public static class Builder {
+        private long id;
         private final String title;
         private final String author;
         private String subTitle;
@@ -42,6 +43,7 @@ public class Book {
         private String description;
         private String imageUrl;
         private Category category;
+        private Publisher publisher;
         private final int quantity;
         public Builder(String title, String author,int quantity) {
             this.title = title;
@@ -64,8 +66,16 @@ public class Book {
             this.imageUrl = imageUrl;
             return this;
         }
+        public Builder id(long id) {
+            this.id = id;
+            return this;
+        }
         public Builder category(Category category) {
             this.category = category;
+            return this;
+        }
+        public Builder publisher(Publisher publisher) {
+            this.publisher = publisher;
             return this;
         }
 
@@ -84,6 +94,8 @@ public class Book {
         this.category = builder.category;
         this.quantity = builder.quantity;
         this.language = builder.language;
+        this.publisher = builder.publisher;
+        this.id = builder.id;
     }
 
 }

@@ -18,10 +18,15 @@ public class CategoryController {
     public ResponseEntity<?> getCategories() {
         return ResponseEntity.ok(categoryService.findAll());
     }
+    @GetMapping("get-publisher")
+    public ResponseEntity<?> getPublisher() {
+        return ResponseEntity.ok(categoryService.findPublishers());
+    }
     @GetMapping("get/name/{name}")
     public ResponseEntity<?> getCategories(String name) {
         return ResponseEntity.ok(categoryService.findByName(name));
     }
+
 
     @PostMapping("create")
     public ResponseEntity<?> createCategory(@RequestBody Category category) {

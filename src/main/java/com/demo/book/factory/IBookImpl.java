@@ -3,8 +3,10 @@ package com.demo.book.factory;
 import com.demo.book.dto.BookDto;
 import com.demo.book.entity.Book;
 import com.demo.book.entity.Category;
+import com.demo.book.entity.Publisher;
 import com.demo.book.repository.BookRepository;
 import com.demo.book.repository.CategoryRepository;
+import com.demo.book.repository.PublisherRepository;
 import com.demo.book.service.impl.BookServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,14 +22,17 @@ public class IBookImpl implements IBook{
     private BookRepository bookRepository;
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private PublisherRepository publisherRepository;
     @Override
     public Book createBook(BookDto bookDto) {
         Category category = categoryRepository.findByCategoryName(bookDto.getCategory());
-
+        Publisher publisher = publisherRepository.findByName(bookDto.getPublisher());
         Book book = new Book.Builder(bookDto.getTitle(),bookDto.getAuthor(),bookDto.getQuantity())
                 .description(bookDto.getDescription())
                 .subTitle(bookDto.getSubTitle())
                 .category(category)
+                .publisher(publisher)
                 .language(bookDto.getLanguage())
                 .build();
         return bookRepository.save(book);
@@ -39,8 +44,18 @@ public class IBookImpl implements IBook{
     }
 
     @Override
-    public Book updateBook(Book book) {
-        return bookRepository.save(book);
+    public Book updateBook(BookDto book) {
+        Category category = categoryRepository.findByCategoryName(book.getCategory());
+        Publisher publisher = publisherRepository.findByName(book.getPublisher());
+        Book updatedBook = new Book.Builder(book.getTitle(),book.getAuthor(),book.getQuantity())
+                .id(book.getId())
+                .description(book.getDescription())
+                .subTitle(book.getSubTitle())
+                .category(category)
+                .publisher(publisher)
+                .language(book.getLanguage())
+                .build();
+        return bookRepository.save(updatedBook);
     }
 
     @Override

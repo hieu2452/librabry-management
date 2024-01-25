@@ -49,6 +49,7 @@ public class AdminServiceImpl implements AdminService {
         staff.setDisplayName(user.getDisplayName());
         staff.setAge(user.getAge());
         staff.setUsername(user.getUsername());
+        staff.setPhoneNumber(user.getPhoneNumber());
         staff.setPassword(passwordEncoder.encode(user.getPassword()));
         staff.setRoles(Collections.singletonList(role2));
 
@@ -61,7 +62,7 @@ public class AdminServiceImpl implements AdminService {
 
         Member newMember = (Member) factory.createUser();
 //        Role role = roleRepository.findByRole("MEMBER");
-
+        newMember.setPhoneNumber(member.getPhoneNumber());
         newMember.setDisplayName(member.getDisplayName());
         newMember.setAge(member.getAge());
 //        newMember.setRoles(Collections.singletonList(role));

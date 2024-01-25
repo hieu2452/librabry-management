@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 
-
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -27,9 +27,13 @@ public class User  {
     private String displayName;
     private String email;
     private int age;
+    @Column(name = "phone_number")
+    private String phoneNumber;
     private String address;
     @Column(name = "full_name")
     private String fullName;
+    @Column(name = "created_date")
+    private LocalDateTime createdDate = LocalDateTime.now();
     public User() {
 
     }

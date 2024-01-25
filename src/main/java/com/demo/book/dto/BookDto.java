@@ -14,6 +14,7 @@ public class BookDto {
     private String type;
     private String imageUrl;
     private String category;
+    private String publisher;
     private int quantity;
     private String language;
 }

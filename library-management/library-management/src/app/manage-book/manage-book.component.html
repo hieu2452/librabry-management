@@ -1,9 +1,40 @@
 <mat-card>
-    <b><span>Manage Product</span></b>
     <button mat-flat-button color="primary" class="float-right" style="width: 10%;" (click)="handleAddAction()">
-        <mat-icon>add_circle</mat-icon>Add Product
+        <mat-icon>add_circle</mat-icon>Add Book
     </button>
+    <div style="height: 50px;">
+        <mat-form-field fxFlex>
+            <mat-label>Category</mat-label>
+            <mat-select [(value)]="bookParam.category">
+                <mat-option *ngFor="let category of categories"
+                    [value]="category.categoryName">{{category.categoryName}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field fxFlex>
+            <mat-label>Publisher</mat-label>
+            <mat-select [(value)]="bookParam.publisher">
+                <mat-option *ngFor="let publisher of publishers"
+                    [value]="publisher.name">{{publisher.name}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field fxFlex>
+            <mat-label>Language</mat-label>
+            <mat-select [(value)]="bookParam.language">
+                <mat-option [value]="'English'">English</mat-option>
+                <mat-option [value]="'Vietnamese'">Vietnamese</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <button mat-flat-button color="primary" class="float-right"
+            style="width: 10%; height: 70px; text-align: center;" (click)="handleFilter()">
+            Apply filter
+        </button>
+        <button mat-flat-button color="primary" class="float-right"
+            style="width: 10%; height: 70px; text-align: center;" (click)="resetFilter()">
+            Reset filter
+        </button>
+    </div>
 </mat-card>
+
 <div class="responsive_table">
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
         <ng-container matColumnDef="id">
@@ -24,6 +55,10 @@
         <ng-container matColumnDef="category">
             <th mat-header-cell *matHeaderCellDef>Category</th>
             <td mat-cell *matCellDef="let element">{{element.category.categoryName}}</td>
+        </ng-container>
+        <ng-container matColumnDef="publisher">
+            <th mat-header-cell *matHeaderCellDef>Publisher</th>
+            <td mat-cell *matCellDef="let element">{{element.publisher.name}}</td>
         </ng-container>
 
         <ng-container matColumnDef="subtitle">

@@ -1,7 +1,9 @@
 package com.demo.book.service.impl;
 
 import com.demo.book.entity.Category;
+import com.demo.book.entity.Publisher;
 import com.demo.book.repository.CategoryRepository;
+import com.demo.book.repository.PublisherRepository;
 import com.demo.book.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,8 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private PublisherRepository publisherRepository;
     @Override
     public Category findByName(String name) {
         return categoryRepository.findByCategoryName(name);
@@ -19,5 +23,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<Category> findAll() {
         return categoryRepository.findAll();
+    }
+
+    @Override
+    public List<Publisher> findPublishers() {
+        return publisherRepository.findAll();
     }
 }
