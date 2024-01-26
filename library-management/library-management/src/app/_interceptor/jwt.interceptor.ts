@@ -9,14 +9,12 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
   const user = authService.userSource$.pipe(take(1)).subscribe({
     next: (data: any) => {
-      console.log(data)
       if (data) {
         req = req.clone({
           setHeaders: {
             Authorization: `Bearer ${data.accessToken}`
           }
         })
-        console.log(req)
       }
     }
   })

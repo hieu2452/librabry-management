@@ -49,16 +49,16 @@ public class BookController {
             return new ResponseEntity<>(book, HttpStatus.OK);
         return new ResponseEntity<>("Book not found", HttpStatus.NOT_FOUND);
     }
-    @GetMapping("get/type/{type}")
-    public ResponseEntity<?> getBookByType(@PathVariable String type) {
-        return ResponseEntity.ok(bookService.findByCategory(type));
-    }
-
-    @GetMapping("/get/get-type")
-    public ResponseEntity<?> getBookTypes() {
-        List<BookType> bookTypes = Arrays.asList(BookType.values());
-        return ResponseEntity.ok(bookTypes);
-    }
+//    @GetMapping("get/type/{type}")
+//    public ResponseEntity<?> getBookByType(@PathVariable String type) {
+//        return ResponseEntity.ok(bookService.findByCategory(type));
+//    }
+//
+//    @GetMapping("/get/get-type")
+//    public ResponseEntity<?> getBookTypes() {
+//        List<BookType> bookTypes = Arrays.asList(BookType.values());
+//        return ResponseEntity.ok(bookTypes);
+//    }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteBook(@PathVariable long id) {
@@ -70,8 +70,8 @@ public class BookController {
         }
     }
 
-    @GetMapping("/get/type-lg/{type}")
-    public ResponseEntity<?> getBookByTypeAndLanguage(@PathVariable String type, @RequestParam String lang) {
-        return ResponseEntity.ok(bookLanguage.getBookByTypeAndLanguage(type,lang));
-    }
+//    @GetMapping("/get/type-lg/{type}")
+//    public ResponseEntity<?> getBookByTypeAndLanguage(@PathVariable String type, @RequestParam String lang) {
+//        return ResponseEntity.ok(bookLanguage.getBookByTypeAndLanguage(type,lang));
+//    }
 }

@@ -12,25 +12,19 @@ public class EmailUtils {
     @Autowired
     private JavaMailSender emailSender;
     @Async
-    public void sendInvoiceEmail(String recipientEmail, String detail) {
+    public void sendEmail(String recipientEmail, String detail) {
         try {
-            // Create a MimeMessage
             MimeMessage message = emailSender.createMimeMessage();
 
-            // Enable the multipart flag to attach the PDF
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-            // Set the recipient's email address
             helper.setTo(recipientEmail);
 
-            // Set the email subject
             helper.setSubject("Thank you for using our services");
 
-            // Set the email body
             helper.setText(detail);
 
 
-            // Send the email
             emailSender.send(message);
 
             System.out.println("Email sent with invoice attachment successfully.");

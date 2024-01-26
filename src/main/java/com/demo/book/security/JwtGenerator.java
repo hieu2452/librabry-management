@@ -5,6 +5,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -17,12 +19,17 @@ import java.util.Map;
 import java.util.function.Function;
 @Component
 public class JwtGenerator {
-    private static final String SECRET_KEY = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
-
+    @Value("${spring.jwt.secret-key}")
+    private String SECRET_KEY;
+    @Value("${spring.jwt.time-to-live}")
+    private long TTL;
     public String generateToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
     }
+    @Autowired
+    public JwtGenerator() {
 
+    }
     public String generateToken(
             Map<String, List<String>> extractClaims,
             UserDetails userDetails) {
@@ -32,7 +39,7 @@ public class JwtGenerator {
                 .setClaims(extractClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1800000))
+                .setExpiration(new Date(System.currentTimeMillis() + TTL))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

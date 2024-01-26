@@ -36,7 +36,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(req ->
-                        req.requestMatchers("/api/v1/auth/**", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                        req.requestMatchers("/api/v1/auth/**", "/api-docs/**", "/swagger-ui/**").permitAll()
                                 .requestMatchers("/api/admin/create-librarian").hasRole("ADMIN")
                                 .requestMatchers("/api/auth/member/**").hasAnyRole("ADMIN,LIBRARIAN")
                                 .requestMatchers("/api/auth/**").permitAll()
@@ -49,7 +49,6 @@ public class SecurityConfig {
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
-//                .exceptionHandling(exception -> exception.authenticationEntryPoint(unAuthorized()))
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

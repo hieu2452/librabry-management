@@ -1,5 +1,6 @@
 package com.demo.book.service.impl;
 
+import com.demo.book.dao.impl.UserServiceAdapter;
 import com.demo.book.dto.UserDto;
 import com.demo.book.entity.*;
 import com.demo.book.entity.enums.UserType;
@@ -71,10 +72,8 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<UserDto> getUsers() {
-        return userRepository.findAll().stream().map(
-                user -> new UserDto.Builder().id(user.getId()).address(user.getAddress()).userType(user.getUserType())
-                        .email(user.getEmail()).age(user.getAge()).displayName(user.getDisplayName()).fullName(user.getFullName())
-                        .build()).collect(Collectors.toList());
+    public List<UserDto> getUsers(Integer minAge,Integer maxAge,String userType) {
+        AdminService userServiceAdapter = new UserServiceAdapter();
+        return userServiceAdapter.getUsers(minAge,maxAge,userType);
     }
 }

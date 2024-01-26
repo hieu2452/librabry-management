@@ -2,7 +2,6 @@ package com.demo.book.dao.impl;
 
 import com.demo.book.dao.BaseDaoClass.BaseRepository;
 import com.demo.book.dto.UserDto;
-import com.demo.book.entity.Member;
 import com.demo.book.entity.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
@@ -19,11 +18,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class MemberDAO extends BaseRepository<User,Long> {
-    public static MemberDAO instance;
-    public static MemberDAO getInstance() {
+public class UserDAO extends BaseRepository<User,Long> {
+    public static UserDAO instance;
+    public static UserDAO getInstance() {
         if(instance==null) {
-            instance = new MemberDAO();
+            instance = new UserDAO();
         }
         return instance;
     }
@@ -75,7 +74,9 @@ public class MemberDAO extends BaseRepository<User,Long> {
                         .build()).collect(Collectors.toList());
     }
 
-    public List<UserDto> findMembers(Integer minAge,Integer maxAge,String userType) throws NotSupportedException {
+//    public List<UserDto>
+
+    public List<UserDto> findUser(Integer minAge,Integer maxAge){
         EntityManager em = emf.createEntityManager();
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
@@ -83,7 +84,7 @@ public class MemberDAO extends BaseRepository<User,Long> {
 
         List<Predicate> predicates = new ArrayList<>();
 
-        predicates.add(criteriaBuilder.equal(root.get("userType"), "MEMBER"));
+//        predicates.add(criteriaBuilder.equal(root.get("userType"), "MEMBER"));
 
         if (minAge > 0) {
             predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("age"), minAge));
@@ -91,10 +92,6 @@ public class MemberDAO extends BaseRepository<User,Long> {
 
         if (maxAge > 0) {
             predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("age"), maxAge));
-        }
-
-        if (!userType.equals("")) {
-            predicates.add(criteriaBuilder.equal(root.get("userType"), userType));
         }
 
         if (!predicates.isEmpty()) {

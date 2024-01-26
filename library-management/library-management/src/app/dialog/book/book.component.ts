@@ -157,6 +157,7 @@ export class BookComponent {
     var formData = this.bookForm.value;
     
     var data = {...formData}
+    console.log(data)
     if (this.file_store) {
       form_Data.append('file', this.file_store[0]);
     }

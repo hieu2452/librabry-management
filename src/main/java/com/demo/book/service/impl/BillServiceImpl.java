@@ -4,6 +4,8 @@ import com.demo.book.dto.BillDto;
 import com.demo.book.dto.BookDto;
 import com.demo.book.entity.*;
 import com.demo.book.entity.enums.BorrowedBookStatus;
+import com.demo.book.exception.BorrowException;
+import com.demo.book.exception.UserNotFoundException;
 import com.demo.book.repository.*;
 import com.demo.book.service.BillService;
 import com.demo.book.utils.EmailUtils;
@@ -14,7 +16,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class BillServiceImpl implements BillService {
     @Autowired
-    private UserRepository userRepository;
+    private MemberRepository memberRepository;
     @Autowired
     private LibraryCardRepository libraryCardRepository;
     @Autowired
@@ -28,7 +30,8 @@ public class BillServiceImpl implements BillService {
     @Transactional
     @Override
     public String createBill(BillDto billDto) {
-        User user = userRepository.findById(billDto.getUserId()).orElse(null);
+        Member user = memberRepository.findById(billDto.getUserId())
+                .orElseThrow( ()-> new UserNotFoundException(billDto.getUserId()));
 
         LibraryCard libraryCard = libraryCardRepository.findByUserId(user.getId());
 
@@ -38,7 +41,7 @@ public class BillServiceImpl implements BillService {
         }
 
         if(libraryCard.getBookAvailable() < total || libraryCard.getStatus().equalsIgnoreCase("EXPIRED")) {
-            return "Unable to borrow book ";
+            throw new BorrowException("Unable to borrow book ");
         }
 
         Bill bill = new Bill();
@@ -50,13 +53,13 @@ public class BillServiceImpl implements BillService {
             BillDetailKey billDetailKey = new BillDetailKey(newBill.getId(),book.getId());
             Book book1 = bookRepository.findById(book.getId())
                     .orElseThrow();
-            if (book1.getQuantity() < book.getQuantity()) return "Insufficient amount (Book: " + book1.getTitle()+")";
+            if (book1.getQuantity() < book.getQuantity()) throw new BorrowException("Insufficient amount (Book: " + book1.getTitle()+")");
             book1.setQuantity(book1.getQuantity()-book.getQuantity());
             BillDetail billDetail = new BillDetail(billDetailKey,book.getQuantity(), BorrowedBookStatus.BORROWED,newBill,book1);
             billDetailRepository.save(billDetail);
         }
         if(user.getEmail() != null)
-            emailUtils.sendInvoiceEmail(user.getEmail(),"Borrow book");
+            emailUtils.sendEmail(user.getEmail(),"Borrow book");
 
         return "Borrow successfully";
     }

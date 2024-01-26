@@ -9,5 +9,5 @@ import java.util.List;
 public interface AdminService {
     Staff createLibrarianUser(Staff staff);
     Member createMemberUser(Member member);
-    List<UserDto> getUsers();
+    List<UserDto> getUsers(Integer minAge,Integer maxAge,String userType);
 }
