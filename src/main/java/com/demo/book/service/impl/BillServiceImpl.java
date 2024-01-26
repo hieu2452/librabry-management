@@ -1,16 +1,20 @@
 package com.demo.book.service.impl;
 
+import com.demo.book.dto.BillDetailDto;
 import com.demo.book.dto.BillDto;
 import com.demo.book.dto.BookDto;
 import com.demo.book.entity.*;
 import com.demo.book.entity.enums.BorrowedBookStatus;
+import com.demo.book.event.notification.NotificationEvent;
 import com.demo.book.exception.BorrowException;
 import com.demo.book.exception.UserNotFoundException;
 import com.demo.book.repository.*;
 import com.demo.book.service.BillService;
 import com.demo.book.utils.EmailUtils;
 import jakarta.transaction.Transactional;
+import org.apache.catalina.core.ApplicationPushBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,6 +31,9 @@ public class BillServiceImpl implements BillService {
     private BillDetailRepository billDetailRepository;
     @Autowired
     private EmailUtils emailUtils;
+    @Autowired
+    private ApplicationEventPublisher publisher;
+
     @Transactional
     @Override
     public String createBill(BillDto billDto) {
@@ -36,7 +43,7 @@ public class BillServiceImpl implements BillService {
         LibraryCard libraryCard = libraryCardRepository.findByUserId(user.getId());
 
         int total = 0;
-        for (BookDto book : billDto.getBooks()) {
+        for (BillDetailDto book : billDto.getBooks()) {
             total += book.getQuantity();
         }
 
@@ -48,10 +55,10 @@ public class BillServiceImpl implements BillService {
         bill.setUser(user);
         Bill newBill = billRepository.saveAndFlush(bill);
 
-        for(BookDto book  : billDto.getBooks()){
+        for(BillDetailDto book  : billDto.getBooks()){
 
-            BillDetailKey billDetailKey = new BillDetailKey(newBill.getId(),book.getId());
-            Book book1 = bookRepository.findById(book.getId())
+            BillDetailKey billDetailKey = new BillDetailKey(newBill.getId(),book.getBookId());
+            Book book1 = bookRepository.findById(book.getBookId())
                     .orElseThrow();
             if (book1.getQuantity() < book.getQuantity()) throw new BorrowException("Insufficient amount (Book: " + book1.getTitle()+")");
             book1.setQuantity(book1.getQuantity()-book.getQuantity());
@@ -61,6 +68,8 @@ public class BillServiceImpl implements BillService {
         if(user.getEmail() != null)
             emailUtils.sendEmail(user.getEmail(),"Borrow book");
 
+        publisher.publishEvent(
+                new NotificationEvent(this,"User : " + user.getFullName() + " - id : " + user.getId()+" borrowed book"));
         return "Borrow successfully";
     }
 }

@@ -27,22 +27,22 @@ public class BookController {
     @Autowired
     private BookLanguage bookLanguage;
 
-    @PostMapping(value = "/create-book",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/create",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createBook(@RequestParam(value = "file",required = false) MultipartFile file, @RequestParam("model") String model) throws IOException {
         return ResponseEntity.ok(bookService.createBook(file,model));
     }
 
-    @PutMapping(value = "/update-book",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/update",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateBook(@RequestParam(value = "file",required = false) MultipartFile file, @RequestParam("model") String model) throws IOException {
         return ResponseEntity.ok(bookService.update(file,model));
     }
 
-    @GetMapping("/get-all")
+    @GetMapping("")
     public ResponseEntity<?> getBooks(@ModelAttribute BookFilter bookFilter) {
         return ResponseEntity.ok(bookService.findAll(bookFilter));
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getBookById(@PathVariable long id) {
         Book book = bookService.findById(id);
         if(book!=null)

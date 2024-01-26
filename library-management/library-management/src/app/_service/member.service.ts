@@ -10,6 +10,6 @@ export class MemberService {
   constructor(private http: HttpClient) { }
 
   getMembers() {
-    return this.http.get(this.baseUrl + 'api/member/get')
+    return this.http.get(this.baseUrl + 'api/member')
   }
 }

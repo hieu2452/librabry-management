@@ -16,7 +16,6 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String title;
-    private String subTitle;
     private String description;
     private final LocalDateTime addedDate = LocalDateTime.now();
     private String author;
@@ -38,7 +37,6 @@ public class Book {
         private long id;
         private final String title;
         private final String author;
-        private String subTitle;
         private String language;
         private String description;
         private String imageUrl;
@@ -54,10 +52,7 @@ public class Book {
             this.language = language;
             return this;
         }
-        public Builder subTitle(String subTitle) {
-            this.subTitle = subTitle;
-            return this;
-        }
+
         public Builder description(String description) {
             this.description = description;
             return this;
@@ -87,7 +82,6 @@ public class Book {
 
     public Book(Builder builder) {
         this.title = builder.title;
-        this.subTitle = builder.subTitle;
         this.description = builder.description;
         this.imageUrl = builder.imageUrl;
         this.author = builder.author;

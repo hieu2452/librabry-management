@@ -18,7 +18,7 @@ import { BookParam } from '../_modal/BookParam';
 })
 export class ManageBookComponent implements OnInit {
   books: any = [];
-  displayedColumns: string[] = ['id', 'title', 'author', 'category', 'publisher','subtitle', 'description', 'language', 'quantity', 'addedDate', 'edit'];
+  displayedColumns: string[] = ['id', 'title', 'author', 'category', 'publisher', 'description', 'language', 'quantity', 'addedDate', 'edit'];
   dataSource: any;
   categories: any = [];
   publishers: any = [];

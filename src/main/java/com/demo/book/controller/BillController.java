@@ -15,7 +15,7 @@ public class BillController {
     @Autowired
     private BillService billService;
 
-    @PostMapping("/create-bill")
+    @PostMapping("/create")
     public ResponseEntity<?> createBill(@RequestBody BillDto billDto) {
         return ResponseEntity.ok(billService.createBill(billDto));
     }

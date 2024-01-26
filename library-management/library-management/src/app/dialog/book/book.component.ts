@@ -44,7 +44,6 @@ export class BookComponent {
       id: [null],
       title: [null, [Validators.required]],
       author: [null, [Validators.required]],
-      subTitle: [null],
       category: [null, Validators.required],
       language: [null, Validators.required],
       quantity: [null, Validators.required],
@@ -57,7 +56,8 @@ export class BookComponent {
       this.bookForm.patchValue(this.dialogData.data);
       // console.log(this.dialogData.data.category)
       this.selected = this.dialogData.data.category;
-      this.bookForm.controls['category'].setValue(this.dialogData.data.category)
+      this.bookForm.controls['category'].setValue(this.dialogData.data.category.categoryName)
+      this.bookForm.controls['publisher'].setValue(this.dialogData.data.publisher.name)
     }
 
 
@@ -78,7 +78,7 @@ export class BookComponent {
 
   getCategories() {
     this.categoryService.getCategories().subscribe({
-      next: (response : any) => {
+      next: (response: any) => {
         console.log(response)
         this.categories = response;
       },
@@ -87,7 +87,7 @@ export class BookComponent {
       }
     })
     this.categoryService.getpublisher().subscribe({
-      next: (response : any) => {
+      next: (response: any) => {
         console.log(response)
         this.publishers = response;
       },
@@ -130,7 +130,7 @@ export class BookComponent {
   add() {
     const form_Data: FormData = new FormData();
     var formData = this.bookForm.value;
-    var data = {...formData}
+    var data = { ...formData }
     console.log(data)
     if (this.file_store) {
       form_Data.append('file', this.file_store[0]);
@@ -155,8 +155,8 @@ export class BookComponent {
   edit() {
     const form_Data: FormData = new FormData();
     var formData = this.bookForm.value;
-    
-    var data = {...formData}
+
+    var data = { ...formData }
     console.log(data)
     if (this.file_store) {
       form_Data.append('file', this.file_store[0]);

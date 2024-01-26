@@ -16,7 +16,7 @@ export class BookService {
     params = params.append('category', bookParam.category);
     params = params.append('publisher', bookParam.publisher);
     params = params.append('language', bookParam.language);
-    return this.http.get(this.baseUrl + 'api/book/get-all',{ observe: 'response', params }).pipe(
+    return this.http.get(this.baseUrl + 'api/book',{ observe: 'response', params }).pipe(
       map(response => {
         if (response.body)
           return response.body
@@ -26,10 +26,10 @@ export class BookService {
   }
 
   addBook(book: any) {
-    return this.http.post(this.baseUrl + 'api/book/create-book', book);
+    return this.http.post(this.baseUrl + 'api/book/create', book);
   }
 
   updateBook(book: any) {
-    return this.http.put(this.baseUrl + 'api/book/update-book', book)
+    return this.http.put(this.baseUrl + 'api/book/update', book)
   }
 }

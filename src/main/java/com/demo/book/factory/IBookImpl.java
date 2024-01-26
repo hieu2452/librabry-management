@@ -30,7 +30,6 @@ public class IBookImpl implements IBook{
         Publisher publisher = publisherRepository.findByName(bookDto.getPublisher());
         Book book = new Book.Builder(bookDto.getTitle(),bookDto.getAuthor(),bookDto.getQuantity())
                 .description(bookDto.getDescription())
-                .subTitle(bookDto.getSubTitle())
                 .category(category)
                 .publisher(publisher)
                 .language(bookDto.getLanguage())
@@ -50,7 +49,6 @@ public class IBookImpl implements IBook{
         Book updatedBook = new Book.Builder(book.getTitle(),book.getAuthor(),book.getQuantity())
                 .id(book.getId())
                 .description(book.getDescription())
-                .subTitle(book.getSubTitle())
                 .category(category)
                 .publisher(publisher)
                 .language(book.getLanguage())

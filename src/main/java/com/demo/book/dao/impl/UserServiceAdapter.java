@@ -11,13 +11,13 @@ import java.util.stream.Collectors;
 public class UserServiceAdapter implements AdminService {
     private final UserDAO userDAO = UserDAO.getInstance();
     @Override
-    public Staff createLibrarianUser(Staff staff) {
-        return null;
+    public void createLibrarianUser(Staff staff) {
+
     }
 
     @Override
-    public Member createMemberUser(Member member) {
-        return null;
+    public void createMemberUser(Member member) {
+
     }
 
     @Override

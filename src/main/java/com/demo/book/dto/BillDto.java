@@ -7,5 +7,5 @@ import java.util.List;
 @Data
 public class BillDto {
     private long userId;
-    private List<BookDto> books;
+    private List<BillDetailDto> books;
 }

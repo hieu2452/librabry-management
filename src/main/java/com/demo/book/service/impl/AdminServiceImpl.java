@@ -4,6 +4,7 @@ import com.demo.book.dao.impl.UserServiceAdapter;
 import com.demo.book.dto.UserDto;
 import com.demo.book.entity.*;
 import com.demo.book.entity.enums.UserType;
+import com.demo.book.exception.UserExistsException;
 import com.demo.book.factory.UserFactory.UserAbstractFactory;
 import com.demo.book.factory.UserFactory.UserFactory;
 import com.demo.book.repository.StaffRepository;
@@ -38,11 +39,12 @@ public class AdminServiceImpl implements AdminService {
 
     @Transactional
     @Override
-    public Staff createLibrarianUser(Staff user) {
+    public void createLibrarianUser(Staff user) {
+        if(staffRepository.existsByUsername(user.getUsername())) throw new UserExistsException();
+
         UserAbstractFactory factory = UserFactory.getFactory(UserType.STAFF);
 
         Staff staff = (Staff) factory.createUser();
-//        Role role1 = roleRepository.findByRole("MEMBER");
         Role role2 = roleRepository.findByRole("LIBRARIAN");
 
         staff.setFullName(user.getFullName());
@@ -53,22 +55,18 @@ public class AdminServiceImpl implements AdminService {
         staff.setPhoneNumber(user.getPhoneNumber());
         staff.setPassword(passwordEncoder.encode(user.getPassword()));
         staff.setRoles(Collections.singletonList(role2));
-
-        return staffRepository.save(staff);
+        staffRepository.save(staff);
     }
     @Transactional
     @Override
-    public Member createMemberUser(Member member) {
+    public void createMemberUser(Member member) {
         UserAbstractFactory factory = UserFactory.getFactory(UserType.MEMBER);
 
         Member newMember = (Member) factory.createUser();
-//        Role role = roleRepository.findByRole("MEMBER");
         newMember.setPhoneNumber(member.getPhoneNumber());
         newMember.setDisplayName(member.getDisplayName());
         newMember.setAge(member.getAge());
-//        newMember.setRoles(Collections.singletonList(role));
-
-        return memberRepository.save(newMember);
+        memberRepository.save(member);
     }
 
     @Override

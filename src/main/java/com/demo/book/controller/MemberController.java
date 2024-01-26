@@ -16,14 +16,15 @@ public class MemberController {
     private AdminService adminService;
 
 
-    @GetMapping("/get")
+    @GetMapping("")
     public ResponseEntity<?> getMember(@RequestParam(defaultValue = "0") int minAge,
                                        @RequestParam(defaultValue = "0") int maxAge) throws NotSupportedException {
         return ResponseEntity.ok(adminService.getUsers(minAge,maxAge,"MEMBER"));
     }
 
-    @PostMapping("/create-member")
+    @PostMapping("/create")
     public ResponseEntity<?> createMemberUser(@RequestBody Member user) {
-        return ResponseEntity.ok(adminService.createMemberUser(user));
+        adminService.createMemberUser(user);
+        return ResponseEntity.noContent().build();
     }
 }

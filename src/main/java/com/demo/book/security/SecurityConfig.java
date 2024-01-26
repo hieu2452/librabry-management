@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(req ->
                         req.requestMatchers("/api/v1/auth/**", "/api-docs/**", "/swagger-ui/**").permitAll()
-                                .requestMatchers("/api/admin/create-librarian").hasRole("ADMIN")
+                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/api/auth/member/**").hasAnyRole("ADMIN,LIBRARIAN")
                                 .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/api/admin/**").hasRole("ADMIN")

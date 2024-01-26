@@ -7,7 +7,7 @@ import com.demo.book.entity.Member;
 import java.util.List;
 
 public interface AdminService {
-    Staff createLibrarianUser(Staff staff);
-    Member createMemberUser(Member member);
+    void createLibrarianUser(Staff staff);
+    void createMemberUser(Member member);
     List<UserDto> getUsers(Integer minAge,Integer maxAge,String userType);
 }

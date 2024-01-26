@@ -18,13 +18,15 @@ public class AdminController {
 
     @PostMapping("/create-librarian")
     public ResponseEntity<?> createLibrarianUser(@Valid @RequestBody Staff user) {
-        return ResponseEntity.ok(adminService.createLibrarianUser(user));
+        adminService.createLibrarianUser(user);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/get-user")
     public ResponseEntity<?> getUser(@RequestParam(defaultValue = "0") int minAge,
                                        @RequestParam(defaultValue = "0") int maxAge,
                                        @RequestParam(defaultValue = "") String type) {
-        return ResponseEntity.ok(adminService.getUsers(minAge,maxAge,type));
+        adminService.getUsers(minAge,maxAge,type);
+        return ResponseEntity.noContent().build();
     }
 }
