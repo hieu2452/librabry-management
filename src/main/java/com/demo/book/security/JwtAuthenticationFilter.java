@@ -26,7 +26,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private HandlerExceptionResolver exceptionResolver;
 
-    private static final String[] excludedEndpoints = new String[] {"/api/auth/login"};
+    private static final String[] excludedEndpoints = new String[] {"/api/auth/login","/api/auth/refreshtoken"};
 
     public JwtAuthenticationFilter(){
 

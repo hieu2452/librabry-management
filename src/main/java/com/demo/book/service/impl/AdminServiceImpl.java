@@ -45,7 +45,7 @@ public class AdminServiceImpl implements AdminService {
         UserAbstractFactory factory = UserFactory.getFactory(UserType.STAFF);
 
         Staff staff = (Staff) factory.createUser();
-        Role role2 = roleRepository.findByRole("LIBRARIAN");
+        Role role2 = roleRepository.findByRole("ADMIN");
 
         staff.setFullName(user.getFullName());
         staff.setAddress(user.getAddress());

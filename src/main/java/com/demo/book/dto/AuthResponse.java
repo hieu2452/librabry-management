@@ -9,9 +9,10 @@ public class AuthResponse {
     private String username;
     private String accessToken;
     private String tokenType = "Bearer ";
-
-    public AuthResponse(String username, String accessToken) {
+    private String refreshToken;
+    public AuthResponse(String username, String accessToken,String refreshToken) {
         this.username = username;
         this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
     }
 }

@@ -2,12 +2,17 @@ package com.demo.book.controller;
 
 import com.demo.book.dto.AuthResponse;
 import com.demo.book.dto.LoginRequest;
+import com.demo.book.dto.RefreshTokenRequest;
+import com.demo.book.dto.RefreshTokenResponse;
 import com.demo.book.entity.Permission;
+import com.demo.book.entity.RefreshToken;
 import com.demo.book.entity.Role;
 import com.demo.book.entity.Staff;
+import com.demo.book.exception.TokenRefreshException;
 import com.demo.book.repository.StaffRepository;
 import com.demo.book.security.JwtGenerator;
-import org.apache.coyote.Response;
+import com.demo.book.service.impl.RefreshTokenService;
+import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,12 +21,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,11 +35,13 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final StaffRepository staffRepository;
     private final JwtGenerator jwtGenerator;
+    private final RefreshTokenService refreshTokenService;
     @Autowired
-    public AuthController(AuthenticationManager authenticationManager, StaffRepository staffRepository, JwtGenerator jwtGenerator) {
+    public AuthController(AuthenticationManager authenticationManager, StaffRepository staffRepository, JwtGenerator jwtGenerator, RefreshTokenService refreshTokenService) {
         this.authenticationManager = authenticationManager;
         this.staffRepository = staffRepository;
         this.jwtGenerator = jwtGenerator;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @PostMapping("/login")
@@ -58,11 +61,11 @@ public class AuthController {
         Staff user = staffRepository.findByUsername(loginRequest.getUsername());
 
         Map<String,List<String>> roles = mapRole(user.getRoles());
-
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         var token = jwtGenerator.generateToken(roles,user);
-        return new ResponseEntity<>(new AuthResponse(loginRequest.getUsername(),token), HttpStatus.OK);
+        return new ResponseEntity<>(new AuthResponse(loginRequest.getUsername(),token,refreshToken.getToken()), HttpStatus.OK);
     }
     private Map<String, List<String>> mapRole(List<Role> roles){
         List<String> roleName = roles.stream().map(Role::getRole).toList();
@@ -79,5 +82,20 @@ public class AuthController {
         authorities.put("role",roleName);
         authorities.put("permission",permissions);
         return authorities;
+    }
+
+    @GetMapping("refreshtoken/{refreshToken}")
+    public ResponseEntity<?> refreshToken(@PathVariable String refreshToken) {
+
+        return refreshTokenService.findByToken(refreshToken)
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getStaff)
+                .map(user -> {
+                    Map<String,List<String>> roles = mapRole(user.getRoles());
+                    String token = jwtGenerator.generateToken(roles,user);
+                    return ResponseEntity.ok(new RefreshTokenResponse(token, refreshToken));
+                })
+                .orElseThrow(() -> new TokenRefreshException(refreshToken,
+                        "Refresh token is not in database!"));
     }
 }
