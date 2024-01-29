@@ -1,9 +1,8 @@
 package com.demo.book.controller;
 
-import com.demo.book.dto.AuthResponse;
-import com.demo.book.dto.LoginRequest;
-import com.demo.book.dto.RefreshTokenRequest;
-import com.demo.book.dto.RefreshTokenResponse;
+import com.demo.book.domain.AuthResponse;
+import com.demo.book.domain.LoginRequest;
+import com.demo.book.domain.RefreshTokenResponse;
 import com.demo.book.entity.Permission;
 import com.demo.book.entity.RefreshToken;
 import com.demo.book.entity.Role;
@@ -12,7 +11,6 @@ import com.demo.book.exception.TokenRefreshException;
 import com.demo.book.repository.StaffRepository;
 import com.demo.book.security.JwtGenerator;
 import com.demo.book.service.impl.RefreshTokenService;
-import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -58,10 +56,10 @@ public class AuthController {
             throw new BadCredentialsException("username or password is incorrect");
         }
 
-        Staff user = staffRepository.findByUsername(loginRequest.getUsername());
+        Staff user = (Staff) authentication.getPrincipal();
 
         Map<String,List<String>> roles = mapRole(user.getRoles());
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         var token = jwtGenerator.generateToken(roles,user);
@@ -86,6 +84,7 @@ public class AuthController {
 
     @GetMapping("refreshtoken/{refreshToken}")
     public ResponseEntity<?> refreshToken(@PathVariable String refreshToken) {
+
 
         return refreshTokenService.findByToken(refreshToken)
                 .map(refreshTokenService::verifyExpiration)

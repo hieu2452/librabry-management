@@ -1,9 +1,8 @@
 package com.demo.book.factory;
 
-import com.demo.book.dto.BookDto;
+import com.demo.book.domain.BookDto;
 import com.demo.book.entity.Book;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface IBook {

@@ -6,18 +6,14 @@ import { LayoutComponent } from './layout/layout.component';
 
 export const routes: Routes = [
     {
-        path:'',
+        path: '',
         redirectTo: 'dashboard',
-        pathMatch : 'full'
+        pathMatch: 'full'
     },
     {
         path: 'login',
         component: LoginComponent
     },
-    // {
-    //     path: 'dashboard',
-    //     component: LayoutComponent
-    // },
     {
         path: 'dashboard',
         loadComponent: () => import('./layout/layout.component').then(a => a.LayoutComponent),

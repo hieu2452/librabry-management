@@ -1,0 +1,37 @@
+/* Add this CSS to your styles file or component */
+
+.mat-dialog-content {
+    max-width: 400px; /* Adjust the max-width as needed */
+    margin: 0 auto; /* Center the form within the dialog content */
+
+    /* Optional: Add some padding for better spacing */
+    padding: 20px;
+}
+
+mat-form-field {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+mat-label {
+    font-size: 14px;
+}
+
+/* Optional: Style input and select fields for consistent appearance */
+input, mat-select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* Optional: Style mat-select dropdown icon */
+mat-select-arrow {
+    color: #555;
+}
+
+/* Optional: Add some space between rows */
+div[fxLayout="row wrap"] {
+    margin-bottom: 15px;
+}
+

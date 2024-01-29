@@ -1,6 +1,6 @@
 package com.demo.book.dao.impl;
 
-import com.demo.book.dto.UserDto;
+import com.demo.book.domain.UserDto;
 import com.demo.book.entity.Member;
 import com.demo.book.entity.Staff;
 import com.demo.book.service.AdminService;

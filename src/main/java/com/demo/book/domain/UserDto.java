@@ -1,11 +1,5 @@
-package com.demo.book.dto;
+package com.demo.book.domain;
 
-import com.demo.book.entity.Book;
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.Builder;
 import lombok.Data;
 
 @Data

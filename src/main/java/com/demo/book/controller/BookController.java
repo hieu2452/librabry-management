@@ -1,9 +1,8 @@
 package com.demo.book.controller;
 
 import com.demo.book.adapter.BookLanguage;
-import com.demo.book.dto.BookFilter;
+import com.demo.book.domain.BookFilter;
 import com.demo.book.entity.Book;
-import com.demo.book.entity.enums.BookType;
 import com.demo.book.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,10 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/book")
@@ -41,7 +36,10 @@ public class BookController {
     public ResponseEntity<?> getBooks(@ModelAttribute BookFilter bookFilter) {
         return ResponseEntity.ok(bookService.findAll(bookFilter));
     }
-
+    @GetMapping("search")
+    public ResponseEntity<?> searchByKeyword(@ModelAttribute BookFilter bookFilter) {
+        return ResponseEntity.ok(bookService.findByKeyword(bookFilter));
+    }
     @GetMapping("/{id}")
     public ResponseEntity<?> getBookById(@PathVariable long id) {
         Book book = bookService.findById(id);

@@ -1,7 +1,7 @@
 package com.demo.book.service.impl;
 
 import com.demo.book.dao.impl.UserServiceAdapter;
-import com.demo.book.dto.UserDto;
+import com.demo.book.domain.UserDto;
 import com.demo.book.entity.*;
 import com.demo.book.entity.enums.UserType;
 import com.demo.book.exception.UserExistsException;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -45,7 +44,7 @@ public class AdminServiceImpl implements AdminService {
         UserAbstractFactory factory = UserFactory.getFactory(UserType.STAFF);
 
         Staff staff = (Staff) factory.createUser();
-        Role role2 = roleRepository.findByRole("ADMIN");
+        Role role2 = roleRepository.findByRole("LIBRARIAN");
 
         staff.setFullName(user.getFullName());
         staff.setAddress(user.getAddress());

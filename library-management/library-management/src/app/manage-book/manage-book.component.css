@@ -1,0 +1,34 @@
+.filter {
+    display: flex;
+    align-items: center;
+}
+
+.filter input,
+.filter select,
+.filter button {
+    height: 40px;
+    /* Adjust the height as needed */
+    margin-right: 10px;
+    /* Adjust spacing between elements */
+}
+
+.filter select {
+    width: 150px;
+    /* Adjust the width of the selects */
+}
+
+.filter button {
+    min-width: 100px;
+    /* Adjust the width of the buttons */
+}
+
+/* Optional: Add labels for inputs and selects */
+.filter label {
+    margin-right: 10px;
+    /* Adjust spacing between labels and elements */
+}
+
+.filter .add-book {
+    margin-left: auto;
+    /* This will push the button to the right */
+}

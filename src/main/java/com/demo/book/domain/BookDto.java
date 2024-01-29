@@ -1,9 +1,7 @@
-package com.demo.book.dto;
+package com.demo.book.domain;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
-import java.util.List;
 @Data
 public class BookDto {
     private long id;

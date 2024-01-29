@@ -1,6 +1,5 @@
-package com.demo.book.dto;
+package com.demo.book.domain;
 
-import com.demo.book.entity.Book;
 import lombok.Data;
 
 import java.util.List;

@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
     this.authService.login(this.form.value).subscribe({
       next: (response: any) => {
         console.log(response);
-        this.router.navigate(["/dashboard/book"]);
+        this.router.navigate(["/dashboard/manage-book"]);
       },
       error: error => {
         console.log(error.error.detail)

@@ -1,8 +1,7 @@
 package com.demo.book.service.impl;
 
-import com.demo.book.dto.BillDetailDto;
-import com.demo.book.dto.BillDto;
-import com.demo.book.dto.BookDto;
+import com.demo.book.domain.BillDetailDto;
+import com.demo.book.domain.BillDto;
 import com.demo.book.entity.*;
 import com.demo.book.entity.enums.BorrowedBookStatus;
 import com.demo.book.event.notification.NotificationEvent;
@@ -12,10 +11,11 @@ import com.demo.book.repository.*;
 import com.demo.book.service.BillService;
 import com.demo.book.utils.EmailUtils;
 import jakarta.transaction.Transactional;
-import org.apache.catalina.core.ApplicationPushBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class BillServiceImpl implements BillService {
@@ -72,4 +72,10 @@ public class BillServiceImpl implements BillService {
                 new NotificationEvent(this,"User : " + user.getFullName() + " - id : " + user.getId()+" borrowed book"));
         return "Borrow successfully";
     }
+
+    @Override
+    public List<Bill> findAll() {
+        return billRepository.findAll();
+    }
+
 }

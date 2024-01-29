@@ -1,8 +1,8 @@
 package com.demo.book.service.impl;
 
-import com.demo.book.dto.BookDto;
-import com.demo.book.dto.BookFilter;
-import com.demo.book.dto.PageableResponse;
+import com.demo.book.domain.BookDto;
+import com.demo.book.domain.BookFilter;
+import com.demo.book.domain.PageableResponse;
 import com.demo.book.entity.Book;
 import com.demo.book.factory.ServiceAbstractFactory;
 import com.demo.book.repository.BookRepository;
@@ -18,16 +18,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.print.Pageable;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 
 @org.springframework.stereotype.Service
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -71,7 +68,21 @@ public class BookServiceImpl implements BookService {
 
         return PageMapper.mapPageable(bookRepository.findAll(spec,pageable));
     }
+    @Override
+    public PageableResponse<Book> findByKeyword(BookFilter filter) {
+        PageRequest pageable = PageRequest.of(filter.getPageNumber(), filter.getPageSize());
 
+        Specification<Book> spec1 = BookSpecification.byCategory(filter.getKeyword());
+        Specification<Book> spec2 = BookSpecification.byPublisher(filter.getKeyword());
+        Specification<Book> spec3 = BookSpecification.byPublisher(filter.getKeyword());
+        Specification<Book> spec4 = BookSpecification.byAuthor(filter.getKeyword());
+        Specification<Book> spec5 = BookSpecification.byLanguage(filter.getKeyword());
+
+        return PageMapper.mapPageable(
+                bookRepository.findAll(
+                        Specification.where(spec1).or(spec2).or(spec3).or(spec4).or(spec5),
+                        pageable));
+    }
 
 
     @Override

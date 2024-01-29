@@ -1,7 +1,7 @@
 package com.demo.book.dao.impl;
 
 import com.demo.book.dao.BaseDaoClass.BaseRepository;
-import com.demo.book.dto.UserDto;
+import com.demo.book.domain.UserDto;
 import com.demo.book.entity.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
@@ -10,7 +10,6 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import jakarta.transaction.NotSupportedException;
 
 import java.util.ArrayList;
 import java.util.List;

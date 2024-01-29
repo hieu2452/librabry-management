@@ -1,7 +1,6 @@
 package com.demo.book.utils;
 
-import com.demo.book.dto.PageableResponse;
-import com.demo.book.entity.Book;
+import com.demo.book.domain.PageableResponse;
 import org.springframework.data.domain.Page;
 
 public class PageMapper{

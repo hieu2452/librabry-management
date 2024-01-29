@@ -8,13 +8,14 @@ import { BookComponent } from '../dialog/book/book.component';
 import { Router, RouterModule } from '@angular/router';
 import { CategoryService } from '../_service/category.service';
 import { BookParam } from '../_modal/BookParam';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-manage-book',
   standalone: true,
-  imports: [MATERIAL_MODULDE, DatePipe, RouterModule, NgFor],
+  imports: [MATERIAL_MODULDE, DatePipe, RouterModule, NgFor, FormsModule],
   templateUrl: './manage-book.component.html',
-  styleUrl: './manage-book.component.css'
+  styleUrl: './manage-book.component.css',
 })
 export class ManageBookComponent implements OnInit {
   books: any = [];
@@ -38,8 +39,16 @@ export class ManageBookComponent implements OnInit {
     this.getCategories();
   }
 
+  onChange(e: any) {
+    console.log(this.bookParam.keyword)
+    this.bookService.search(this.bookParam).subscribe({
+      next: (books: any) => {
+        this.dataSource = new MatTableDataSource(books.content);
+      }
+    });
+  }
+
   handleFilter() {
-    console.log(this.bookParam)
     this.getBooks(this.bookParam);
   }
 
@@ -74,7 +83,6 @@ export class ManageBookComponent implements OnInit {
   getCategories() {
     this.categoryService.getCategories().subscribe({
       next: (response: any) => {
-        console.log(response)
         this.categories = response;
       },
       error: error => {
@@ -83,7 +91,6 @@ export class ManageBookComponent implements OnInit {
     })
     this.categoryService.getpublisher().subscribe({
       next: (response: any) => {
-        console.log(response)
         this.publishers = response;
       },
       error: error => {

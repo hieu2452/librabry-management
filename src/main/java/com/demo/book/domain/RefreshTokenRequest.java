@@ -1,4 +1,4 @@
-package com.demo.book.dto;
+package com.demo.book.domain;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

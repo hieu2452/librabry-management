@@ -1,0 +1,13 @@
+<mat-toolbar color="primary">
+    <span>My App</span>
+    <span class="example-spacer"></span>
+    <button mat-icon-button [matMenuTriggerFor]="userMenu">
+        <mat-icon>account_circle</mat-icon>
+    </button>
+
+    <!-- Dropdown Menu -->
+    <mat-menu #userMenu="matMenu">
+        <!-- <button mat-menu-item (click)="editProfile()">Edit Profile</button> -->
+        <button mat-menu-item (click)="onLogout()">Logout</button>
+    </mat-menu>
+</mat-toolbar>

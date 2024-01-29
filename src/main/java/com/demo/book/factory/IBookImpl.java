@@ -1,13 +1,12 @@
 package com.demo.book.factory;
 
-import com.demo.book.dto.BookDto;
+import com.demo.book.domain.BookDto;
 import com.demo.book.entity.Book;
 import com.demo.book.entity.Category;
 import com.demo.book.entity.Publisher;
 import com.demo.book.repository.BookRepository;
 import com.demo.book.repository.CategoryRepository;
 import com.demo.book.repository.PublisherRepository;
-import com.demo.book.service.impl.BookServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

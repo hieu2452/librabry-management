@@ -32,7 +32,7 @@ public class JwtExceptionHandle {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("message", ex.getMessage());
-        body.put("status", HttpStatus.UNAUTHORIZED.value());
-        return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
+        body.put("status", HttpStatus.FORBIDDEN.value());
+        return new ResponseEntity<>(body, HttpStatus.FORBIDDEN);
     }
 }

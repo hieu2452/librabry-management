@@ -14,7 +14,7 @@ public class Bill {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private final LocalDateTime createdDate = LocalDateTime.now();
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private User user;
     @Enumerated(EnumType.STRING)
     private BillStatus Status;

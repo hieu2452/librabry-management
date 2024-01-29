@@ -1,41 +1,42 @@
 <mat-card>
-    <button mat-flat-button color="primary" class="float-right" style="width: 10%;" (click)="handleAddAction()">
-        <mat-icon>add_circle</mat-icon>Add Book
-    </button>
-    <div style="height: 50px;">
-        <mat-form-field fxFlex>
-            <mat-label>Category</mat-label>
-            <mat-select [(value)]="bookParam.category">
-                <mat-option *ngFor="let category of categories"
-                    [value]="category.categoryName">{{category.categoryName}}</mat-option>
-            </mat-select>
-        </mat-form-field>
-        <mat-form-field fxFlex>
-            <mat-label>Publisher</mat-label>
-            <mat-select [(value)]="bookParam.publisher">
-                <mat-option *ngFor="let publisher of publishers"
-                    [value]="publisher.name">{{publisher.name}}</mat-option>
-            </mat-select>
-        </mat-form-field>
-        <mat-form-field fxFlex>
-            <mat-label>Language</mat-label>
-            <mat-select [(value)]="bookParam.language">
-                <mat-option [value]="'English'">English</mat-option>
-                <mat-option [value]="'Vietnamese'">Vietnamese</mat-option>
-            </mat-select>
-        </mat-form-field>
-        <button mat-flat-button color="primary" class="float-right"
-            style="width: 10%; height: 70px; text-align: center;" (click)="handleFilter()">
+    <div style="height: 50px;" class="filter">
+        <label for="keyword">Keyword:</label>
+        <input [(ngModel)]="bookParam.keyword" (change)="onChange($event)" id="keyword" type="text"
+            placeholder="Search">
+        <label for="category">Category:</label>
+        <select [(ngModel)]="bookParam.category" name="Category" id="category">
+            <option [ngValue]="'all'" selected>All
+            </option>
+            <option *ngFor="let category of categories" [ngValue]="category.categoryName">{{category.categoryName}}
+            </option>
+        </select>
+        <label for="publisher">Publisher:</label>
+        <select [(ngModel)]="bookParam.publisher" name="Publisher" id="publisher">
+            <option [ngValue]="'all'" selected>All
+            <option *ngFor="let publisher of publishers" [ngValue]="publisher.name" >{{publisher.name}}
+            </option>
+        </select>
+        <label for="language">Language:</label>
+        <select [(ngModel)]="bookParam.language" name="Language" id="language">
+            <option [ngValue]="'all'" selected>All
+            <option [ngValue]="'English'">English
+            </option>
+            <option [ngValue]="'Vietnamese'">Vietnamese
+            </option>
+        </select>
+        <button mat-flat-button color="primary" class="float-right" (click)="handleFilter()">
             Apply filter
         </button>
-        <button mat-flat-button color="primary" class="float-right"
-            style="width: 10%; height: 70px; text-align: center;" (click)="resetFilter()">
+        <button mat-flat-button color="primary" class="float-right" (click)="resetFilter()">
             Reset filter
+        </button>
+        <button mat-flat-button color="primary" class="float-right add-book" style="width: 10%;" (click)="handleAddAction()">
+            <mat-icon>add_circle</mat-icon>Add Book
         </button>
     </div>
 </mat-card>
-
-<div class="responsive_table">
+<br>
+<div>
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
         <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef>Id</th>

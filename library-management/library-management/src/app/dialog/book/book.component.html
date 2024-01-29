@@ -18,42 +18,6 @@
                 <mat-form-field fxFlex>
                     <mat-label>Title</mat-label>
                     <input matInput formControlName="title" required>
-
-                </mat-form-field>
-            </div>
-            <div fxLayout="row wrap">
-                <mat-form-field fxFlex>
-                    <mat-label>Author</mat-label>
-                    <input matInput formControlName="author" required>
-
-                </mat-form-field>
-            </div>
-            <div fxLayout="row wrap">
-                <mat-form-field fxFlex>
-                    <mat-label>Quantity</mat-label>
-                    <input matInput formControlName="quantity" type="number" required>
-
-                </mat-form-field>
-                <mat-form-field fxFlex>
-                    <mat-label>Language</mat-label>
-                    <mat-select formControlName="language">
-                        <mat-option *ngFor="let language of languages"
-                            [value]="language">{{language}}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-form-field fxFlex>
-                    <mat-label>Category</mat-label>
-                    <mat-select formControlName="category">
-                        <mat-option *ngFor="let category of categories"
-                            [value]="category.categoryName">{{category.categoryName}}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-form-field fxFlex>
-                    <mat-label>Publisher</mat-label>
-                    <mat-select formControlName="publisher">
-                        <mat-option *ngFor="let publisher of publishers"
-                            [value]="publisher.name">{{publisher.name}}</mat-option>
-                    </mat-select>
                 </mat-form-field>
             </div>
 
@@ -63,26 +27,44 @@
                     <input matInput formControlName="description">
                 </mat-form-field>
             </div>
-
-            <!-- <mat-card-content>
-                <br><br>
-                <mat-form-field style="width: 100%;">
-                    <mat-label>File matInput</mat-label>
-                    <button mat-icon-button matPrefix (click)="f_input.click()">
-                        <mat-icon>attach_file</mat-icon>
-                    </button>
-                    <input type="text" readonly matInput [formControl]="display" />
-                    <input type="file" multiple hidden #f_input (change)="handleFileInputChange(f_input.files!)" />
-                    <input type="file" nbInput fullWidth fieldSize="small" (change)="onFileSelected($event)">
+            <div fxLayout="row wrap">
+                <mat-form-field fxFlex>
+                    <mat-label>Author</mat-label>
+                    <input matInput formControlName="author" required>
                 </mat-form-field>
-                <br><br>
-            </mat-card-content> -->
 
+                <mat-form-field fxFlex>
+                    <mat-label>Quantity</mat-label>
+                    <input matInput formControlName="quantity" type="number" required>
+                </mat-form-field>
+            </div>
+            <div fxLayout="row wrap">
+                <mat-form-field fxFlex>
+                    <mat-label>Category</mat-label>
+                    <mat-select formControlName="category">
+                        <mat-option *ngFor="let category of categories" [value]="category.categoryName">{{category.categoryName}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+    
+                <mat-form-field fxFlex>
+                    <mat-label>Publisher</mat-label>
+                    <mat-select formControlName="publisher">
+                        <mat-option *ngFor="let publisher of publishers" [value]="publisher.name">{{publisher.name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+    
+                <mat-form-field fxFlex>
+                    <mat-label>Language</mat-label>
+                    <mat-select formControlName="language">
+                        <mat-option *ngFor="let language of languages" [value]="language">{{language}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
         </div>
     </form>
 </mat-dialog-content>
 
-<mat-dialog-actions>
+<mat-dialog-actions  style="justify-content: flex-end;">
     <button mat-raised-button color="primary" type="submit" (click)="handleSubmit()" [disabled]="validateForm()">
         <mat-icon>save</mat-icon> {{action}}
     </button>

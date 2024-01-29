@@ -1,6 +1,7 @@
 package com.demo.book.service.impl;
 
 import com.demo.book.entity.RefreshToken;
+import com.demo.book.entity.Staff;
 import com.demo.book.exception.TokenRefreshException;
 import com.demo.book.repository.RefreshTokenRepository;
 import com.demo.book.repository.StaffRepository;
@@ -28,10 +29,15 @@ public class RefreshTokenService {
         return refreshTokenRepository.findByToken(token);
     }
 
-    public RefreshToken createRefreshToken(Long userId) {
+    public RefreshToken createRefreshToken(Staff staff) {
         RefreshToken refreshToken = new RefreshToken();
+        Optional<RefreshToken> optional = refreshTokenRepository.findByStaff(staff);
 
-        refreshToken.setStaff(staffRepository.findById(userId).get());
+        if(optional.isPresent()) {
+            return optional.get();
+        }
+
+        refreshToken.setStaff(staffRepository.findById(staff.getId()).get());
         refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenTTL));
         refreshToken.setToken(UUID.randomUUID().toString());
 

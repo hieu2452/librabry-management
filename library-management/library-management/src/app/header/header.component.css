@@ -1,0 +1,14 @@
+.mat-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mat-toolbar span {
+    /* Optional: Add some styling to the span */
+    font-size: 20px;
+}
+
+.mat-toolbar button {
+    margin-left: auto;
+}
