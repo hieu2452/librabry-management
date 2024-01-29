@@ -28,12 +28,12 @@ public class BillDetail {
         this.book = book;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade= CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER,cascade= CascadeType.ALL)
     @MapsId("billId")
     @JoinColumn(name = "bill_id")
     private Bill bill;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("bookId")
     @JoinColumn(name = "book_id")
     private Book book;

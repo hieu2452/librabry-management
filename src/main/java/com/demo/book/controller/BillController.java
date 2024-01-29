@@ -20,4 +20,9 @@ public class BillController {
     public ResponseEntity<?> getBills() {
         return ResponseEntity.ok(billService.findAll());
     }
+
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<?> getBillDetail(@PathVariable long id) {
+        return ResponseEntity.ok(billService.findBillDetail(id));
+    }
 }

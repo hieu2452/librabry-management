@@ -14,17 +14,13 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class JwtExceptionHandle {
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleSecurityException(Exception ex) {
-        ProblemDetail errorDetail = null;
-        if (ex instanceof ExpiredJwtException) {
-            Map<String, Object> body = new LinkedHashMap<>();
-            body.put("timestamp", LocalDateTime.now());
-            body.put("message", ex.getMessage());
-            body.put("status", HttpStatus.UNAUTHORIZED.value());
-            return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
-        }
-        return null;
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<Object> handleSecurityException(ExpiredJwtException ex) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", ex.getMessage());
+        body.put("status", HttpStatus.UNAUTHORIZED.value());
+        return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(TokenRefreshException.class)

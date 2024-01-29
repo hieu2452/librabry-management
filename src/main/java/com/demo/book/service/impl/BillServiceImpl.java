@@ -3,6 +3,7 @@ package com.demo.book.service.impl;
 import com.demo.book.domain.BillDetailDto;
 import com.demo.book.domain.BillDto;
 import com.demo.book.entity.*;
+import com.demo.book.entity.enums.BillStatus;
 import com.demo.book.entity.enums.BorrowedBookStatus;
 import com.demo.book.event.notification.NotificationEvent;
 import com.demo.book.exception.BorrowException;
@@ -11,6 +12,8 @@ import com.demo.book.repository.*;
 import com.demo.book.service.BillService;
 import com.demo.book.utils.EmailUtils;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,7 @@ import java.util.List;
 
 @Service
 public class BillServiceImpl implements BillService {
+    private final Logger logger = LoggerFactory.getLogger(BillServiceImpl.class);
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
@@ -53,6 +57,7 @@ public class BillServiceImpl implements BillService {
 
         Bill bill = new Bill();
         bill.setUser(user);
+        bill.setStatus(BillStatus.UNDONE);
         Bill newBill = billRepository.saveAndFlush(bill);
 
         for(BillDetailDto book  : billDto.getBooks()){
@@ -73,9 +78,23 @@ public class BillServiceImpl implements BillService {
         return "Borrow successfully";
     }
 
+
+
     @Override
     public List<Bill> findAll() {
         return billRepository.findAll();
+    }
+
+    @Override
+    public List<BillDetail> findBillDetail(long billId) {
+
+        try {
+            List<BillDetail> billDetails = billDetailRepository.findByBillId(billId);
+            return billDetails;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            throw new RuntimeException();
+        }
     }
 
 }

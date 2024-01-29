@@ -24,6 +24,17 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<Object> handleBorrowException(
+//            Exception ex, WebRequest request) {
+//
+//        Map<String, Object> body = new LinkedHashMap<>();
+//        body.put("timestamp", LocalDateTime.now());
+//        body.put("message", ex.getMessage());
+//        body.put("status",HttpStatus.BAD_REQUEST.value());
+//        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+//    }
+
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<Object> handleUserNotFound(
             UserNotFoundException ex, WebRequest request) {
