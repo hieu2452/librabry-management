@@ -1,7 +1,8 @@
 package com.demo.book.service.impl;
 
-import com.demo.book.domain.BillDetailDto;
-import com.demo.book.domain.BillDto;
+import com.demo.book.domain.dto.BillDetailDto;
+import com.demo.book.domain.dto.BillDto;
+import com.demo.book.domain.response.BorrowResponse;
 import com.demo.book.entity.*;
 import com.demo.book.entity.enums.BillStatus;
 import com.demo.book.entity.enums.BorrowedBookStatus;
@@ -16,9 +17,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BillServiceImpl implements BillService {
@@ -44,7 +47,9 @@ public class BillServiceImpl implements BillService {
         Member user = memberRepository.findById(billDto.getUserId())
                 .orElseThrow( ()-> new UserNotFoundException(billDto.getUserId()));
 
-        LibraryCard libraryCard = libraryCardRepository.findByUserId(user.getId());
+        LibraryCard libraryCard = user.getLibraryCard();
+
+        if(billDto.getBooks().isEmpty()) throw new RuntimeException("");
 
         int total = 0;
         for (BillDetailDto book : billDto.getBooks()) {
@@ -57,7 +62,7 @@ public class BillServiceImpl implements BillService {
 
         Bill bill = new Bill();
         bill.setUser(user);
-        bill.setStatus(BillStatus.UNDONE);
+        bill.setStatus(BillStatus.BORROWED);
         Bill newBill = billRepository.saveAndFlush(bill);
 
         for(BillDetailDto book  : billDto.getBooks()){
@@ -82,15 +87,16 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public List<Bill> findAll() {
-        return billRepository.findAll();
+        List<Bill> bills = billRepository.findAll();
+        return billRepository.findAll(Sort.by(Sort.Direction.DESC,"createdDate"));
     }
 
     @Override
-    public List<BillDetail> findBillDetail(long billId) {
-
+    public List<BorrowResponse> findBillDetail(long billId) {
         try {
-            List<BillDetail> billDetails = billDetailRepository.findByBillId(billId);
-            return billDetails;
+            return billDetailRepository.findByBillId(billId).stream()
+                    .map(b -> new BorrowResponse(b.getBorrowedDate(),b.getQuantity(),b.getStatus(),b.getBook().getId(),b.getBook().getTitle()))
+                    .collect(Collectors.toList());
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new RuntimeException();

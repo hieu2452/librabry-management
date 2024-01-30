@@ -28,7 +28,6 @@ export class LoginComponent implements OnInit {
   handleSubmit() {
     this.authService.login(this.form.value).subscribe({
       next: (response: any) => {
-        console.log(response);
         this.router.navigate(["/dashboard/manage-book"]);
       },
       error: error => {

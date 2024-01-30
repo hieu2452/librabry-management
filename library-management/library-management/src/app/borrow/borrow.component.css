@@ -1,0 +1,11 @@
+mat-form-field {
+    width: 50%;
+    margin-bottom: 15px;
+}
+mat-dialog-content {
+    height: 10%;
+}
+
+.borrow-detail {
+    height: 100%;
+}

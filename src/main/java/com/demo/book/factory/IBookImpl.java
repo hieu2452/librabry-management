@@ -1,6 +1,6 @@
 package com.demo.book.factory;
 
-import com.demo.book.domain.BookDto;
+import com.demo.book.domain.dto.BookDto;
 import com.demo.book.entity.Book;
 import com.demo.book.entity.Category;
 import com.demo.book.entity.Publisher;

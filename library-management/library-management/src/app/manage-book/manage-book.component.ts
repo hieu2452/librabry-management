@@ -1,23 +1,28 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output } from '@angular/core';
 import { BookService } from '../_service/book.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MATERIAL_MODULDE } from '../material/material.module';
-import { DatePipe, NgFor } from '@angular/common';
+import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { BookComponent } from '../dialog/book/book.component';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CategoryService } from '../_service/category.service';
 import { BookParam } from '../_modal/BookParam';
 import { FormsModule } from '@angular/forms';
+import { EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-manage-book',
   standalone: true,
-  imports: [MATERIAL_MODULDE, DatePipe, RouterModule, NgFor, FormsModule],
+  imports: [MATERIAL_MODULDE, DatePipe, RouterModule, NgFor, FormsModule, NgIf],
   templateUrl: './manage-book.component.html',
   styleUrl: './manage-book.component.css',
 })
 export class ManageBookComponent implements OnInit {
+
+  @Input() handle: string | undefined;
+  @Output() itemAdded = new EventEmitter();
+
   books: any = [];
   displayedColumns: string[] = ['id', 'title', 'author', 'category', 'publisher', 'description', 'language', 'quantity', 'addedDate', 'edit'];
   dataSource: any;
@@ -30,13 +35,17 @@ export class ManageBookComponent implements OnInit {
   constructor(private bookService: BookService,
     private dialog: MatDialog,
     private router: Router,
+    private route: ActivatedRoute,
     private categoryService: CategoryService) {
-
+    this.route.data.subscribe({
+      next: (v: any) => this.handle = v.action
+    })
   }
 
   ngOnInit(): void {
     this.getBooks(this.bookParam);
     this.getCategories();
+    console.log(this.handle)
   }
 
   onChange(e: any) {
@@ -117,5 +126,10 @@ export class ManageBookComponent implements OnInit {
 
   handleDeleteAction(e: any) {
 
+  }
+
+  handleBorrowAction(e: any) {
+    if(e.quantity <= 0) return;
+    this.itemAdded.emit(e);
   }
 }

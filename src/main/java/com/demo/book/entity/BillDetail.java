@@ -2,6 +2,7 @@ package com.demo.book.entity;
 
 import com.demo.book.entity.enums.BillStatus;
 import com.demo.book.entity.enums.BorrowedBookStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 @Data
 public class BillDetail {
     @EmbeddedId
+    @JsonIgnore
     private BillDetailKey billDetailKey;
 
     private final LocalDateTime borrowedDate = LocalDateTime.now();
@@ -28,7 +30,8 @@ public class BillDetail {
         this.book = book;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER,cascade= CascadeType.ALL)
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("billId")
     @JoinColumn(name = "bill_id")
     private Bill bill;

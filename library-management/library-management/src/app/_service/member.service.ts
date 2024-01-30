@@ -12,4 +12,8 @@ export class MemberService {
   getMembers() {
     return this.http.get(this.baseUrl + 'api/member')
   }
+
+  getMemberByLibraryCard(id: number) {
+    return this.http.get(this.baseUrl + 'api/member/lb-card/' + id)
+  }
 }

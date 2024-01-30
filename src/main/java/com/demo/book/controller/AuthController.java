@@ -1,8 +1,8 @@
 package com.demo.book.controller;
 
-import com.demo.book.domain.AuthResponse;
-import com.demo.book.domain.LoginRequest;
-import com.demo.book.domain.RefreshTokenResponse;
+import com.demo.book.domain.response.AuthResponse;
+import com.demo.book.domain.request.LoginRequest;
+import com.demo.book.domain.response.RefreshTokenResponse;
 import com.demo.book.entity.Permission;
 import com.demo.book.entity.RefreshToken;
 import com.demo.book.entity.Role;

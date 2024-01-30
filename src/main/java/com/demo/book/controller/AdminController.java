@@ -26,7 +26,7 @@ public class AdminController {
     public ResponseEntity<?> getUser(@RequestParam(defaultValue = "0") int minAge,
                                        @RequestParam(defaultValue = "0") int maxAge,
                                        @RequestParam(defaultValue = "") String type) {
-        adminService.getUsers(minAge,maxAge,type);
-        return ResponseEntity.noContent().build();
+        ;
+        return ResponseEntity.ok(adminService.getUsers(minAge,maxAge,type));
     }
 }

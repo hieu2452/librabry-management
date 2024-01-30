@@ -1,6 +1,6 @@
 package com.demo.book.controller;
 
-import com.demo.book.domain.BillDto;
+import com.demo.book.domain.dto.BillDto;
 import com.demo.book.service.BillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

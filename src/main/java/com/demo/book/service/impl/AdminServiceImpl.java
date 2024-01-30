@@ -1,22 +1,20 @@
 package com.demo.book.service.impl;
 
 import com.demo.book.dao.impl.UserServiceAdapter;
-import com.demo.book.domain.UserDto;
+import com.demo.book.domain.dto.UserDto;
 import com.demo.book.entity.*;
 import com.demo.book.entity.enums.UserType;
 import com.demo.book.exception.UserExistsException;
 import com.demo.book.factory.UserFactory.UserAbstractFactory;
 import com.demo.book.factory.UserFactory.UserFactory;
-import com.demo.book.repository.StaffRepository;
-import com.demo.book.repository.MemberRepository;
-import com.demo.book.repository.RoleRepository;
-import com.demo.book.repository.UserRepository;
+import com.demo.book.repository.*;
 import com.demo.book.service.AdminService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,6 +30,8 @@ public class AdminServiceImpl implements AdminService {
     private MemberRepository memberRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private LibraryCardRepository libraryCardRepository;
     public AdminServiceImpl() {
 
     }
@@ -65,7 +65,12 @@ public class AdminServiceImpl implements AdminService {
         newMember.setPhoneNumber(member.getPhoneNumber());
         newMember.setDisplayName(member.getDisplayName());
         newMember.setAge(member.getAge());
-        memberRepository.save(member);
+        LibraryCard libraryCard = new LibraryCard("AVAILABLE",3);
+        libraryCard.setMember(newMember);
+        newMember.setLibraryCard(libraryCard);
+        libraryCardRepository.save(libraryCard);
+//        newMember.setLibraryCard(libraryCard);
+//        memberRepository.save(member);
     }
 
     @Override

@@ -1,1 +1,78 @@
-<p>borrow works!</p>
+<div style="height: 100%; display: flex;">
+    <div style="width:70%;">
+        <app-manage-book (itemAdded)="addBook($event)"></app-manage-book>
+    </div>
+    <div class="borrow-detail" style="width:50%;">
+        <mat-dialog-content class=" mat-typography">
+            <div fxFlex fxLayout="column">
+                <div fxLayout="row wrap">
+                    <mat-form-field fxFlex style="width: 98%; margin-left: 5px;">
+                        <mat-label>Library card</mat-label>
+                        <input matInput [(ngModel)]="userForm.cardId" required (change)="onChange($event)">
+                    </mat-form-field>
+                </div>
+                <div fxLayout="row wrap" style="width: 98%; margin-left: 5px;">
+                    <mat-form-field fxFlex>
+                        <mat-label>Name</mat-label>
+                        <input matInput [value]="userForm.fullName">
+                    </mat-form-field>
+                </div>
+
+                <div fxLayout="row wrap">
+                    <mat-form-field fxFlex style="width: 50%; margin-right: 10px; margin-left: 5px;">
+                        <mat-label>Email</mat-label>
+                        <input matInput [value]="userForm.email">
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex style="width: 45%;">
+                        <mat-label>Phone number</mat-label>
+                        <input matInput [value]="userForm.phoneNumber">
+                    </mat-form-field>
+                </div>
+                <div fxLayout="row wrap" style="width: 98%; margin-left: 5px;">
+                    <mat-form-field fxFlex>
+                        <mat-label>Address</mat-label>
+                        <input matInput [value]="userForm.address" type="text">
+                    </mat-form-field>
+                </div>
+            </div>
+        </mat-dialog-content>
+        <button mat-flat-button color="primary" class="float-right add-book" style="width: 10%; margin-left: 5px;"
+            (click)="handleAddAction()" [disabled]="validateForm()">
+            Ok
+        </button>
+        <br>
+        <br>
+        <div style="margin-left: 5px;">
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef>Id</th>
+                    <td mat-cell *matCellDef="let element">{{element.id}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="title">
+                    <th mat-header-cell *matHeaderCellDef>Title</th>
+                    <td mat-cell *matCellDef="let element">{{element.title}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="quantity">
+                    <th mat-header-cell *matHeaderCellDef>Quantity</th>
+                    <td mat-cell *matCellDef="let element">
+                        <input min="1" matInput type="number" style="width: 50px;" [(ngModel)]="element.quantity" />
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="edit">
+                    <th mat-header-cell *matHeaderCellDef>Action</th>
+                    <td mat-cell *matCellDef="let element" class="action-link">
+                        <button mat-icon-button color="primary" matTooltip="Edit" (click)="handleRemoveAction(element)">
+                            <mat-icon>cancel</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
+                <tr mat-row *matRowDef="let row;columns:displayedColumns;"></tr>
+            </table>
+        </div>
+
+    </div>
+</div>

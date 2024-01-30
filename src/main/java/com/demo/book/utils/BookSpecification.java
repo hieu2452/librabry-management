@@ -1,6 +1,6 @@
 package com.demo.book.utils;
 
-import com.demo.book.domain.BookFilter;
+import com.demo.book.domain.params.BookFilter;
 import com.demo.book.entity.Book;
 import com.demo.book.entity.Category;
 import jakarta.persistence.criteria.Join;

@@ -1,10 +1,13 @@
 package com.demo.book.entity;
 
 import com.demo.book.entity.enums.BillStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "bills")
@@ -18,6 +21,10 @@ public class Bill {
     private User user;
     @Enumerated(EnumType.STRING)
     private BillStatus Status;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "bill",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<BillDetail> billDetails = new ArrayList<>();
     public Bill() {
 
     }

@@ -1,4 +1,4 @@
-package com.demo.book.domain;
+package com.demo.book.domain.response;
 
 import lombok.Getter;
 import lombok.Setter;

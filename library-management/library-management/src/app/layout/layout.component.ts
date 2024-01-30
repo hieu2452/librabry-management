@@ -20,6 +20,7 @@ export class LayoutComponent {
     { state: 'manage-staff', name: 'Manage Staff', type: 'link', icon: 'people', role: ['admin'] },
     { state: 'manage-book', name: 'View Book', type: 'link', icon: 'backup_table', role: ['admin', 'librarian'] },
     { state: 'manage-category', name: 'Manage Category', type: 'link', icon: 'category', role: ['librarian', 'admin'] },
+    { state: 'manage-publisher', name: 'Manage Publisher', type: 'link', icon: 'category', role: ['librarian', 'admin'] },
     { state: 'manage-borrow', name: 'Manage Borrow', type: 'link', icon: 'people', role: ['admin', 'librarian'] },
     { state: 'borrow', name: 'Borrow', type: 'link', icon: 'people', role: ['admin', 'librarian'] },
   ]

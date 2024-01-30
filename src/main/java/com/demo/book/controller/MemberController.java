@@ -1,8 +1,8 @@
 package com.demo.book.controller;
 
-import com.demo.book.dao.impl.UserDAO;
 import com.demo.book.entity.Member;
 import com.demo.book.service.AdminService;
+import com.demo.book.service.StaffService;
 import jakarta.transaction.NotSupportedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
     @Autowired
     private AdminService adminService;
-
+    @Autowired
+    private StaffService staffService;
 
     @GetMapping("")
     public ResponseEntity<?> getMember(@RequestParam(defaultValue = "0") int minAge,
@@ -26,5 +27,11 @@ public class MemberController {
     public ResponseEntity<?> createMemberUser(@RequestBody Member user) {
         adminService.createMemberUser(user);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/lb-card/{id}")
+    public ResponseEntity<?> getMemberByLibraryCard(@PathVariable long id) {
+
+        return ResponseEntity.ok(staffService.findMemberByLibraryCard(id));
     }
 }

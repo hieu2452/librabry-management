@@ -1,7 +1,7 @@
 package com.demo.book.service;
 
-import com.demo.book.domain.BookFilter;
-import com.demo.book.domain.PageableResponse;
+import com.demo.book.domain.params.BookFilter;
+import com.demo.book.domain.response.PageableResponse;
 import com.demo.book.entity.Book;
 import org.springframework.web.multipart.MultipartFile;
 

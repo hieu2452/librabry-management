@@ -11,9 +11,9 @@ import lombok.EqualsAndHashCode;
 @Data
 public class Member extends User{
 
-    @JsonIgnore
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "libraryCard_id", referencedColumnName = "id")
+//    @JsonIgnore
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "library_card_id", referencedColumnName = "id")
     private LibraryCard libraryCard;
     public Member() {
 

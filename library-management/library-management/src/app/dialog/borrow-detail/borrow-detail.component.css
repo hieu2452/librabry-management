@@ -1,0 +1,9 @@
+.detail {
+    height: 20%;
+    background-color: #424242;
+    color: #ffffff; /* Set text color to white for better visibility */
+    padding: 10px; /
+}
+.table {
+    height: 70%;
+}

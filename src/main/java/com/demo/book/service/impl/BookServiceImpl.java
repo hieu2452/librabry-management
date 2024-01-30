@@ -1,8 +1,8 @@
 package com.demo.book.service.impl;
 
-import com.demo.book.domain.BookDto;
-import com.demo.book.domain.BookFilter;
-import com.demo.book.domain.PageableResponse;
+import com.demo.book.domain.dto.BookDto;
+import com.demo.book.domain.params.BookFilter;
+import com.demo.book.domain.response.PageableResponse;
 import com.demo.book.entity.Book;
 import com.demo.book.factory.ServiceAbstractFactory;
 import com.demo.book.repository.BookRepository;
@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -54,7 +55,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public PageableResponse<Book> findAll(BookFilter bookFilters) {
-        PageRequest pageable = PageRequest.of(bookFilters.getPageNumber(), bookFilters.getPageSize());
+        PageRequest pageable = PageRequest.of(bookFilters.getPageNumber(), bookFilters.getPageSize(), Sort.by(Sort.Direction.DESC,"addedDate"));
         Specification<Book> spec = Specification.where(null);
         if(bookFilters.getCategory()!=null && !bookFilters.getCategory().equals("all")) {
             spec = spec.and(BookSpecification.byCategory(bookFilters.getCategory()));
@@ -70,7 +71,7 @@ public class BookServiceImpl implements BookService {
     }
     @Override
     public PageableResponse<Book> findByKeyword(BookFilter filter) {
-        PageRequest pageable = PageRequest.of(filter.getPageNumber(), filter.getPageSize());
+        PageRequest pageable = PageRequest.of(filter.getPageNumber(), filter.getPageSize(), Sort.by(Sort.Direction.DESC,"addedDate"));
 
         Specification<Book> spec1 = BookSpecification.byCategory(filter.getKeyword());
         Specification<Book> spec2 = BookSpecification.byPublisher(filter.getKeyword());

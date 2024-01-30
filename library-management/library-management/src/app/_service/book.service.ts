@@ -16,6 +16,8 @@ export class BookService {
     params = params.append('category', bookParam.category);
     params = params.append('publisher', bookParam.publisher);
     params = params.append('language', bookParam.language);
+    params = params.append('pageNumber',0);
+    params = params.append('pageSize', 20);
     return this.http.get(this.baseUrl + 'api/book', { observe: 'response', params }).pipe(
       map(response => {
         if (response.body)

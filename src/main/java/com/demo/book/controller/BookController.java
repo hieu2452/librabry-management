@@ -1,7 +1,7 @@
 package com.demo.book.controller;
 
 import com.demo.book.adapter.BookLanguage;
-import com.demo.book.domain.BookFilter;
+import com.demo.book.domain.params.BookFilter;
 import com.demo.book.entity.Book;
 import com.demo.book.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
