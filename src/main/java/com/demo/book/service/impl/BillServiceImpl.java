@@ -29,8 +29,6 @@ public class BillServiceImpl implements BillService {
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
-    private LibraryCardRepository libraryCardRepository;
-    @Autowired
     private BillRepository billRepository;
     @Autowired
     private BookRepository bookRepository;
@@ -87,7 +85,6 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public List<Bill> findAll() {
-        List<Bill> bills = billRepository.findAll();
         return billRepository.findAll(Sort.by(Sort.Direction.DESC,"createdDate"));
     }
 

@@ -128,18 +128,9 @@ export class BookComponent {
     }
   }
   add() {
-    const form_Data: FormData = new FormData();
     var formData = this.bookForm.value;
     var data = { ...formData }
-    console.log(data)
-    if (this.file_store) {
-      form_Data.append('file', this.file_store[0]);
-    }
-
-    form_Data.append('model', JSON
-      .stringify(data));
-
-    this.bookService.addBook(form_Data).subscribe({
+    this.bookService.addBook(data).subscribe({
       next: (response: any) => {
         this.dialogRef.close();
         this.onAddProduct.emit();
@@ -153,19 +144,9 @@ export class BookComponent {
   }
 
   edit() {
-    const form_Data: FormData = new FormData();
     var formData = this.bookForm.value;
-
     var data = { ...formData }
-    console.log(data)
-    if (this.file_store) {
-      form_Data.append('file', this.file_store[0]);
-    }
-
-    form_Data.append('model', JSON
-      .stringify(data));
-
-    this.bookService.updateBook(form_Data).subscribe({
+    this.bookService.updateBook(data).subscribe({
       next: (response: any) => {
         this.dialogRef.close();
         this.onEditProduct.emit();

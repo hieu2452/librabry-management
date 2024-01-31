@@ -28,4 +28,9 @@ public class Bill {
     public Bill() {
 
     }
+
+    public Bill(long id, BillStatus status) {
+        this.id = id;
+        Status = status;
+    }
 }

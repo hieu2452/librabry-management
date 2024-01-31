@@ -69,8 +69,6 @@ public class AdminServiceImpl implements AdminService {
         libraryCard.setMember(newMember);
         newMember.setLibraryCard(libraryCard);
         libraryCardRepository.save(libraryCard);
-//        newMember.setLibraryCard(libraryCard);
-//        memberRepository.save(member);
     }
 
     @Override

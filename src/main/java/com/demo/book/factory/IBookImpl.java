@@ -4,6 +4,7 @@ import com.demo.book.domain.dto.BookDto;
 import com.demo.book.entity.Book;
 import com.demo.book.entity.Category;
 import com.demo.book.entity.Publisher;
+import com.demo.book.exception.BookNotFoundException;
 import com.demo.book.repository.BookRepository;
 import com.demo.book.repository.CategoryRepository;
 import com.demo.book.repository.PublisherRepository;
@@ -25,15 +26,8 @@ public class IBookImpl implements IBook{
     private PublisherRepository publisherRepository;
     @Override
     public Book createBook(BookDto bookDto) {
-        Category category = categoryRepository.findByCategoryName(bookDto.getCategory());
-        Publisher publisher = publisherRepository.findByName(bookDto.getPublisher());
-        Book book = new Book.Builder(bookDto.getTitle(),bookDto.getAuthor(),bookDto.getQuantity())
-                .description(bookDto.getDescription())
-                .category(category)
-                .publisher(publisher)
-                .language(bookDto.getLanguage())
-                .build();
-        return bookRepository.save(book);
+
+        return null;
     }
 
     @Override
@@ -43,23 +37,14 @@ public class IBookImpl implements IBook{
 
     @Override
     public Book updateBook(BookDto book) {
-        Category category = categoryRepository.findByCategoryName(book.getCategory());
-        Publisher publisher = publisherRepository.findByName(book.getPublisher());
-        Book updatedBook = new Book.Builder(book.getTitle(),book.getAuthor(),book.getQuantity())
-                .id(book.getId())
-                .description(book.getDescription())
-                .category(category)
-                .publisher(publisher)
-                .language(book.getLanguage())
-                .build();
-        return bookRepository.save(updatedBook);
+
+        return null;
     }
 
     @Override
     public void deleteBook(long id) {
         try {
-            Book book = bookRepository.findById(id).orElse(null);
-            assert book != null;
+            Book book = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
             bookRepository.delete(book);
         } catch (Exception e) {
             log.debug(e.getMessage());

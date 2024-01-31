@@ -67,18 +67,8 @@ public class AuthController {
     }
     private Map<String, List<String>> mapRole(List<Role> roles){
         List<String> roleName = roles.stream().map(Role::getRole).toList();
-        List<String> permissions = new ArrayList<>();
-        for(Role role : roles)
-        {
-            for(Permission permission: role.getPermissions()){
-                String role_permission = role.getRole()+"_"+permission.getPermission();
-                permissions.add(role_permission);
-            }
-        }
-
         Map<String,List<String>> authorities = new HashMap<>();
         authorities.put("role",roleName);
-        authorities.put("permission",permissions);
         return authorities;
     }
 

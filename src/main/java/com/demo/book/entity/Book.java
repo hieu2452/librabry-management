@@ -22,9 +22,7 @@ public class Book {
     private String imageUrl;
     private String language;
     private int quantity;
-    public Book() {
 
-    }
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     @Valid
@@ -33,6 +31,9 @@ public class Book {
     @JoinColumn(name = "publisher_id")
     private Publisher publisher;
 
+    public Book() {
+
+    }
     public static class Builder {
         private long id;
         private final String title;

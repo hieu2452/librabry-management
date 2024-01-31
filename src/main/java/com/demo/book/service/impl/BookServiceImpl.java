@@ -4,14 +4,19 @@ import com.demo.book.domain.dto.BookDto;
 import com.demo.book.domain.params.BookFilter;
 import com.demo.book.domain.response.PageableResponse;
 import com.demo.book.entity.Book;
+import com.demo.book.entity.Category;
+import com.demo.book.entity.Publisher;
+import com.demo.book.exception.BookNotFoundException;
+import com.demo.book.exception.CategoryNotFoundException;
+import com.demo.book.exception.PublisherNotFoundException;
 import com.demo.book.factory.ServiceAbstractFactory;
 import com.demo.book.repository.BookRepository;
+import com.demo.book.repository.CategoryRepository;
+import com.demo.book.repository.PublisherRepository;
 import com.demo.book.service.BookService;
 import com.demo.book.service.FileHandlerFactory;
 import com.demo.book.utils.BookSpecification;
 import com.demo.book.utils.PageMapper;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,9 +26,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,27 +38,33 @@ public class BookServiceImpl implements BookService {
     @Autowired
     private FileHandlerFactory fileHandlerFactory;
     @Autowired
+    private CategoryRepository categoryRepository;
+    @Autowired
+    private PublisherRepository publisherRepository;
+    @Autowired
     private ServiceAbstractFactory factory;
 
     @Transactional
     @Override
-    public Book createBook(MultipartFile file, String model) throws IOException {
-         long start = System.currentTimeMillis();
-        BookDto bookDto = new ObjectMapper().readValue(model, BookDto.class);
-        Book book;
+    public Book createBook(BookDto bookDto){
 
-        if (file != null) {
-            String url = fileHandlerFactory.createFileUpload().uploadFile(file);
-            bookDto.setImageUrl(url);
-        }
-        book = factory.createIBook().createBook(bookDto);
-        return book;
+        Category category = categoryRepository.findByCategoryName(bookDto.getCategory()).orElseThrow(CategoryNotFoundException::new);
+        Publisher publisher = publisherRepository.findByName(bookDto.getPublisher()).orElseThrow(PublisherNotFoundException::new);
+        Book book = new Book.Builder(bookDto.getTitle(),bookDto.getAuthor(),bookDto.getQuantity())
+                .description(bookDto.getDescription())
+                .category(category)
+                .publisher(publisher)
+                .language(bookDto.getLanguage())
+                .build();
+        return bookRepository.save(book);
+
     }
 
     @Override
     public PageableResponse<Book> findAll(BookFilter bookFilters) {
         PageRequest pageable = PageRequest.of(bookFilters.getPageNumber(), bookFilters.getPageSize(), Sort.by(Sort.Direction.DESC,"addedDate"));
         Specification<Book> spec = Specification.where(null);
+
         if(bookFilters.getCategory()!=null && !bookFilters.getCategory().equals("all")) {
             spec = spec.and(BookSpecification.byCategory(bookFilters.getCategory()));
         }
@@ -88,22 +96,22 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book findById(long id) {
-        Optional<Book> optional = factory.createIBook().findBookById(id);
-        return optional.orElse(null);
+        Optional<Book> optional = bookRepository.findById(id);
+        return optional.orElseThrow(() -> new BookNotFoundException(id));
     }
     @Transactional
     @Override
-    public Book update(MultipartFile file, String model) throws IOException {
-        BookDto book = new ObjectMapper().registerModule(new JavaTimeModule()).readValue(model, BookDto.class);
-        Book updatedBook;
-        if(file == null ) {
-            updatedBook = factory.createIBook().updateBook(book);
-        } else {
-            String url = fileHandlerFactory.createFileUpload().uploadFile(file);
-            book.setImageUrl(url);
-            updatedBook = factory.createIBook().updateBook(book);
-        }
-        return updatedBook;
+    public Book update(BookDto bookDto) {
+        Category category = categoryRepository.findByCategoryName(bookDto.getCategory()).orElseThrow(CategoryNotFoundException::new);
+        Publisher publisher = publisherRepository.findByName(bookDto.getPublisher()).orElseThrow(PublisherNotFoundException::new);
+        Book updatedBook = new Book.Builder(bookDto.getTitle(),bookDto.getAuthor(),bookDto.getQuantity())
+                .id(bookDto.getId())
+                .description(bookDto.getDescription())
+                .category(category)
+                .publisher(publisher)
+                .language(bookDto.getLanguage())
+                .build();
+        return bookRepository.save(updatedBook);
     }
 
     @Override
@@ -114,9 +122,13 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public void delete(long id) {
-        factory.createIBook().deleteBook(id);
+        try {
+            Book book = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
+            bookRepository.delete(book);
+        } catch (Exception e) {
+            log.debug(e.getMessage());
+            throw new RuntimeException("Unable to delete book");
+        }
     }
-
-
 
 }

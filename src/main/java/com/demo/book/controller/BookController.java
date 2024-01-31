@@ -1,9 +1,11 @@
 package com.demo.book.controller;
 
 import com.demo.book.adapter.BookLanguage;
+import com.demo.book.domain.dto.BookDto;
 import com.demo.book.domain.params.BookFilter;
 import com.demo.book.entity.Book;
 import com.demo.book.service.BookService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,14 +24,14 @@ public class BookController {
     @Autowired
     private BookLanguage bookLanguage;
 
-    @PostMapping(value = "/create",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> createBook(@RequestParam(value = "file",required = false) MultipartFile file, @RequestParam("model") String model) throws IOException {
-        return ResponseEntity.ok(bookService.createBook(file,model));
+    @PostMapping(value = "/create")
+    public ResponseEntity<?> createBook(@Valid @RequestBody BookDto bookDto) {
+        return ResponseEntity.ok(bookService.createBook(bookDto));
     }
 
-    @PutMapping(value = "/update",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> updateBook(@RequestParam(value = "file",required = false) MultipartFile file, @RequestParam("model") String model) throws IOException {
-        return ResponseEntity.ok(bookService.update(file,model));
+    @PutMapping(value = "/update")
+    public ResponseEntity<?> updateBook(@Valid @RequestBody BookDto bookDto) {
+        return ResponseEntity.ok(bookService.update(bookDto));
     }
 
     @GetMapping("")

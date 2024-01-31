@@ -2,6 +2,7 @@ package com.demo.book.service.impl;
 
 import com.demo.book.entity.Category;
 import com.demo.book.entity.Publisher;
+import com.demo.book.exception.CategoryNotFoundException;
 import com.demo.book.repository.CategoryRepository;
 import com.demo.book.repository.PublisherRepository;
 import com.demo.book.service.CategoryService;
@@ -17,7 +18,7 @@ public class CategoryServiceImpl implements CategoryService {
     private PublisherRepository publisherRepository;
     @Override
     public Category findByName(String name) {
-        return categoryRepository.findByCategoryName(name);
+        return categoryRepository.findByCategoryName(name).orElseThrow(CategoryNotFoundException::new);
     }
 
     @Override
