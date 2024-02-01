@@ -1,5 +1,7 @@
 package com.demo.book.security;
 
+import com.demo.book.interceptor.RequestFilter;
+import org.apache.coyote.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -50,6 +52,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+//                .addFilterBefore(requestFilter(), RequestFilter.class);
         return http.build();
     }
 
@@ -77,6 +80,10 @@ public class SecurityConfig {
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter(exceptionResolver);
+    }
+    @Bean
+    public RequestFilter requestFilter(){
+        return new RequestFilter();
     }
 
 }

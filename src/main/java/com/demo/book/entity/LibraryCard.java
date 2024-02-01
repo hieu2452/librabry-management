@@ -21,7 +21,7 @@ public class LibraryCard {
     @Column(name = "book_available")
     private int bookAvailable;
     @JsonIgnore
-    @OneToOne(mappedBy = "libraryCard")
+    @OneToOne(mappedBy = "libraryCard",fetch = FetchType.LAZY)
     @Cascade({org.hibernate.annotations.CascadeType.ALL})
     private Member member;
     public LibraryCard() {

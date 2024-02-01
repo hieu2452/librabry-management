@@ -102,6 +102,7 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public Book update(BookDto bookDto) {
+        if(bookDto.getId() == 0) throw new IllegalArgumentException("Book id can not be null");
         Category category = categoryRepository.findByCategoryName(bookDto.getCategory()).orElseThrow(CategoryNotFoundException::new);
         Publisher publisher = publisherRepository.findByName(bookDto.getPublisher()).orElseThrow(PublisherNotFoundException::new);
         Book updatedBook = new Book.Builder(bookDto.getTitle(),bookDto.getAuthor(),bookDto.getQuantity())
@@ -114,16 +115,16 @@ public class BookServiceImpl implements BookService {
         return bookRepository.save(updatedBook);
     }
 
-    @Override
-    public List<Book> findByCategory(String type){
-        return bookRepository.findByCategory(type);
-    }
+//    @Override
+//    public List<Book> findByCategory(String type){
+//        return bookRepository.findByCategory(type);
+//    }
 
     @Transactional
     @Override
     public void delete(long id) {
+        Book book = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
         try {
-            Book book = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
             bookRepository.delete(book);
         } catch (Exception e) {
             log.debug(e.getMessage());

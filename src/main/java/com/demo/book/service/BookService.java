@@ -14,7 +14,7 @@ public interface BookService {
     PageableResponse<Book> findAll(BookFilter bookFilters);
     Book findById(long id);
     Book update(BookDto bookDto);
-    List<Book> findByCategory(String type);
+//    List<Book> findByCategory(String type);
     void delete(long id);
     PageableResponse<Book> findByKeyword(BookFilter filter);
 }

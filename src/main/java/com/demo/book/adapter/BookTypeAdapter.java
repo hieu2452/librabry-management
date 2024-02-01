@@ -15,8 +15,8 @@ public class BookTypeAdapter implements BookLanguage{
     private BookService bookService;
     @Override
     public List<Book> getBookByTypeAndLanguage(String type, String language) {
-        List<Book> books = bookService.findByCategory(type);
+//        List<Book> books = bookService.findByCategory(type);
 
-        return books.stream().filter(book -> book.getLanguage().equalsIgnoreCase(language)).collect(Collectors.toList());
+        return null;
     }
 }

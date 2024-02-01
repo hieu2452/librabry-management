@@ -14,7 +14,6 @@ public class BillDetail {
     @EmbeddedId
     @JsonIgnore
     private BillDetailKey billDetailKey;
-
     private final LocalDateTime borrowedDate = LocalDateTime.now();
     private int quantity;
     @Enumerated(EnumType.STRING)
@@ -24,6 +23,13 @@ public class BillDetail {
     }
     public BillDetail(BillDetailKey billDetailKey, int quantity, BorrowedBookStatus status, Bill bill, Book book) {
         this.billDetailKey = billDetailKey;
+        this.quantity = quantity;
+        this.status = status;
+        this.bill = bill;
+        this.book = book;
+    }
+
+    public BillDetail(int quantity, BorrowedBookStatus status, Bill bill, Book book) {
         this.quantity = quantity;
         this.status = status;
         this.bill = bill;

@@ -5,6 +5,7 @@ import com.demo.book.domain.params.BookFilter;
 import com.demo.book.domain.response.PageableResponse;
 import com.demo.book.entity.Book;
 import com.demo.book.entity.Category;
+import com.demo.book.entity.Publisher;
 import com.demo.book.exception.BookNotFoundException;
 import com.demo.book.exception.CategoryNotFoundException;
 import com.demo.book.exception.PublisherNotFoundException;
@@ -16,6 +17,7 @@ import com.demo.book.service.impl.BookServiceImpl;
 import com.demo.book.utils.BookSpecification;
 import javafx.beans.binding.When;
 import org.aspectj.lang.annotation.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -47,37 +49,46 @@ public class BookServiceImplTest {
 
     @InjectMocks
     private BookServiceImpl bookService;
+    private Specification<Book> spec;
+    private BookFilter bookFilters;
+    private List<Book> books;
+    private PageRequest pageable;
+    @BeforeEach
+    public void init() {
+        spec = Specification.where(null);
+
+        bookFilters = new BookFilter();
+        bookFilters.setPageNumber(0);
+        bookFilters.setPageSize(5);
+        bookFilters.setCategory("lecture");
+
+        Category category1 = new Category("Lecture");
+        Category category3 = new Category("Math");
+        pageable = PageRequest.of(bookFilters.getPageNumber(), bookFilters.getPageSize(), Sort.by(Sort.Direction.DESC,"addedDate"));
+        books = Arrays.asList(new Book.Builder("book1", "book1", 5).category(category1).build(),
+                new Book.Builder("book3", "book3", 7).category(category3).build());
+    }
 
 //    @Test
 //    public void findAll_WithCategoryFilter_ShouldReturnFilteredBook() {
-//        BookFilter bookFilters = new BookFilter();
-//        bookFilters.setPageNumber(0);
-//        bookFilters.setPageSize(5);
-//        bookFilters.setCategory("lecture");
-//
-//        Category category1 = new Category("lecture");
-//        Category category3 = new Category("lecture");
-//
-//        List<Book> testData;
-//        testData = Arrays.asList(new Book.Builder("book1", "book1", 5).category(category1).build(),
-//                new Book.Builder("book3", "book3", 7).category(category3).build());
 //
 //        PageableResponse<Book> expected = new PageableResponse<>();
-//        expected.setContent(testData);
+//        expected.setContent(books);
 //        expected.setTotalPages(1);
 //        expected.setTotalItems(3);
-//        PageRequest pageable = PageRequest.of(bookFilters.getPageNumber(), bookFilters.getPageSize(), Sort.by(Sort.Direction.DESC,"addedDate"));
-//        Specification<Book> spec = Specification.where(null);
+//
 //        spec = spec.and(BookSpecification.byCategory(eq(bookFilters.getCategory())));
-//        Page<Book> page = new PageImpl<>(testData);
-//        when(bookRepository.findAll(spec,eq(pageable)))
+//
+//        Page<Book> page = new PageImpl<>(books);
+//
+//        when(bookRepository.findAll(any(Specification.class),any(PageRequest.class)))
 //                .thenReturn(page);
 //
 //        PageableResponse<Book> result = bookService.findAll(bookFilters);
 //
 //        assertEquals(expected.getContent().size(),result.getContent().size());
 //
-//        verify(bookRepository, times(1)).findAll(spec,eq(pageable));
+//        verify(bookRepository, times(1)).findAll(any(Specification.class),any(PageRequest.class));
 //    }
 
     @Test
@@ -88,7 +99,7 @@ public class BookServiceImplTest {
 
         Book book = bookService.findById(22);
 
-        assertEquals(expected.getTitle(),book.getTitle());
+        assertEquals(expected.getId(),book.getId());
 
         verify(bookRepository).findById(22L);
     }
@@ -103,8 +114,9 @@ public class BookServiceImplTest {
     }
 
     @Test
-    public void whenGetInvalidCategory_returnNotFound() {
+    public void createBookNonExistCategory_returnNotFound() {
         BookDto bookDto = new BookDto();
+        bookDto.setId(1);
         bookDto.setTitle("silent hill");
         bookDto.setAuthor("logan");
         bookDto.setCategory("lecture");
@@ -118,8 +130,9 @@ public class BookServiceImplTest {
     }
 
     @Test
-    public void whenGetInvalidPublisher_returnNotFound() {
+    public void createBookNonExistPublisher_returnNotFound() {
         BookDto bookDto = new BookDto();
+        bookDto.setId(1);
         bookDto.setTitle("silent hill");
         bookDto.setAuthor("logan");
         bookDto.setCategory("lecture");
@@ -133,6 +146,99 @@ public class BookServiceImplTest {
         when(categoryRepository.findByCategoryName(any(String.class))).thenReturn(Optional.of(category));
 
         assertThrowsExactly(PublisherNotFoundException.class,() ->bookService.createBook(bookDto));
-//        assertThrowsExactly(CategoryNotFoundException.class,() ->bookService.update(bookDto));
+        assertThrowsExactly(PublisherNotFoundException.class,() ->bookService.update(bookDto));
     }
+
+    @Test
+    public void updateBook_SuccessfulUpdate_ReturnsUpdatedBook () {
+        BookDto bookDto = new BookDto();
+        bookDto.setId(1);
+        bookDto.setTitle("silent hill");
+        bookDto.setAuthor("logan");
+        bookDto.setCategory("lecture");
+        bookDto.setLanguage("vietnamese");
+        bookDto.setPublisher("kim dong");
+
+        Category category = new Category("lecture");
+        Publisher publisher = new Publisher("vietnamese");
+        when(categoryRepository.findByCategoryName(any(String.class))).thenReturn(Optional.of(category));
+        when(publisherRepository.findByName(any(String.class))).thenReturn(Optional.of(publisher));
+
+        Book updatedBook = new Book.Builder(bookDto.getTitle(),bookDto.getAuthor(),bookDto.getQuantity())
+                .id(bookDto.getId())
+                .description(bookDto.getDescription())
+                .category(category)
+                .publisher(publisher)
+                .language(bookDto.getLanguage())
+                .build();
+
+        when(bookRepository.save(any(Book.class))).thenReturn(updatedBook);
+        Book result = bookService.update(bookDto);
+
+        assertEquals(bookDto.getId(),result.getId());
+    }
+
+    @Test
+    public void updateBook_NullBookId_ThrowException () {
+        BookDto bookDto = new BookDto();
+        bookDto.setTitle("silent hill");
+        bookDto.setAuthor("logan");
+        bookDto.setCategory("lecture");
+        bookDto.setLanguage("vietnamese");
+        bookDto.setPublisher("kim dong");
+
+        assertThrowsExactly(IllegalArgumentException.class,() -> bookService.update(bookDto));
+    }
+
+
+    @Test
+    public void createBook_SuccessfulCreate_ReturnsCreatedBook () {
+        BookDto bookDto = new BookDto();
+        bookDto.setTitle("silent hill");
+        bookDto.setAuthor("logan");
+        bookDto.setCategory("lecture");
+        bookDto.setLanguage("vietnamese");
+        bookDto.setPublisher("kim dong");
+
+        Category category = new Category("lecture");
+        Publisher publisher = new Publisher("vietnamese");
+        when(categoryRepository.findByCategoryName(any(String.class))).thenReturn(Optional.of(category));
+        when(publisherRepository.findByName(any(String.class))).thenReturn(Optional.of(publisher));
+
+        Book createdBook = new Book.Builder(bookDto.getTitle(),bookDto.getAuthor(),bookDto.getQuantity())
+                .id(bookDto.getId())
+                .description(bookDto.getDescription())
+                .category(category)
+                .publisher(publisher)
+                .language(bookDto.getLanguage())
+                .build();
+
+        when(bookRepository.save(any(Book.class))).thenReturn(createdBook);
+        Book result = bookService.createBook(bookDto);
+
+        assertEquals(bookDto.getId(),result.getId());
+    }
+
+    @Test
+    public void deleteBook_BookIdNull_ThrowException() {
+        long bookId = 1L;
+
+        when(bookRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+
+        assertThrowsExactly(BookNotFoundException.class,() -> bookService.delete(bookId));
+
+    }
+
+    @Test
+    public void deleteBook_DeleteSuccessful_ThrowException() {
+        Book book= new Book.Builder("book1", "book1", 5).id(1L).build();
+
+        when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
+
+        bookService.delete(1L);
+
+        verify(bookRepository,times(1)).delete(book);
+
+    }
+
 }
