@@ -3,6 +3,7 @@ package com.demo.book.service.impl;
 import com.demo.book.domain.dto.BillDetailDto;
 import com.demo.book.domain.dto.BillDto;
 import com.demo.book.domain.response.BorrowResponse;
+import com.demo.book.domain.response.MessageResponse;
 import com.demo.book.entity.*;
 import com.demo.book.entity.enums.BillStatus;
 import com.demo.book.entity.enums.BorrowedBookStatus;
@@ -44,7 +45,7 @@ public class BillServiceImpl implements BillService {
 
     @Transactional
     @Override
-    public String createBill(BillDto billDto) {
+    public MessageResponse createBill(BillDto billDto) {
         Member user = memberRepository.findById(billDto.getUserId())
                 .orElseThrow( ()-> new UserNotFoundException(billDto.getUserId()));
 
@@ -86,14 +87,12 @@ public class BillServiceImpl implements BillService {
                 emailUtils.sendEmail(user.getEmail(),"Borrow book");
             publisher.publishEvent(
                     new NotificationEvent(this,"User : " + user.getFullName() + " - id : " + user.getId()+" borrowed book"));
-            return "Borrow successfully";
+            return new MessageResponse("Borrow successfully");
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new RuntimeException("");
         }
     }
-
-
 
     @Override
     public List<Bill> findAll() {

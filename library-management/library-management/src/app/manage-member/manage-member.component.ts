@@ -13,7 +13,7 @@ import { DatePipe } from '@angular/common';
 })
 export class ManageMemberComponent implements OnInit {
   members: any = [];
-  displayedColumns: string[] = ['id', 'userType', 'fullName', 'age', 'email', 'address', 'createdDate'];
+  displayedColumns: string[] = ['id', 'userType', 'fullName', 'libraryCard', 'age', 'email', 'address', 'createdDate'];
   dataSource: any;
   constructor(private memberService: MemberService) {
 

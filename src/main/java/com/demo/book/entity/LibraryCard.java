@@ -28,6 +28,12 @@ public class LibraryCard {
 
     }
 
+    public LibraryCard(long id, String status, int bookAvailable) {
+        this.id = id;
+        this.status = status;
+        this.bookAvailable = bookAvailable;
+    }
+
     public LibraryCard(String status, int bookAvailable) {
         this.status = status;
         this.bookAvailable = bookAvailable;

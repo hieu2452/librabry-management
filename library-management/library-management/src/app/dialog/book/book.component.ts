@@ -6,6 +6,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { error } from 'console';
 import { NgFor, NgIf } from '@angular/common';
 import { CategoryService } from '../../_service/category.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-book',
@@ -36,7 +37,8 @@ export class BookComponent {
     private formBulider: FormBuilder,
     protected bookService: BookService,
     public dialogRef: MatDialogRef<BookComponent>,
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -132,6 +134,7 @@ export class BookComponent {
     var data = { ...formData }
     this.bookService.addBook(data).subscribe({
       next: (response: any) => {
+        this.toastr.success("Add book successfully");
         this.dialogRef.close();
         this.onAddProduct.emit();
       },
@@ -148,6 +151,7 @@ export class BookComponent {
     var data = { ...formData }
     this.bookService.updateBook(data).subscribe({
       next: (response: any) => {
+        this.toastr.success("Update book successfully");
         this.dialogRef.close();
         this.onEditProduct.emit();
       },

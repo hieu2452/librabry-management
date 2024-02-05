@@ -9,6 +9,7 @@ import { DataSource } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
 import { BorrowService } from '../_service/borrow.service';
 import e, { response } from 'express';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-borrow',
@@ -32,7 +33,8 @@ export class BorrowComponent implements OnInit {
 
   constructor(private formBulider: FormBuilder,
     private memberService: MemberService,
-    private borrowService: BorrowService) {
+    private borrowService: BorrowService,
+    private toastr: ToastrService) {
 
   }
 
@@ -88,9 +90,11 @@ export class BorrowComponent implements OnInit {
 
     this.borrowService.borrowBooks(borrowRequest).subscribe({
       next: (response: any) => {
+        this.toastr.success("Borrow book successfully");
         console.log(response);
       },
       error: error => {
+        this.toastr.error("Somthing went wrong");
         console.log(error);
       }
     })

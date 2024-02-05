@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../_service/auth.service';
 import { Router, RouterModule } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +14,10 @@ import { Router, RouterModule } from '@angular/router';
 export class LoginComponent implements OnInit {
   form: any = FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private authService: AuthService, private router: Router) {
+  constructor(private formBuilder: FormBuilder,
+    private authService: AuthService,
+    private router: Router,
+    private toastr: ToastrService) {
 
 
   }
@@ -28,9 +32,11 @@ export class LoginComponent implements OnInit {
   handleSubmit() {
     this.authService.login(this.form.value).subscribe({
       next: (response: any) => {
+        this.toastr.success("login successfully")
         this.router.navigate(["/dashboard/manage-book"]);
       },
       error: error => {
+        this.toastr.error("user name or password is incorrect")
         console.log(error.error.detail)
       }
     })

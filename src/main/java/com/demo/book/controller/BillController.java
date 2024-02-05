@@ -25,4 +25,5 @@ public class BillController {
     public ResponseEntity<?> getBillDetail(@PathVariable long id) {
         return ResponseEntity.ok(billService.findBillDetail(id));
     }
+
 }

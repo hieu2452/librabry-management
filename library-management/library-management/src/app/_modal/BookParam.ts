@@ -3,6 +3,8 @@ export class BookParam {
     publisher: string = '';
     language: any = '';
     keyword: string = '';
+    pageSize: number = 10;
+    pageNumber: number = 0;
     constructor() {
         this.category = 'all';
         this.publisher = 'all';

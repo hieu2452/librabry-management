@@ -10,11 +10,12 @@ import { CategoryService } from '../_service/category.service';
 import { BookParam } from '../_modal/BookParam';
 import { FormsModule } from '@angular/forms';
 import { EventEmitter } from '@angular/core';
+import { AngularPaginatorModule } from 'angular-paginator';
 
 @Component({
   selector: 'app-manage-book',
   standalone: true,
-  imports: [MATERIAL_MODULDE, DatePipe, RouterModule, NgFor, FormsModule, NgIf],
+  imports: [MATERIAL_MODULDE, DatePipe, RouterModule, NgFor, FormsModule, NgIf, AngularPaginatorModule],
   templateUrl: './manage-book.component.html',
   styleUrl: './manage-book.component.css',
 })
@@ -23,7 +24,7 @@ export class ManageBookComponent implements OnInit {
   @Input() handle: string | undefined;
   @Output() itemAdded = new EventEmitter();
 
-  books: any = [];
+  paginator: any = [];
   displayedColumns: string[] = ['id', 'title', 'author', 'category', 'publisher', 'description', 'language', 'quantity', 'addedDate', 'edit'];
   dataSource: any;
   categories: any = [];
@@ -36,7 +37,7 @@ export class ManageBookComponent implements OnInit {
     private dialog: MatDialog,
     private router: Router,
     private route: ActivatedRoute,
-    private categoryService: CategoryService) {
+    private categoryService: CategoryService,) {
     this.route.data.subscribe({
       next: (v: any) => this.handle = v.action
     })
@@ -52,6 +53,7 @@ export class ManageBookComponent implements OnInit {
     console.log(this.bookParam.keyword)
     this.bookService.search(this.bookParam).subscribe({
       next: (books: any) => {
+        this.paginator = books;
         this.dataSource = new MatTableDataSource(books.content);
       }
     });
@@ -84,6 +86,7 @@ export class ManageBookComponent implements OnInit {
   getBooks(bookParam: BookParam) {
     this.bookService.getBooks(bookParam).subscribe({
       next: (books: any) => {
+        this.paginator = books;
         this.dataSource = new MatTableDataSource(books.content);
       }
     })
@@ -129,7 +132,14 @@ export class ManageBookComponent implements OnInit {
   }
 
   handleBorrowAction(e: any) {
-    if(e.quantity <= 0) return;
+    if (e.quantity <= 0) return;
     this.itemAdded.emit(e);
+  }
+
+  handlePageEvent(e: any) {
+    this.bookParam.pageNumber = e.pageIndex;
+    this.bookParam.pageSize = e.pageSize;
+
+    this.getBooks(this.bookParam)
   }
 }

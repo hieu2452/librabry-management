@@ -26,7 +26,7 @@ public class BookController {
 
     @PostMapping(value = "/create")
     public ResponseEntity<?> createBook(@Valid @RequestBody BookDto bookDto) {
-        return ResponseEntity.ok(bookService.createBook(bookDto));
+        return new ResponseEntity<>(bookService.createBook(bookDto),HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/update")
@@ -45,9 +45,7 @@ public class BookController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getBookById(@PathVariable long id) {
         Book book = bookService.findById(id);
-        if(book!=null)
-            return new ResponseEntity<>(book, HttpStatus.OK);
-        return new ResponseEntity<>("Book not found", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(bookService.findById(id), HttpStatus.OK);
     }
 //    @GetMapping("get/type/{type}")
 //    public ResponseEntity<?> getBookByType(@PathVariable String type) {
@@ -62,12 +60,8 @@ public class BookController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteBook(@PathVariable long id) {
-        try {
-            bookService.delete(id);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Unable to delete this Book");
-        }
+        bookService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
 //    @GetMapping("/get/type-lg/{type}")

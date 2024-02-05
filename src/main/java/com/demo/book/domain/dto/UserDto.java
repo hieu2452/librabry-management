@@ -1,8 +1,10 @@
 package com.demo.book.domain.dto;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class UserDto {
     private long id;
     private String userType;

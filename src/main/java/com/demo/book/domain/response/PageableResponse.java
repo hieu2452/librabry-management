@@ -10,4 +10,5 @@ public class PageableResponse<T> {
     List<T> content;
     long totalItems;
     long totalPages;
+    long currentPage;
 }

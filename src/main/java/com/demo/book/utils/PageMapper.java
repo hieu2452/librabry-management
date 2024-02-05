@@ -10,7 +10,7 @@ public class PageMapper{
         response.setContent(page.getContent());
         response.setTotalItems(page.getTotalElements());
         response.setTotalPages(page.getTotalPages());
-
+        response.setCurrentPage(page.getPageable().getPageNumber());
         return response;
     }
 }

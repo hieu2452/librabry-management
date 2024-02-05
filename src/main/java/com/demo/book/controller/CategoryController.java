@@ -4,6 +4,7 @@ import com.demo.book.dao.impl.CategoryDAO;
 import com.demo.book.entity.Category;
 import com.demo.book.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +31,6 @@ public class CategoryController {
 
     @PostMapping("create")
     public ResponseEntity<?> createCategory(@RequestBody Category category) {
-        return ResponseEntity.ok(categoryDAO.save(category).get());
+        return new ResponseEntity<>(categoryDAO.save(category).get(), HttpStatus.CREATED);
     }
 }

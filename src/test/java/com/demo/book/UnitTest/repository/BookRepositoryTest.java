@@ -1,4 +1,4 @@
-package com.demo.book.repository;
+package com.demo.book.UnitTest.repository;
 
 import com.demo.book.entity.Book;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

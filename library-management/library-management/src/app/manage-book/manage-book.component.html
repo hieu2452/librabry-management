@@ -37,7 +37,7 @@
     </div>
 </mat-card>
 <br>
-<div>
+<div style="height: 65%;">
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
         <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef>Id</th>
@@ -107,4 +107,10 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
         <tr mat-row *matRowDef="let row;columns:displayedColumns;"></tr>
     </table>
+</div>
+<div>
+    <mat-paginator *ngIf="paginator.content.length > 0" [length]="paginator.totalItems" [pageSize]="paginator.pageSize"
+        [pageSizeOptions]="[10]" [showFirstLastButtons]="true" (page)="handlePageEvent($event)"
+        aria-label="Select page">
+    </mat-paginator>
 </div>

@@ -1,8 +1,9 @@
-package com.demo.book.service;
+package com.demo.book.UnitTest.service;
 
 import com.demo.book.domain.dto.BillDetailDto;
 import com.demo.book.domain.dto.BillDto;
 import com.demo.book.domain.response.BorrowResponse;
+import com.demo.book.domain.response.MessageResponse;
 import com.demo.book.entity.*;
 import com.demo.book.entity.enums.BillStatus;
 import com.demo.book.entity.enums.BorrowedBookStatus;
@@ -100,9 +101,9 @@ public class BillServiceImplTest {
             when(bookRepository.findById(eq(book.getId()))).thenReturn(Optional.of(book));
         }
 
-        String result = billService.createBill(billDto);
+        MessageResponse result = billService.createBill(billDto);
 
-        assertEquals("Borrow successfully",result);
+        assertEquals("Borrow successfully",result.getMessage());
 
         verify(memberRepository, times(1)).findById(any(Long.class));
         verify(bookRepository, times(billDto.getBooks().size())).findById(anyLong());

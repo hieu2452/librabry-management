@@ -1,4 +1,4 @@
-package com.demo.book.service;
+package com.demo.book.IntegrationTest.service;
 
 import com.demo.book.domain.dto.BookDto;
 import com.demo.book.domain.params.BookFilter;

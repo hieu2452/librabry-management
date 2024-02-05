@@ -69,6 +69,7 @@ public class AdminServiceImpl implements AdminService {
         libraryCard.setMember(newMember);
         newMember.setLibraryCard(libraryCard);
         libraryCardRepository.save(libraryCard);
+
     }
 
     @Override
@@ -76,4 +77,5 @@ public class AdminServiceImpl implements AdminService {
         AdminService userServiceAdapter = new UserServiceAdapter();
         return userServiceAdapter.getUsers(minAge,maxAge,userType);
     }
+
 }
