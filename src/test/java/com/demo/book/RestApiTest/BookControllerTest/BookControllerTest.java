@@ -12,6 +12,8 @@ import com.demo.book.entity.Publisher;
 import com.demo.book.exception.BookNotFoundException;
 import com.demo.book.service.impl.BookServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.Servlet;
+import jakarta.servlet.ServletContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +22,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.*;
 
@@ -34,6 +38,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.*;
 
 @WebMvcTest(value = BookController.class,excludeAutoConfiguration = SecurityAutoConfiguration.class)
 //@Import(ControllerAdviser.class)
@@ -42,7 +47,8 @@ public class BookControllerTest {
     private BookServiceImpl bookService;
     @MockBean
     private BookTypeAdapter bookTypeAdapter;
-
+    @Autowired
+    private WebApplicationContext webApplicationContext;
     @Autowired
     private MockMvc mockMvc;
     private Book book;
@@ -74,6 +80,14 @@ public class BookControllerTest {
                 .andExpect(jsonPath("$.publisher").value(book.getPublisher()))
                 .andDo(print());
 
+    }
+
+    @Test
+    public void servletContext_thenReturnBookController() {
+        ServletContext servletContext = webApplicationContext.getServletContext();
+        assertNotNull(servletContext);
+        assertInstanceOf(MockServletContext.class, servletContext);
+        assertNotNull(webApplicationContext.getBean("bookController"));
     }
 
     @Test
@@ -205,7 +219,7 @@ public class BookControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/book/delete/{id}",bookId))
                 .andExpect(status().isNotFound())
                 .andDo(print());
-//        verify(bookService,times(1)).delete(bookId);
+        verify(bookService,times(1)).delete(bookId);
     }
     @Test
     public void shouldUpdateBook() throws Exception {

@@ -54,6 +54,7 @@ public class AdminServiceImpl implements AdminService {
         staff.setPhoneNumber(user.getPhoneNumber());
         staff.setPassword(passwordEncoder.encode(user.getPassword()));
         staff.setRoles(Collections.singletonList(role2));
+
         staffRepository.save(staff);
     }
     @Transactional

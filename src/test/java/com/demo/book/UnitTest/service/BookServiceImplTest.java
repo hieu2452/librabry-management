@@ -16,6 +16,7 @@ import com.demo.book.repository.PublisherRepository;
 import com.demo.book.service.FileHandlerFactory;
 import com.demo.book.service.impl.BookServiceImpl;
 import com.demo.book.utils.BookSpecification;
+import com.demo.book.utils.PageMapper;
 import javafx.beans.binding.When;
 import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,7 +62,6 @@ public class BookServiceImplTest {
         bookFilters = new BookFilter();
         bookFilters.setPageNumber(0);
         bookFilters.setPageSize(5);
-        bookFilters.setCategory("lecture");
 
         Category category1 = new Category("Lecture");
         Category category3 = new Category("Math");
@@ -70,27 +70,69 @@ public class BookServiceImplTest {
                 new Book.Builder("book3", "book3", 7).category(category3).build());
     }
 
-//    @Test
-//    public void findAll_WithCategoryFilter_ShouldReturnFilteredBook() {
-//
-//        PageableResponse<Book> expected = new PageableResponse<>();
-//        expected.setContent(books);
-//        expected.setTotalPages(1);
-//        expected.setTotalItems(3);
-//
-//        spec = spec.and(BookSpecification.byCategory(eq(bookFilters.getCategory())));
-//
-//        Page<Book> page = new PageImpl<>(books);
-//
-//        when(bookRepository.findAll(any(Specification.class),any(PageRequest.class)))
-//                .thenReturn(page);
-//
-//        PageableResponse<Book> result = bookService.findAll(bookFilters);
-//
-//        assertEquals(expected.getContent().size(),result.getContent().size());
-//
-//        verify(bookRepository, times(1)).findAll(any(Specification.class),any(PageRequest.class));
-//    }
+    @Test
+    public void findAll_ReturnListOfBooks() {
+        Pageable pageable = PageRequest.of(bookFilters.getPageNumber(), bookFilters.getPageSize(),Sort.by(Sort.Direction.DESC,"addedDate"));
+
+        List<Book> books = this.books;
+        Page<Book> page = new PageImpl<>(books, pageable, books.size());
+        when(bookRepository.findAll(eq(spec), eq(pageable))).thenReturn(page);
+
+        PageableResponse<Book> pageableResponse = new PageableResponse<>();
+        pageableResponse.setContent(page.getContent());
+        pageableResponse.setTotalItems(page.getTotalElements());
+        pageableResponse.setTotalPages(page.getTotalPages());
+        pageableResponse.setCurrentPage(page.getPageable().getPageNumber());
+
+        PageableResponse<Book> result = bookService.findAll(bookFilters);
+
+        assertEquals(books.size(), result.getContent().size());
+        assertEquals(page.getTotalPages(), result.getTotalPages());
+    }
+
+    @Test
+    public void findByKeyword_ReturnListOfBooks() {
+        BookFilter filter = new BookFilter();
+        filter.setKeyword("searchKeyword");
+
+        List<Book> books = this.books;
+        Page<Book> page = new PageImpl<>(books, pageable, books.size());
+        when(bookRepository.findAll(any(Specification.class), any(PageRequest.class))).thenReturn(page);
+
+        PageableResponse<Book> pageableResponse = new PageableResponse<>();
+        pageableResponse.setContent(page.getContent());
+        pageableResponse.setTotalItems(page.getTotalElements());
+        pageableResponse.setTotalPages(page.getTotalPages());
+        pageableResponse.setCurrentPage(page.getPageable().getPageNumber());
+
+        PageableResponse<Book> result = bookService.findByKeyword(filter);
+
+
+        assertEquals(books.size(), result.getContent().size());
+        assertEquals(page.getTotalPages(), result.getTotalPages());
+    }
+
+    @Test
+    public void findAllWithCategoryFilter_ReturnListOfBooks() {
+        bookFilters.setCategory("Math");
+        spec = spec.and(BookSpecification.byCategory(bookFilters.getCategory()));
+        Pageable pageable = PageRequest.of(bookFilters.getPageNumber(), bookFilters.getPageSize(),Sort.by(Sort.Direction.DESC,"addedDate"));
+
+        List<Book> books = this.books;
+        Page<Book> page = new PageImpl<>(books, pageable, books.size());
+        when(bookRepository.findAll(any(Specification.class),any(PageRequest.class))).thenReturn(page);
+
+        PageableResponse<Book> pageableResponse = new PageableResponse<>();
+        pageableResponse.setContent(page.getContent());
+        pageableResponse.setTotalItems(page.getTotalElements());
+        pageableResponse.setTotalPages(page.getTotalPages());
+        pageableResponse.setCurrentPage(page.getPageable().getPageNumber());
+
+        PageableResponse<Book> result = bookService.findAll(bookFilters);
+
+        assertEquals(books.size(), result.getContent().size());
+        assertEquals(page.getTotalPages(), result.getTotalPages());
+    }
 
     @Test
     public void whenGetValidId_returnBook() {
