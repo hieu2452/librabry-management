@@ -13,4 +13,6 @@ public interface BillService {
     List<Bill> findAll();
 
     List<BorrowResponse> findBillDetail(long billId);
+
+    void returnBook(List<Long> bookIds, long billId);
 }

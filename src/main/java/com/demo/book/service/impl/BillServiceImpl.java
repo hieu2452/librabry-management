@@ -23,6 +23,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -105,6 +106,31 @@ public class BillServiceImpl implements BillService {
                 .map(b -> new BorrowResponse(b.getBorrowedDate(),b.getQuantity(),b.getStatus(),b.getBook().getId(),b.getBook().getTitle()))
                 .collect(Collectors.toList());
 
+    }
+
+    @Override
+    @Transactional
+    public void returnBook(List<Long> bookIds, long billId) {
+        List<BillDetail> billDetails = billDetailRepository.findByBillId(billId);
+        boolean bookExist = false;
+        for(BillDetail billDetail : billDetails) {
+            if(containBook(bookIds,billDetail.getBillDetailKey().getBookId())
+                    && billDetail.getStatus() == BorrowedBookStatus.BORROWED) {
+                billDetail.getBook().setQuantity(billDetail.getQuantity()+billDetail.getBook().getQuantity());
+                billDetail.setStatus(BorrowedBookStatus.RETURNED);
+                billDetail.setReturnedDate(LocalDateTime.now());
+                bookExist = true;
+            }
+        }
+
+        if (!bookExist) throw new BookNotFoundException("Bill id: " + billId + " books not found");
+    }
+
+    private boolean containBook(List<Long> bookIds, long bookId) {
+        for(Long id: bookIds) {
+            if(id == bookId) return true;
+        }
+        return false;
     }
 
 }

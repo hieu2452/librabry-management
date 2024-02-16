@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController()
 @RequestMapping("/api/bill")
 public class BillController {
@@ -26,4 +28,9 @@ public class BillController {
         return ResponseEntity.ok(billService.findBillDetail(id));
     }
 
+    @PatchMapping("/return/{id}")
+    public ResponseEntity<?> returnBooks(@RequestBody List<Long> bookIds,@PathVariable long id) {
+        billService.returnBook(bookIds,id);
+        return ResponseEntity.noContent().build();
+    }
 }

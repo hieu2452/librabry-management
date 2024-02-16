@@ -15,6 +15,7 @@ public class BillDetail {
     @JsonIgnore
     private BillDetailKey billDetailKey;
     private final LocalDateTime borrowedDate = LocalDateTime.now();
+    private LocalDateTime returnedDate;
     private int quantity;
     @Enumerated(EnumType.STRING)
     private BorrowedBookStatus status;

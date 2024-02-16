@@ -5,6 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { error } from 'console';
 import { MATERIAL_MODULDE } from '../../material/material.module';
 import { DatePipe } from '@angular/common';
+import { SelectionModel } from '@angular/cdk/collections';
 
 @Component({
   selector: 'app-borrow-detail',
@@ -14,7 +15,7 @@ import { DatePipe } from '@angular/common';
   styleUrl: './borrow-detail.component.css'
 })
 export class BorrowDetailComponent implements OnInit {
-
+  selection = new SelectionModel<any>(true, []);
   bill: any;
   onViewBorrow = new EventEmitter();
   dataSource: any;
@@ -33,6 +34,7 @@ export class BorrowDetailComponent implements OnInit {
   getBillDetail() {
     this.borrowService.getBillDetail(this.dialogData.data.id).subscribe({
       next: (response: any) => {
+        console.log(response)
         this.dataSource = new MatTableDataSource(response)
       },
       error: error => {
@@ -42,7 +44,7 @@ export class BorrowDetailComponent implements OnInit {
   }
 
   handleReturnAction(e: any) {
-
+    this.selection.toggle(e);
   }
 
   handleEditAction(e: any) {

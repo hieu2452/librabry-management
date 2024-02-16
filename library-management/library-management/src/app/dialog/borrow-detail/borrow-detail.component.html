@@ -41,9 +41,9 @@
         <ng-container matColumnDef="edit">
             <th mat-header-cell *matHeaderCellDef>Action</th>
             <td mat-cell *matCellDef="let element" class="action-link">
-                <button mat-icon-button color="primary" matTooltip="Return" (click)="handleReturnAction(element)">
-                    <mat-icon>done</mat-icon>
-                </button>
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? handleReturnAction(element) : null"
+                    [checked]="selection.isSelected(element)">
+                </mat-checkbox>
                 <button mat-icon-button color="primary" matTooltip="Edit" (click)="handleEditAction(element)">
                     <mat-icon>edit</mat-icon>
                 </button>
