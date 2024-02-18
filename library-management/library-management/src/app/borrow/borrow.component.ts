@@ -46,6 +46,7 @@ export class BorrowComponent implements OnInit {
     console.log(this.userForm.cardId)
     this.memberService.getMemberByLibraryCard(this.userForm.cardId!).subscribe({
       next: (resposne: any) => {
+        console.log(resposne)
         this.userForm.userId = resposne.id;
         this.userForm.fullName = resposne.fullName;
         this.userForm.phoneNumber = resposne.phoneNumber;

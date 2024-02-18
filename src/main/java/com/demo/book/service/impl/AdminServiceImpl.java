@@ -65,6 +65,8 @@ public class AdminServiceImpl implements AdminService {
         Member newMember = (Member) factory.createUser();
         newMember.setPhoneNumber(member.getPhoneNumber());
         newMember.setDisplayName(member.getDisplayName());
+        newMember.setFullName(member.getFullName());
+        newMember.setEmail(member.getEmail());
         newMember.setAge(member.getAge());
         LibraryCard libraryCard = new LibraryCard("AVAILABLE",3);
         libraryCard.setMember(newMember);

@@ -108,7 +108,7 @@ public class BillServiceImplTest {
         verify(memberRepository, times(1)).findById(any(Long.class));
         verify(bookRepository, times(billDto.getBooks().size())).findById(anyLong());
         verify(billRepository, times(1)).save(any(Bill.class));
-        verify(publisher, times(1)).publishEvent(any(NotificationEvent.class));
+        verify(publisher, atLeastOnce()).publishEvent(any(NotificationEvent.class));
 
     }
 

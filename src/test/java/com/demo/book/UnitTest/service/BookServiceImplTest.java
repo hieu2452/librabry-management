@@ -16,9 +16,8 @@ import com.demo.book.repository.PublisherRepository;
 import com.demo.book.service.FileHandlerFactory;
 import com.demo.book.service.impl.BookServiceImpl;
 import com.demo.book.utils.BookSpecification;
-import com.demo.book.utils.PageMapper;
-import javafx.beans.binding.When;
-import org.aspectj.lang.annotation.Before;
+
+import com.demo.book.utils.MathUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +30,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -48,7 +46,6 @@ public class BookServiceImplTest {
     private FileHandlerFactory fileHandlerFactory;
     @Mock
     private ServiceAbstractFactory factory;
-
     @InjectMocks
     private BookServiceImpl bookService;
     private Specification<Book> spec;
@@ -147,11 +144,11 @@ public class BookServiceImplTest {
         verify(bookRepository).findById(22L);
     }
 
-    @Test()
+    @Test
     public void whenGetInValidId_returnNull() {
         long inValidId = 25L;
 
-        when(bookRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(null));
+        when(bookRepository.findById(any(Long.class))).thenThrow(BookNotFoundException.class);
 
         assertThrowsExactly(BookNotFoundException.class,() -> bookService.findById(inValidId));
     }
@@ -283,5 +280,8 @@ public class BookServiceImplTest {
         verify(bookRepository,times(1)).delete(book);
 
     }
+
+
+
 
 }

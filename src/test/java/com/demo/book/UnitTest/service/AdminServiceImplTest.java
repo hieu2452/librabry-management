@@ -92,11 +92,12 @@ public class AdminServiceImplTest {
 
     @Test
     public void getAllUser_ReturnList() {
-        List<UserDto> expectedUsers = new ArrayList<>();
+        List<UserDto> expectedUsers = spy(new ArrayList<>());
 
         Integer minAge = 10;
         Integer maxAge = 30;
         String userType = "Member";
+
         for(int i = 0; i< 13;i++) {
             UserDto user = new UserDto();
             user.setId(i);
@@ -108,5 +109,6 @@ public class AdminServiceImplTest {
         List<UserDto> actualUsers = adminService.getUsers(minAge,maxAge,userType);
 
         assertEquals(expectedUsers.size(),actualUsers.size());
+        assertEquals(13, expectedUsers);
     }
 }
