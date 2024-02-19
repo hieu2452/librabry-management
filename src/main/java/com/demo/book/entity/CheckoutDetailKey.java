@@ -8,16 +8,16 @@ import java.io.Serializable;
 
 @Embeddable
 @Data
-public class BillDetailKey implements Serializable {
-    @Column(name = "bill_id",nullable = false)
-    private long billId;
+public class CheckoutDetailKey implements Serializable {
+    @Column(name = "checkout_id",nullable = false)
+    private long checkoutId;
     @Column(name = "book_id",nullable = false)
     private long bookId;
-    public BillDetailKey() {
+    public CheckoutDetailKey() {
 
     }
-    public BillDetailKey(long billId, long bookId) {
-        this.billId = billId;
+    public CheckoutDetailKey(long checkoutId, long bookId) {
+        this.checkoutId = checkoutId;
         this.bookId = bookId;
     }
 

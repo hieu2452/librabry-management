@@ -14,8 +14,6 @@ public class BookDto {
     private String description;
     @NotBlank
     private String author;
-    private String type;
-    private String imageUrl;
     private String category;
     private String publisher;
     @NotNull

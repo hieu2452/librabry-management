@@ -3,8 +3,10 @@ package com.demo.book.controller;
 import com.demo.book.adapter.BookLanguage;
 import com.demo.book.domain.dto.BookDto;
 import com.demo.book.domain.params.BookFilter;
+import com.demo.book.domain.response.MessageResponse;
 import com.demo.book.entity.Book;
 import com.demo.book.service.BookService;
+import com.demo.book.utils.BookExcelImporter;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,10 +25,19 @@ public class BookController {
     private BookService bookService;
     @Autowired
     private BookLanguage bookLanguage;
+    @Autowired
+    private BookExcelImporter bookExcelImporter;
+
 
     @PostMapping(value = "/create")
     public ResponseEntity<?> createBook(@Valid @RequestBody BookDto bookDto) {
         return new ResponseEntity<>(bookService.createBook(bookDto),HttpStatus.CREATED);
+    }
+
+    @PostMapping(value = "/create-excel")
+    public ResponseEntity<?> createBookByExcel(@RequestParam("book-excel") MultipartFile file) {
+        bookExcelImporter.importBooksFromExcel(file);
+        return new ResponseEntity<>(new MessageResponse("import book data successfully"),HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/update")

@@ -11,6 +11,7 @@ import { BookParam } from '../_modal/BookParam';
 import { FormsModule } from '@angular/forms';
 import { EventEmitter } from '@angular/core';
 import { AngularPaginatorModule } from 'angular-paginator';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-manage-book',
@@ -37,7 +38,8 @@ export class ManageBookComponent implements OnInit {
     private dialog: MatDialog,
     private router: Router,
     private route: ActivatedRoute,
-    private categoryService: CategoryService,) {
+    private categoryService: CategoryService,
+    private toastr: ToastrService) {
     this.route.data.subscribe({
       next: (v: any) => this.handle = v.action
     })
@@ -111,6 +113,10 @@ export class ManageBookComponent implements OnInit {
     })
   }
 
+  handeViewAction(e:any) {
+    
+  }
+
   handleEditAction(e: any) {
     const dialogConfog = new MatDialogConfig();
     dialogConfog.data = {
@@ -141,5 +147,25 @@ export class ManageBookComponent implements OnInit {
     this.bookParam.pageSize = e.pageSize;
 
     this.getBooks(this.bookParam)
+  }
+
+  handleImportFile() {
+    const form_Data: FormData = new FormData();
+    var input = document.createElement('input');
+    input.type = 'file';
+
+    input.onchange = (e : any) => {
+      var file = e.target?.files[0];
+      form_Data.append('book-excel',file);
+      this.bookService.addBookByExcel(form_Data).subscribe({
+        next : (response : any) => {
+          this.toastr.success(response.message);
+          this.getBooks(new BookParam());
+        }
+      })
+    }
+
+    input.click();
+    
   }
 }

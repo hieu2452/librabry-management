@@ -1,7 +1,7 @@
 package com.demo.book.service.impl;
 
-import com.demo.book.domain.dto.BillDetailDto;
-import com.demo.book.domain.dto.BillDto;
+import com.demo.book.domain.dto.CheckoutDetailDto;
+import com.demo.book.domain.dto.CheckoutDto;
 import com.demo.book.domain.response.BorrowResponse;
 import com.demo.book.domain.response.MessageResponse;
 import com.demo.book.entity.*;
@@ -13,7 +13,7 @@ import com.demo.book.exception.BorrowException;
 import com.demo.book.exception.LibraryCardNotFound;
 import com.demo.book.exception.UserNotFoundException;
 import com.demo.book.repository.*;
-import com.demo.book.service.BillService;
+import com.demo.book.service.CheckoutService;
 import com.demo.book.utils.EmailUtils;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -24,21 +24,20 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class BillServiceImpl implements BillService {
-    private final Logger logger = LoggerFactory.getLogger(BillServiceImpl.class);
+public class CheckoutServiceImpl implements CheckoutService {
+    private final Logger logger = LoggerFactory.getLogger(CheckoutServiceImpl.class);
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
-    private BillRepository billRepository;
+    private CheckoutRepository checkoutRepository;
     @Autowired
     private BookRepository bookRepository;
     @Autowired
-    private BillDetailRepository billDetailRepository;
+    private CheckoutDetailRepository checkoutDetailRepository;
     @Autowired
     private EmailUtils emailUtils;
     @Autowired
@@ -46,19 +45,19 @@ public class BillServiceImpl implements BillService {
 
     @Transactional
     @Override
-    public MessageResponse createBill(BillDto billDto) {
-        Member user = memberRepository.findById(billDto.getUserId())
-                .orElseThrow( ()-> new UserNotFoundException(billDto.getUserId()));
+    public MessageResponse createBill(CheckoutDto checkoutDto) {
+        Member user = memberRepository.findById(checkoutDto.getUserId())
+                .orElseThrow( ()-> new UserNotFoundException(checkoutDto.getUserId()));
 
         LibraryCard libraryCard = user.getLibraryCard();
         if(libraryCard == null) throw new LibraryCardNotFound("");
 
-        if(billDto.getBooks().isEmpty()) {
+        if(checkoutDto.getBooks().isEmpty()) {
             throw new IllegalArgumentException("Invalid book info");
         }
 
         int total = 0;
-        for (BillDetailDto book : billDto.getBooks()) {
+        for (CheckoutDetailDto book : checkoutDto.getBooks()) {
             if(book.getQuantity()<=0){
                 throw new IllegalArgumentException("Invalid quantity for book");
             }
@@ -69,21 +68,21 @@ public class BillServiceImpl implements BillService {
                 throw new BorrowException("Unable to borrow book ");
         }
 
-        Bill bill = new Bill();
-        bill.setUser(user);
-        bill.setStatus(BillStatus.BORROWED);
-        for(BillDetailDto book  : billDto.getBooks()){
+        com.demo.book.entity.Checkout checkOut = new com.demo.book.entity.Checkout();
+        checkOut.setMember(user);
+        checkOut.setStatus(BillStatus.BORROWED);
+        for(CheckoutDetailDto book  : checkoutDto.getBooks()){
 
-            BillDetailKey billDetailKey = new BillDetailKey();
+            CheckoutDetailKey checkOutDetailKey = new CheckoutDetailKey();
             Book book1 = bookRepository.findById(book.getBookId())
                     .orElseThrow(()-> new BookNotFoundException(book.getBookId()));
             if (book1.getQuantity() < book.getQuantity()) throw new BorrowException("Insufficient amount (Book: " + book1.getTitle()+")");
             book1.setQuantity(book1.getQuantity()-book.getQuantity());
-            BillDetail billDetail = new BillDetail(billDetailKey,book.getQuantity(), BorrowedBookStatus.BORROWED,bill,book1);
-            bill.getBillDetails().add(billDetail);
+            CheckoutDetail checkOutDetail = new CheckoutDetail(checkOutDetailKey,book.getQuantity(), BorrowedBookStatus.BORROWED, checkOut,book1);
+            checkOut.getCheckoutDetails().add(checkOutDetail);
         }
         try {
-            billRepository.save(bill);
+            checkoutRepository.save(checkOut);
             if(user.getEmail() != null)
                 emailUtils.sendEmail(user.getEmail(),"Borrow book");
             publisher.publishEvent(
@@ -96,13 +95,13 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public List<Bill> findAll() {
-        return billRepository.findAll(Sort.by(Sort.Direction.DESC,"createdDate"));
+    public List<com.demo.book.entity.Checkout> findAll() {
+        return checkoutRepository.findAll(Sort.by(Sort.Direction.DESC,"createdDate"));
     }
 
     @Override
     public List<BorrowResponse> findBillDetail(long billId) {
-        return billDetailRepository.findByBillId(billId).stream()
+        return checkoutDetailRepository.findByCheckoutId(billId).stream()
                 .map(b -> new BorrowResponse(b.getBorrowedDate(),b.getQuantity(),b.getStatus(),b.getBook().getId(),b.getBook().getTitle()))
                 .collect(Collectors.toList());
 
@@ -111,14 +110,14 @@ public class BillServiceImpl implements BillService {
     @Override
     @Transactional
     public void returnBook(List<Long> bookIds, long billId) {
-        List<BillDetail> billDetails = billDetailRepository.findByBillId(billId);
+        List<CheckoutDetail> checkoutDetails = checkoutDetailRepository.findByCheckoutId(billId);
         boolean bookExist = false;
-        for(BillDetail billDetail : billDetails) {
-            if(containBook(bookIds,billDetail.getBillDetailKey().getBookId())
-                    && billDetail.getStatus() == BorrowedBookStatus.BORROWED) {
-                billDetail.getBook().setQuantity(billDetail.getQuantity()+billDetail.getBook().getQuantity());
-                billDetail.setStatus(BorrowedBookStatus.RETURNED);
-                billDetail.setReturnedDate(LocalDateTime.now());
+        for(CheckoutDetail checkOutDetail : checkoutDetails) {
+            if(containBook(bookIds, checkOutDetail.getCheckOutDetailKey().getBookId())
+                    && checkOutDetail.getStatus() == BorrowedBookStatus.BORROWED) {
+                checkOutDetail.getBook().setQuantity(checkOutDetail.getQuantity()+ checkOutDetail.getBook().getQuantity());
+                checkOutDetail.setStatus(BorrowedBookStatus.RETURNED);
+                checkOutDetail.setReturnedDate(LocalDateTime.now());
                 bookExist = true;
             }
         }

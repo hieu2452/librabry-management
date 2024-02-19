@@ -16,7 +16,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 })
 export class BorrowDetailComponent implements OnInit {
   selection = new SelectionModel<any>(true, []);
-  bill: any;
+  checkOut: any;
   onViewBorrow = new EventEmitter();
   dataSource: any;
   displayedColumns: string[] = ['bookId', 'bookTitle', 'borrowedDate', 'quantity', 'bookStatus', 'edit'];
@@ -24,7 +24,7 @@ export class BorrowDetailComponent implements OnInit {
   constructor(private borrowService: BorrowService,
     @Inject(MAT_DIALOG_DATA) public dialogData: any,
     public dialogRef: MatDialogRef<BorrowDetailComponent>) {
-      this.bill = this.dialogData.data;
+      this.checkOut = this.dialogData.data;
   }
 
   ngOnInit(): void {

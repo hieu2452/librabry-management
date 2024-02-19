@@ -31,6 +31,11 @@ export class BookService {
     return this.http.post(this.baseUrl + 'api/book/create', book);
   }
 
+  addBookByExcel(file: any) {
+    console.log(file)
+    return this.http.post(this.baseUrl + 'api/book/create-excel', file);
+  }
+
   updateBook(book: any) {
     return this.http.put(this.baseUrl + 'api/book/update', book)
   }

@@ -10,27 +10,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "bills")
+@Table(name = "checkout")
 @Data
-public class Bill {
+public class Checkout {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private final LocalDateTime createdDate = LocalDateTime.now();
-
+    private LocalDateTime returnedDate;
     @ManyToOne(fetch = FetchType.EAGER)
-    private User user;
+    private Member member;
     @Enumerated(EnumType.STRING)
     private BillStatus Status;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "bill",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<BillDetail> billDetails = new ArrayList<>();
-    public Bill() {
+    @OneToMany(mappedBy = "checkOut",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<CheckoutDetail> checkoutDetails = new ArrayList<>();
+    public Checkout() {
 
     }
 
-    public Bill(long id, BillStatus status) {
+    public Checkout(long id, BillStatus status) {
         this.id = id;
         Status = status;
     }

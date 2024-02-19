@@ -1,6 +1,5 @@
 package com.demo.book.entity;
 
-import com.demo.book.entity.enums.BillStatus;
 import com.demo.book.entity.enums.BorrowedBookStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -10,38 +9,38 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-public class BillDetail {
+public class CheckoutDetail {
     @EmbeddedId
     @JsonIgnore
-    private BillDetailKey billDetailKey;
+    private CheckoutDetailKey checkOutDetailKey;
     private final LocalDateTime borrowedDate = LocalDateTime.now();
     private LocalDateTime returnedDate;
     private int quantity;
     @Enumerated(EnumType.STRING)
     private BorrowedBookStatus status;
-    public BillDetail() {
+    public CheckoutDetail() {
 
     }
-    public BillDetail(BillDetailKey billDetailKey, int quantity, BorrowedBookStatus status, Bill bill, Book book) {
-        this.billDetailKey = billDetailKey;
+    public CheckoutDetail(CheckoutDetailKey checkOutDetailKey, int quantity, BorrowedBookStatus status, Checkout checkOut, Book book) {
+        this.checkOutDetailKey = checkOutDetailKey;
         this.quantity = quantity;
         this.status = status;
-        this.bill = bill;
+        this.checkOut = checkOut;
         this.book = book;
     }
 
-    public BillDetail(int quantity, BorrowedBookStatus status, Bill bill, Book book) {
+    public CheckoutDetail(int quantity, BorrowedBookStatus status, Checkout checkOut, Book book) {
         this.quantity = quantity;
         this.status = status;
-        this.bill = bill;
+        this.checkOut = checkOut;
         this.book = book;
     }
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("billId")
-    @JoinColumn(name = "bill_id")
-    private Bill bill;
+    @MapsId("checkoutId")
+    @JoinColumn(name = "checkout_id")
+    private Checkout checkOut;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("bookId")

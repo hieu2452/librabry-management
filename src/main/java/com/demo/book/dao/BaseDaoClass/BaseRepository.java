@@ -40,7 +40,7 @@ public abstract class BaseRepository<T,K >{
         Map<String, Object> map = new HashMap<>();
 
         map.put(JPA_JDBC_DRIVER, "com.mysql.cj.jdbc.Driver");
-        map.put(JPA_JDBC_URL, "jdbc:mysql://localhost:3306/library_management_db");
+        map.put(JPA_JDBC_URL, "jdbc:mysql://localhost:3306/lb_management_db");
         map.put(JPA_JDBC_USER, "root");
         map.put(JPA_JDBC_PASSWORD, "12345");
         map.put(DIALECT, org.hibernate.dialect.MySQLDialect.class);

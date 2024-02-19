@@ -19,7 +19,6 @@ public class Book {
     private String description;
     private final LocalDateTime addedDate = LocalDateTime.now();
     private String author;
-    private String imageUrl;
     private String language;
     private int quantity;
 
@@ -40,7 +39,6 @@ public class Book {
         private final String author;
         private String language;
         private String description;
-        private String imageUrl;
         private Category category;
         private Publisher publisher;
         private final int quantity;
@@ -56,10 +54,6 @@ public class Book {
 
         public Builder description(String description) {
             this.description = description;
-            return this;
-        }
-        public Builder imageUrl(String imageUrl) {
-            this.imageUrl = imageUrl;
             return this;
         }
         public Builder id(long id) {
@@ -84,7 +78,6 @@ public class Book {
     public Book(Builder builder) {
         this.title = builder.title;
         this.description = builder.description;
-        this.imageUrl = builder.imageUrl;
         this.author = builder.author;
         this.category = builder.category;
         this.quantity = builder.quantity;

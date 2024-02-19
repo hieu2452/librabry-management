@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class BillDetailDto {
+public class CheckoutDetailDto {
     private long bookId;
     private int quantity;
 }

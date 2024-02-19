@@ -1,7 +1,7 @@
 package com.demo.book.UnitTest.service;
 
-import com.demo.book.domain.dto.BillDetailDto;
-import com.demo.book.domain.dto.BillDto;
+import com.demo.book.domain.dto.CheckoutDetailDto;
+import com.demo.book.domain.dto.CheckoutDto;
 import com.demo.book.domain.response.BorrowResponse;
 import com.demo.book.domain.response.MessageResponse;
 import com.demo.book.entity.*;
@@ -12,20 +12,18 @@ import com.demo.book.exception.BookNotFoundException;
 import com.demo.book.exception.BorrowException;
 import com.demo.book.exception.LibraryCardNotFound;
 import com.demo.book.exception.UserNotFoundException;
-import com.demo.book.repository.BillDetailRepository;
-import com.demo.book.repository.BillRepository;
+import com.demo.book.repository.CheckoutDetailRepository;
+import com.demo.book.repository.CheckoutRepository;
 import com.demo.book.repository.BookRepository;
 import com.demo.book.repository.MemberRepository;
-import com.demo.book.service.impl.BillServiceImpl;
+import com.demo.book.service.impl.CheckoutServiceImpl;
 import com.demo.book.utils.EmailUtils;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Sort;
 
@@ -39,39 +37,39 @@ import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
-public class BillServiceImplTest {
+public class CheckoutServiceServiceImplTest {
     @Mock
     private MemberRepository memberRepository;
     @Mock
-    private BillRepository billRepository;
+    private CheckoutRepository checkoutRepository;
     @Mock
     private BookRepository bookRepository;
     @Mock
-    private BillDetailRepository billDetailRepository;
+    private CheckoutDetailRepository checkoutDetailRepository;
     @Mock
     private EmailUtils emailUtils;
     @Mock
     private ApplicationEventPublisher publisher;
     @InjectMocks
-    private BillServiceImpl billService;
+    private CheckoutServiceImpl billService;
 
-    private List<Bill> bills;
-    private BillDto billDto;
+    private List<Checkout> checkOuts;
+    private CheckoutDto checkoutDto;
     private Member member;
-    private Bill bill;
+    private Checkout checkOut;
     @BeforeEach
     public void init() {
-        bills = Arrays.asList(
-                new Bill(1, BillStatus.BORROWED),
-                new Bill(2, BillStatus.BORROWED),
-                new Bill(3, BillStatus.BORROWED),
-                new Bill(4, BillStatus.BORROWED)
+        checkOuts = Arrays.asList(
+                new Checkout(1, BillStatus.BORROWED),
+                new Checkout(2, BillStatus.BORROWED),
+                new Checkout(3, BillStatus.BORROWED),
+                new Checkout(4, BillStatus.BORROWED)
         );
-        bill = new Bill();
+        checkOut = new Checkout();
 
-        billDto = new BillDto();
-        billDto.setUserId(1);
-        billDto.setBooks(Arrays.asList(new BillDetailDto(3,2),new BillDetailDto(2,1)));
+        checkoutDto = new CheckoutDto();
+        checkoutDto.setUserId(1);
+        checkoutDto.setBooks(Arrays.asList(new CheckoutDetailDto(3,2),new CheckoutDetailDto(2,1)));
 
         member = new Member();
         member.setEmail("abc@gmail.com");
@@ -81,11 +79,11 @@ public class BillServiceImplTest {
     @Test
     public void findAllBill_returnListOfBill() {
 
-        when(billRepository.findAll(any(Sort.class))).thenReturn(bills);
+        when(checkoutRepository.findAll(any(Sort.class))).thenReturn(checkOuts);
 
         billService.findAll();
 
-        verify(billRepository).findAll(any(Sort.class));
+        verify(checkoutRepository).findAll(any(Sort.class));
     }
     @Test
     public void createBill_ReturnSuccess() {
@@ -94,20 +92,20 @@ public class BillServiceImplTest {
                 new Book.Builder("book","book",4).id(3).build(),
                 new Book.Builder("book","book",4).id(2).build());
 
-        when(memberRepository.findById(billDto.getUserId())).thenReturn(Optional.of(member));
-        when(billRepository.save(any(Bill.class))).thenReturn(bill);
+        when(memberRepository.findById(checkoutDto.getUserId())).thenReturn(Optional.of(member));
+        when(checkoutRepository.save(any(Checkout.class))).thenReturn(checkOut);
 
         for(Book book:books) {
             when(bookRepository.findById(eq(book.getId()))).thenReturn(Optional.of(book));
         }
 
-        MessageResponse result = billService.createBill(billDto);
+        MessageResponse result = billService.createBill(checkoutDto);
 
         assertEquals("Borrow successfully",result.getMessage());
 
         verify(memberRepository, times(1)).findById(any(Long.class));
-        verify(bookRepository, times(billDto.getBooks().size())).findById(anyLong());
-        verify(billRepository, times(1)).save(any(Bill.class));
+        verify(bookRepository, times(checkoutDto.getBooks().size())).findById(anyLong());
+        verify(checkoutRepository, times(1)).save(any(Checkout.class));
         verify(publisher, atLeastOnce()).publishEvent(any(NotificationEvent.class));
 
     }
@@ -115,9 +113,9 @@ public class BillServiceImplTest {
     @Test
     public void createBillNonExistUser_ReturnNotFound() {
 
-        when(memberRepository.findById(billDto.getUserId())).thenReturn(Optional.empty());
+        when(memberRepository.findById(checkoutDto.getUserId())).thenReturn(Optional.empty());
 
-        assertThrowsExactly(UserNotFoundException.class,() -> billService.createBill(billDto));
+        assertThrowsExactly(UserNotFoundException.class,() -> billService.createBill(checkoutDto));
     }
 
     @Test
@@ -128,26 +126,26 @@ public class BillServiceImplTest {
 
         when(memberRepository.findById(userId)).thenReturn(Optional.of(member));
 
-        assertThrowsExactly(LibraryCardNotFound.class,() -> billService.createBill(billDto));
+        assertThrowsExactly(LibraryCardNotFound.class,() -> billService.createBill(checkoutDto));
     }
 
 
     @Test
     public void createBillEmptyBookInfo_ThrowException() {
-        billDto.setBooks(new ArrayList<>());
+        checkoutDto.setBooks(new ArrayList<>());
 
-        when(memberRepository.findById(billDto.getUserId())).thenReturn(Optional.of(member));
+        when(memberRepository.findById(checkoutDto.getUserId())).thenReturn(Optional.of(member));
 
-        assertThrowsExactly(IllegalArgumentException.class,() -> billService.createBill(billDto));
+        assertThrowsExactly(IllegalArgumentException.class,() -> billService.createBill(checkoutDto));
     }
 
     @Test
     public void createBillEmptyInvalidBookQuantity_ThrowException() {
-        billDto.setBooks(Arrays.asList(new BillDetailDto(3,0),new BillDetailDto(2,0)));
+        checkoutDto.setBooks(Arrays.asList(new CheckoutDetailDto(3,0),new CheckoutDetailDto(2,0)));
 
-        when(memberRepository.findById(billDto.getUserId())).thenReturn(Optional.of(member));
+        when(memberRepository.findById(checkoutDto.getUserId())).thenReturn(Optional.of(member));
 
-        assertThrowsExactly(IllegalArgumentException.class,() -> billService.createBill(billDto));
+        assertThrowsExactly(IllegalArgumentException.class,() -> billService.createBill(checkoutDto));
     }
 
     @Test
@@ -155,10 +153,10 @@ public class BillServiceImplTest {
 
         member.getLibraryCard().setStatus("EXPIRED");
 
-        when(memberRepository.findById(billDto.getUserId())).thenReturn(Optional.of(member));
+        when(memberRepository.findById(checkoutDto.getUserId())).thenReturn(Optional.of(member));
 
 
-        assertThrowsExactly(BorrowException.class,() -> billService.createBill(billDto));
+        assertThrowsExactly(BorrowException.class,() -> billService.createBill(checkoutDto));
     }
 
     @Test
@@ -166,25 +164,25 @@ public class BillServiceImplTest {
 
         member.getLibraryCard().setBookAvailable(0);
 
-        when(memberRepository.findById(billDto.getUserId())).thenReturn(Optional.of(member));
+        when(memberRepository.findById(checkoutDto.getUserId())).thenReturn(Optional.of(member));
 
 
-        assertThrowsExactly(BorrowException.class,() -> billService.createBill(billDto));
+        assertThrowsExactly(BorrowException.class,() -> billService.createBill(checkoutDto));
     }
 
     @Test
     public void createBillInsufficientBook_ThrowException() {
-        billDto.setBooks(Arrays.asList(new BillDetailDto(3,2),new BillDetailDto(2,1)));
+        checkoutDto.setBooks(Arrays.asList(new CheckoutDetailDto(3,2),new CheckoutDetailDto(2,1)));
         List<Book> books = Arrays.asList(
                 new Book.Builder("book","book",1).id(3).build(),
                 new Book.Builder("book","book",4).id(2).build());
 
         when(bookRepository.findById(any())).thenReturn(Optional.of(books.get(0))).thenReturn(Optional.of(books.get(1)));
 
-        when(memberRepository.findById(billDto.getUserId())).thenReturn(Optional.of(member));
+        when(memberRepository.findById(checkoutDto.getUserId())).thenReturn(Optional.of(member));
 
 
-        assertThrowsExactly(BorrowException.class,() -> billService.createBill(billDto));
+        assertThrowsExactly(BorrowException.class,() -> billService.createBill(checkoutDto));
     }
 
     @Test
@@ -192,10 +190,10 @@ public class BillServiceImplTest {
 
         when(bookRepository.findById(any())).thenReturn(Optional.empty());
 
-        when(memberRepository.findById(billDto.getUserId())).thenReturn(Optional.of(member));
+        when(memberRepository.findById(checkoutDto.getUserId())).thenReturn(Optional.of(member));
 
 
-        assertThrowsExactly(BookNotFoundException.class,() -> billService.createBill(billDto));
+        assertThrowsExactly(BookNotFoundException.class,() -> billService.createBill(checkoutDto));
     }
 
 
@@ -206,18 +204,18 @@ public class BillServiceImplTest {
                 new Book.Builder("book","book",4).id(2).build());
 
         when(bookRepository.findById(any())).thenReturn(Optional.empty());
-        when(memberRepository.findById(billDto.getUserId())).thenReturn(Optional.of(member));
+        when(memberRepository.findById(checkoutDto.getUserId())).thenReturn(Optional.of(member));
         when(bookRepository.findById(any())).thenReturn(Optional.of(books.get(0))).thenReturn(Optional.of(books.get(1)));
-        when(billRepository.save(any(Bill.class))).thenThrow(RuntimeException.class);
+        when(checkoutRepository.save(any(Checkout.class))).thenThrow(RuntimeException.class);
 
-        assertThrowsExactly(RuntimeException.class,() -> billService.createBill(billDto));
+        assertThrowsExactly(RuntimeException.class,() -> billService.createBill(checkoutDto));
     }
 
     @Test
     public void findBillDetailNull() {
         long billId = 1L;
 
-        when(billDetailRepository.findByBillId(billId)).thenReturn(new ArrayList<>());
+        when(checkoutDetailRepository.findByCheckoutId(billId)).thenReturn(new ArrayList<>());
 
         List<BorrowResponse> responses = billService.findBillDetail(billId);
 
@@ -227,22 +225,22 @@ public class BillServiceImplTest {
     @Test
     public void findBillDetailSuccess() {
         long billId = 1L;
-        BillDetail billDetail1 = new BillDetail();
-        billDetail1.setStatus(BorrowedBookStatus.BORROWED);
-        billDetail1.setQuantity(1);
-        billDetail1.setBook( new Book.Builder("book","book",3).id(3).build());
+        CheckoutDetail checkoutDetail1 = new CheckoutDetail();
+        checkoutDetail1.setStatus(BorrowedBookStatus.BORROWED);
+        checkoutDetail1.setQuantity(1);
+        checkoutDetail1.setBook( new Book.Builder("book","book",3).id(3).build());
 
-        BillDetail billDetail2 = new BillDetail();
-        billDetail2.setStatus(BorrowedBookStatus.BORROWED);
-        billDetail2.setQuantity(1);
-        billDetail2.setBook(new Book.Builder("book","book",3).id(3).build());
+        CheckoutDetail checkoutDetail2 = new CheckoutDetail();
+        checkoutDetail2.setStatus(BorrowedBookStatus.BORROWED);
+        checkoutDetail2.setQuantity(1);
+        checkoutDetail2.setBook(new Book.Builder("book","book",3).id(3).build());
 
-        List<BillDetail> billDetails = Arrays.asList(billDetail1,billDetail2);
+        List<CheckoutDetail> checkoutDetails = Arrays.asList(checkoutDetail1, checkoutDetail2);
 
-        when(billDetailRepository.findByBillId(billId)).thenReturn(billDetails);
+        when(checkoutDetailRepository.findByCheckoutId(billId)).thenReturn(checkoutDetails);
 
         List<BorrowResponse> responses = billService.findBillDetail(billId);
 
-        assertEquals(billDetails.size(),responses.size());
+        assertEquals(checkoutDetails.size(),responses.size());
     }
 }

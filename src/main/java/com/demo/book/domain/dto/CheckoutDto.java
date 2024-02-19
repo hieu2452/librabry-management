@@ -4,7 +4,7 @@ import lombok.Data;
 
 import java.util.List;
 @Data
-public class BillDto {
+public class CheckoutDto {
     private long userId;
-    private List<BillDetailDto> books;
+    private List<CheckoutDetailDto> books;
 }

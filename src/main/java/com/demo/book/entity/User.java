@@ -8,7 +8,6 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -39,11 +38,5 @@ public class User  {
     public User() {
 
     }
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    private List<Bill> bills = new ArrayList<>();
-
-
 }
 

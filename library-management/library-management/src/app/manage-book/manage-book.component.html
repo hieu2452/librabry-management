@@ -31,6 +31,10 @@
             Reset filter
         </button>
         <button *ngIf="handle === 'manage'" mat-flat-button color="primary" class="float-right add-book"
+            style="width: 10%;" (click)="handleImportFile()">
+            <mat-icon>add_circle</mat-icon>Import Excel
+        </button>
+        <button *ngIf="handle === 'manage'" mat-flat-button color="primary" class="float-right add-book"
             style="width: 10%;" (click)="handleAddAction()">
             <mat-icon>add_circle</mat-icon>Add Book
         </button>
@@ -86,6 +90,9 @@
         <ng-container *ngIf="handle === 'manage'" matColumnDef="edit">
             <th mat-header-cell *matHeaderCellDef>Action</th>
             <td mat-cell *matCellDef="let element" class="action-link">
+                <button mat-icon-button color="primary" matTooltip="View" (click)="handeViewAction(element)">
+                    <mat-icon>remove_red_eye</mat-icon>
+                </button>
                 <button mat-icon-button color="primary" matTooltip="Edit" (click)="handleEditAction(element)">
                     <mat-icon>edit</mat-icon>
                 </button>

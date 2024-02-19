@@ -1,16 +1,14 @@
 package com.demo.book.RestApiTest.BookControllerTest;
 
-import com.demo.book.controller.BillController;
-import com.demo.book.domain.dto.BillDetailDto;
-import com.demo.book.domain.dto.BillDto;
+import com.demo.book.controller.CheckoutController;
+import com.demo.book.domain.dto.CheckoutDetailDto;
+import com.demo.book.domain.dto.CheckoutDto;
 import com.demo.book.domain.response.BorrowResponse;
 import com.demo.book.domain.response.MessageResponse;
-import com.demo.book.entity.Bill;
-import com.demo.book.entity.BillDetail;
-import com.demo.book.entity.Book;
+import com.demo.book.entity.Checkout;
 import com.demo.book.entity.enums.BillStatus;
 import com.demo.book.entity.enums.BorrowedBookStatus;
-import com.demo.book.service.impl.BillServiceImpl;
+import com.demo.book.service.impl.CheckoutServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
@@ -30,24 +28,24 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(value = BillController.class,excludeAutoConfiguration = SecurityAutoConfiguration.class)
-public class BillControllerTest {
+@WebMvcTest(value = CheckoutController.class,excludeAutoConfiguration = SecurityAutoConfiguration.class)
+public class CheckoutServiceControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private BillServiceImpl billService;
+    private CheckoutServiceImpl billService;
 
 
     @Test
     public void shouldCreateBill() throws Exception {
-        BillDto billDto = new BillDto();
-        billDto.setUserId(1);
-        billDto.setBooks(Arrays.asList(new BillDetailDto(3,2),new BillDetailDto(2,1)));
+        CheckoutDto checkoutDto = new CheckoutDto();
+        checkoutDto.setUserId(1);
+        checkoutDto.setBooks(Arrays.asList(new CheckoutDetailDto(3,2),new CheckoutDetailDto(2,1)));
 
-        when(billService.createBill(billDto)).thenReturn(new MessageResponse("Borrow Successfully"));
+        when(billService.createBill(checkoutDto)).thenReturn(new MessageResponse("Borrow Successfully"));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/bill/create")
-                        .content(asJsonString(billDto))
+                        .content(asJsonString(checkoutDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -57,14 +55,14 @@ public class BillControllerTest {
 
     @Test
     public void shouldReturnBills() throws Exception {
-        List<Bill> bills = Arrays.asList(
-                new Bill(1, BillStatus.BORROWED),
-                new Bill(2, BillStatus.BORROWED),
-                new Bill(3, BillStatus.BORROWED),
-                new Bill(4, BillStatus.BORROWED)
+        List<Checkout> checkOuts = Arrays.asList(
+                new Checkout(1, BillStatus.BORROWED),
+                new Checkout(2, BillStatus.BORROWED),
+                new Checkout(3, BillStatus.BORROWED),
+                new Checkout(4, BillStatus.BORROWED)
         );
 
-        when(billService.findAll()).thenReturn(bills);
+        when(billService.findAll()).thenReturn(checkOuts);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/bill"))
                 .andExpect(status().isOk())

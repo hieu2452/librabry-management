@@ -1,16 +1,14 @@
 package com.demo.book.service;
 
-import com.demo.book.domain.dto.BillDto;
+import com.demo.book.domain.dto.CheckoutDto;
 import com.demo.book.domain.response.BorrowResponse;
 import com.demo.book.domain.response.MessageResponse;
-import com.demo.book.entity.Bill;
-import com.demo.book.entity.BillDetail;
 
 import java.util.List;
 
-public interface BillService {
-    MessageResponse createBill(BillDto billDto);
-    List<Bill> findAll();
+public interface CheckoutService {
+    MessageResponse createBill(CheckoutDto checkoutDto);
+    List<com.demo.book.entity.Checkout> findAll();
 
     List<BorrowResponse> findBillDetail(long billId);
 
