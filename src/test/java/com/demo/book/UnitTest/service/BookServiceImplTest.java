@@ -42,10 +42,6 @@ public class BookServiceImplTest {
     private CategoryRepository categoryRepository;
     @Mock
     private PublisherRepository publisherRepository;
-    @Mock
-    private FileHandlerFactory fileHandlerFactory;
-    @Mock
-    private ServiceAbstractFactory factory;
     @InjectMocks
     private BookServiceImpl bookService;
     private Specification<Book> spec;

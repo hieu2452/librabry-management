@@ -160,29 +160,21 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>dev.aspectj</groupId>
-				<artifactId>aspectj-maven-plugin</artifactId>
-				<version>1.13.1</version>
 				<configuration>
-					<complianceLevel>17</complianceLevel>
-					<aspectLibraries>
-						<aspectLibrary>
-							<groupId>org.springframework</groupId>
-							<artifactId>spring-aspects</artifactId>
-						</aspectLibrary>
-					</aspectLibraries>
+					<image>
+						<name>ms/lb-management:latest</name>
+					</image>
 				</configuration>
 				<executions>
 					<execution>
+						<phase>install</phase>
 						<goals>
-							<goal>compile</goal>
+							<goal>build-image</goal>
 						</goals>
 					</execution>
 				</executions>
-				<!-- configuration and executions -->
 			</plugin>
+
 		</plugins>
 	</build>
 

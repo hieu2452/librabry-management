@@ -39,13 +39,10 @@ public class BookServiceImpl implements BookService {
     @Autowired
     private BookRepository bookRepository;
     @Autowired
-    private FileHandlerFactory fileHandlerFactory;
-    @Autowired
     private CategoryRepository categoryRepository;
     @Autowired
     private PublisherRepository publisherRepository;
-    @Autowired
-    private ServiceAbstractFactory factory;
+
 
     @Transactional
     @Override

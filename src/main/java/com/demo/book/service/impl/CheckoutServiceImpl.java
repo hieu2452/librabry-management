@@ -77,7 +77,7 @@ public class CheckoutServiceImpl implements CheckoutService {
             Book book1 = bookRepository.findById(book.getBookId())
                     .orElseThrow(()-> new BookNotFoundException(book.getBookId()));
             if (book1.getQuantity() < book.getQuantity()) throw new BorrowException("Insufficient amount (Book: " + book1.getTitle()+")");
-            book1.setQuantity(book1.getQuantity()-book.getQuantity());
+            book1.setQuantity(book1.getQuantity() - book.getQuantity());
             CheckoutDetail checkOutDetail = new CheckoutDetail(checkOutDetailKey,book.getQuantity(), BorrowedBookStatus.BORROWED, checkOut,book1);
             checkOut.getCheckoutDetails().add(checkOutDetail);
         }
@@ -111,21 +111,23 @@ public class CheckoutServiceImpl implements CheckoutService {
     @Transactional
     public void returnBook(List<Long> bookIds, long billId) {
         List<CheckoutDetail> checkoutDetails = checkoutDetailRepository.findByCheckoutId(billId);
-        boolean bookExist = false;
+        if(checkoutDetails == null || checkoutDetails.isEmpty()) throw new IllegalArgumentException();
+        boolean bookExist = true;
         for(CheckoutDetail checkOutDetail : checkoutDetails) {
             if(containBook(bookIds, checkOutDetail.getCheckOutDetailKey().getBookId())
                     && checkOutDetail.getStatus() == BorrowedBookStatus.BORROWED) {
                 checkOutDetail.getBook().setQuantity(checkOutDetail.getQuantity()+ checkOutDetail.getBook().getQuantity());
                 checkOutDetail.setStatus(BorrowedBookStatus.RETURNED);
                 checkOutDetail.setReturnedDate(LocalDateTime.now());
-                bookExist = true;
+                continue;
             }
+            bookExist = false;
         }
 
         if (!bookExist) throw new BookNotFoundException("Bill id: " + billId + " books not found");
     }
 
-    private boolean containBook(List<Long> bookIds, long bookId) {
+    public boolean containBook(List<Long> bookIds, long bookId) {
         for(Long id: bookIds) {
             if(id == bookId) return true;
         }

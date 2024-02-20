@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Sort;
@@ -50,6 +51,7 @@ public class CheckoutServiceServiceImplTest {
     private EmailUtils emailUtils;
     @Mock
     private ApplicationEventPublisher publisher;
+    @Spy
     @InjectMocks
     private CheckoutServiceImpl billService;
 
@@ -57,6 +59,7 @@ public class CheckoutServiceServiceImplTest {
     private CheckoutDto checkoutDto;
     private Member member;
     private Checkout checkOut;
+    //initialize test variables
     @BeforeEach
     public void init() {
         checkOuts = Arrays.asList(
@@ -76,8 +79,9 @@ public class CheckoutServiceServiceImplTest {
         member.setLibraryCard(new LibraryCard("AVAILABLE",5));
     }
 
+    //when find checkout -> return checkout list
     @Test
-    public void findAllBill_returnListOfBill() {
+    public void findAllCheckout_returnListOfCheckouts() {
 
         when(checkoutRepository.findAll(any(Sort.class))).thenReturn(checkOuts);
 
@@ -85,6 +89,7 @@ public class CheckoutServiceServiceImplTest {
 
         verify(checkoutRepository).findAll(any(Sort.class));
     }
+    // when user checkout -> checkout successfully
     @Test
     public void createBill_ReturnSuccess() {
 
@@ -101,6 +106,7 @@ public class CheckoutServiceServiceImplTest {
 
         MessageResponse result = billService.createBill(checkoutDto);
 
+        assertEquals(2,books.get(0).getQuantity());
         assertEquals("Borrow successfully",result.getMessage());
 
         verify(memberRepository, times(1)).findById(any(Long.class));
@@ -109,9 +115,9 @@ public class CheckoutServiceServiceImplTest {
         verify(publisher, atLeastOnce()).publishEvent(any(NotificationEvent.class));
 
     }
-
+    // when send input with non-existed user -> throw Exception
     @Test
-    public void createBillNonExistUser_ReturnNotFound() {
+    public void createCheckoutWithNonExistedUser_ThrowException() {
 
         when(memberRepository.findById(checkoutDto.getUserId())).thenReturn(Optional.empty());
 
@@ -119,7 +125,7 @@ public class CheckoutServiceServiceImplTest {
     }
 
     @Test
-    public void createBillNonExistCard_ReturnNotFound() {
+    public void createCheckoutNonExistedLibraryCard_ThrowException() {
         long userId = 1;
         Member member = new Member();
         member.setEmail("abc@gmail.com");
@@ -131,7 +137,7 @@ public class CheckoutServiceServiceImplTest {
 
 
     @Test
-    public void createBillEmptyBookInfo_ThrowException() {
+    public void createCheckoutEmptyBookInfo_ThrowException() {
         checkoutDto.setBooks(new ArrayList<>());
 
         when(memberRepository.findById(checkoutDto.getUserId())).thenReturn(Optional.of(member));
@@ -140,7 +146,7 @@ public class CheckoutServiceServiceImplTest {
     }
 
     @Test
-    public void createBillEmptyInvalidBookQuantity_ThrowException() {
+    public void createCheckoutInvalidBookQuantity_ThrowException() {
         checkoutDto.setBooks(Arrays.asList(new CheckoutDetailDto(3,0),new CheckoutDetailDto(2,0)));
 
         when(memberRepository.findById(checkoutDto.getUserId())).thenReturn(Optional.of(member));
@@ -149,7 +155,7 @@ public class CheckoutServiceServiceImplTest {
     }
 
     @Test
-    public void createBillCardExpired_ThrowException() {
+    public void createCheckoutLibraryCardExpired_ThrowException() {
 
         member.getLibraryCard().setStatus("EXPIRED");
 
@@ -160,7 +166,7 @@ public class CheckoutServiceServiceImplTest {
     }
 
     @Test
-    public void createBillCardBookLimit_ThrowException() {
+    public void createCheckoutLibraryCardBookLimit_ThrowException() {
 
         member.getLibraryCard().setBookAvailable(0);
 
@@ -171,7 +177,7 @@ public class CheckoutServiceServiceImplTest {
     }
 
     @Test
-    public void createBillInsufficientBook_ThrowException() {
+    public void createCheckoutInsufficientBook_ThrowException() {
         checkoutDto.setBooks(Arrays.asList(new CheckoutDetailDto(3,2),new CheckoutDetailDto(2,1)));
         List<Book> books = Arrays.asList(
                 new Book.Builder("book","book",1).id(3).build(),
@@ -186,7 +192,7 @@ public class CheckoutServiceServiceImplTest {
     }
 
     @Test
-    public void createBillNonExistBook_ThrowException() {
+    public void createCheckoutNonExistBook_ThrowException() {
 
         when(bookRepository.findById(any())).thenReturn(Optional.empty());
 
@@ -198,7 +204,7 @@ public class CheckoutServiceServiceImplTest {
 
 
     @Test
-    public void createBillError_ThrowException() {
+    public void createCheckoutError_ThrowException() {
         List<Book> books = Arrays.asList(
                 new Book.Builder("book","book",3).id(3).build(),
                 new Book.Builder("book","book",4).id(2).build());
@@ -212,7 +218,7 @@ public class CheckoutServiceServiceImplTest {
     }
 
     @Test
-    public void findBillDetailNull() {
+    public void findCheckoutDetailNull() {
         long billId = 1L;
 
         when(checkoutDetailRepository.findByCheckoutId(billId)).thenReturn(new ArrayList<>());
@@ -223,7 +229,7 @@ public class CheckoutServiceServiceImplTest {
     }
 
     @Test
-    public void findBillDetailSuccess() {
+    public void findCheckoutDetailSuccess() {
         long billId = 1L;
         CheckoutDetail checkoutDetail1 = new CheckoutDetail();
         checkoutDetail1.setStatus(BorrowedBookStatus.BORROWED);
@@ -242,5 +248,75 @@ public class CheckoutServiceServiceImplTest {
         List<BorrowResponse> responses = billService.findBillDetail(billId);
 
         assertEquals(checkoutDetails.size(),responses.size());
+    }
+
+    @Test
+    public void containBook_ReturnTrue() {
+        List<Long> bookIds = spy(new ArrayList<>());
+
+        for(long i = 0; i < 5; i++) {
+            bookIds.add(i);
+        }
+
+        assertTrue(billService.containBook(bookIds,2));
+        assertEquals(5, bookIds.size());
+
+        when(bookIds.size()).thenReturn(100);
+        assertEquals(100,bookIds.size());
+    }
+
+    @Test
+    public void notContainBook_ReturnFalse() {
+        List<Long> bookIds = spy(new ArrayList<>());
+
+        for(long i = 0; i < 5; i++) {
+            bookIds.add(i);
+        }
+
+        assertFalse(billService.containBook(bookIds,6));
+
+        assertEquals(5, bookIds.size());
+
+        when(bookIds.size()).thenReturn(100);
+        assertEquals(100,bookIds.size());
+    }
+
+    @Test
+    public void returnBook_Success() {
+        List<Long> bookIds = Arrays.asList(1L,2L,3L,4L,5L);
+        List<CheckoutDetail> checkoutDetails = Arrays.asList(
+                new CheckoutDetail(new CheckoutDetailKey(1,1),1, BorrowedBookStatus.BORROWED, new Checkout(),new Book()),
+                new CheckoutDetail(new CheckoutDetailKey(2,2),1, BorrowedBookStatus.BORROWED, new Checkout(),new Book()),
+                new CheckoutDetail(new CheckoutDetailKey(3,3),1, BorrowedBookStatus.BORROWED, new Checkout(),new Book())
+        );
+        when(checkoutDetailRepository.findByCheckoutId(anyLong())).thenReturn(checkoutDetails);
+
+        billService.returnBook(bookIds,1);
+        verify(billService,times(1)).returnBook(bookIds,1);
+    }
+
+    @Test
+    public void returnBook_BookNotExistInCheckOutDetail_ThrowException() {
+        List<Long> bookIds = Arrays.asList(1L,2L,3L,4L,5L);
+        List<CheckoutDetail> checkoutDetails = Arrays.asList(
+                new CheckoutDetail(new CheckoutDetailKey(1,8),1, BorrowedBookStatus.BORROWED, new Checkout(),new Book()),
+                new CheckoutDetail(new CheckoutDetailKey(2,7),1, BorrowedBookStatus.BORROWED, new Checkout(),new Book()),
+                new CheckoutDetail(new CheckoutDetailKey(3,6),1, BorrowedBookStatus.BORROWED, new Checkout(),new Book())
+        );
+        when(checkoutDetailRepository.findByCheckoutId(anyLong())).thenReturn(checkoutDetails);
+
+        assertThrowsExactly(BookNotFoundException.class,() -> billService.returnBook(bookIds,1));
+        verify(billService,times(1)).returnBook(bookIds,1);
+    }
+
+    @Test
+    public void returnBook_CheckOUtDetailsEmpty_ThrowException() {
+        List<Long> bookIds = Arrays.asList(1L,2L,3L,4L,5L);
+        List<CheckoutDetail> checkoutDetails = new ArrayList<>();
+
+        when(checkoutDetailRepository.findByCheckoutId(anyLong())).thenReturn(checkoutDetails);
+        assertThrowsExactly(IllegalArgumentException.class, () -> billService.returnBook(bookIds,1));
+
+        verify(billService,times(1)).returnBook(bookIds,1);
     }
 }

@@ -11,11 +11,13 @@ import com.demo.book.entity.Category;
 import com.demo.book.entity.Publisher;
 import com.demo.book.exception.BookNotFoundException;
 import com.demo.book.service.impl.BookServiceImpl;
+import com.demo.book.utils.BookExcelImporter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -47,6 +49,8 @@ public class BookControllerTest {
     private BookServiceImpl bookService;
     @MockBean
     private BookTypeAdapter bookTypeAdapter;
+    @MockBean
+    private BookExcelImporter bookExcelImporter;
     @Autowired
     private WebApplicationContext webApplicationContext;
     @Autowired
