@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+  mysqldb:
+    container_name: database
+    image: mysql_db
+    ports:
+      - 3307:3306
+    restart: always
+    volumes:
+      - container-volume:/var/lib/mysqldb
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "-u$root", "-p$12345",  "ping", "-h", "localhost" ]
+      interval: 30s
+      timeout: 20s
+      retries: 10
+    networks:
+      - backendNetwork
+
+  server:
+    container_name: lb-backend
+    image: hieu2452/lb-management:0.0.2
+    ports:
+      - 8081:8080
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/lb_management_db
+#      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT : org.hibernate.dialect.MySQL5InnoDBDialect
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+    networks:
+      - backendNetwork
+
+  client:
+    container_name: lb-frontend
+    image: hieu2452/library-frontend:0.0.1
+    ports:
+      - 4201:4200
+    depends_on:
+      - server
+    networks:
+      - backendNetwork
+
+volumes:
+  container-volume:
+
+networks:
+  backendNetwork:

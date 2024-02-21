@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 })
 export class CategoryService {
 
-  baseUrl = 'http://localhost:8080/'
+  baseUrl = 'http://server:8080/'
 
   constructor(private http: HttpClient) { }
 

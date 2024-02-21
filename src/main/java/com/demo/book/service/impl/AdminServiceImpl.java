@@ -1,6 +1,5 @@
 package com.demo.book.service.impl;
 
-import com.demo.book.dao.impl.UserServiceAdapter;
 import com.demo.book.domain.dto.UserDto;
 import com.demo.book.entity.*;
 import com.demo.book.entity.enums.UserType;
@@ -74,11 +73,11 @@ public class AdminServiceImpl implements AdminService {
         libraryCardRepository.save(libraryCard);
 
     }
-
-    @Override
-    public List<UserDto> getUsers(Integer minAge,Integer maxAge,String userType) {
-        AdminService userServiceAdapter = new UserServiceAdapter();
-        return userServiceAdapter.getUsers(minAge,maxAge,userType);
-    }
+//
+//    @Override
+//    public List<UserDto> getUsers(Integer minAge,Integer maxAge,String userType) {
+//        AdminService userServiceAdapter = new UserServiceAdapter();
+//        return userServiceAdapter.getUsers(minAge,maxAge,userType);
+//    }
 
 }

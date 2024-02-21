@@ -121,7 +121,10 @@
 			<artifactId>spring-aspects</artifactId>
 			<version>6.0.13</version>
 		</dependency>
-
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
@@ -156,13 +159,15 @@
     </dependencies>
 
 	<build>
+
 		<plugins>
+
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<image>
-						<name>ms/lb-management:latest</name>
+						<name>hieu2452/lb-management:0.0.2</name>
 					</image>
 				</configuration>
 				<executions>

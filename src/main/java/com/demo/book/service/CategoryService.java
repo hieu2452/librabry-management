@@ -9,4 +9,5 @@ public interface CategoryService {
     Category findByName(String name);
     List<Category> findAll();
     List<Publisher> findPublishers();
+    Category save(Category category);
 }

@@ -1,6 +1,4 @@
 package com.demo.book.controller;
-
-import com.demo.book.dao.impl.UserDAO;
 import com.demo.book.entity.Staff;
 import com.demo.book.entity.Member;
 import com.demo.book.service.AdminService;
@@ -22,11 +20,11 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/get-user")
-    public ResponseEntity<?> getUser(@RequestParam(defaultValue = "0") int minAge,
-                                       @RequestParam(defaultValue = "0") int maxAge,
-                                       @RequestParam(defaultValue = "") String type) {
-
-        return ResponseEntity.ok(adminService.getUsers(minAge,maxAge,type));
-    }
+//    @GetMapping("/get-user")
+//    public ResponseEntity<?> getUser(@RequestParam(defaultValue = "0") int minAge,
+//                                       @RequestParam(defaultValue = "0") int maxAge,
+//                                       @RequestParam(defaultValue = "") String type) {
+//
+//        return ResponseEntity.ok(adminService.getUsers(minAge,maxAge,type));
+//    }
 }

@@ -17,11 +17,11 @@ public class MemberController {
     @Autowired
     private StaffService staffService;
 
-    @GetMapping("")
-    public ResponseEntity<?> getMember(@RequestParam(defaultValue = "0") int minAge,
-                                       @RequestParam(defaultValue = "0") int maxAge) throws NotSupportedException {
-        return ResponseEntity.ok(adminService.getUsers(minAge,maxAge,"MEMBER"));
-    }
+//    @GetMapping("")
+//    public ResponseEntity<?> getMember(@RequestParam(defaultValue = "0") int minAge,
+//                                       @RequestParam(defaultValue = "0") int maxAge) throws NotSupportedException {
+//        return ResponseEntity.ok(adminService.getUsers(minAge,maxAge,"MEMBER"));
+//    }
 
     @PostMapping("/create")
     public ResponseEntity<?> createMemberUser(@RequestBody Member user) {

@@ -30,4 +30,11 @@ public class CategoryServiceImpl implements CategoryService {
     public List<Publisher> findPublishers() {
         return publisherRepository.findAll();
     }
+
+    @Override
+    public Category save(Category category) {
+        if(categoryRepository.existsByCategoryName(category.getCategoryName())) throw new IllegalArgumentException();
+
+        return categoryRepository.save(category);
+    }
 }

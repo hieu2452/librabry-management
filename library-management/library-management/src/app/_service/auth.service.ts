@@ -12,7 +12,7 @@ export class AuthService {
   private userSource = new BehaviorSubject(null);
   userSource$ = this.userSource.asObservable();
   isLoggedIn = false;
-  baseUrl = 'http://localhost:8080/'
+  baseUrl = 'http://server:8080/'
   private _isRefreshing = false;
 
   constructor(private http: HttpClient, @Inject(PLATFORM_ID) private platformId: any, private router: Router) { }

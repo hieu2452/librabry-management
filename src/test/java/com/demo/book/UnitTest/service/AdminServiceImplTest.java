@@ -1,6 +1,4 @@
 package com.demo.book.UnitTest.service;
-
-import com.demo.book.dao.impl.UserServiceAdapter;
 import com.demo.book.domain.dto.UserDto;
 import com.demo.book.entity.Member;
 import com.demo.book.entity.Role;
