@@ -11,9 +11,9 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 public class CheckoutDetail {
-    @EmbeddedId
-    @JsonIgnore
-    private CheckoutDetailKey checkOutDetailKey;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
     private final LocalDateTime borrowedDate = LocalDateTime.now();
     private LocalDateTime returnedDate;
     private int quantity;
@@ -22,14 +22,6 @@ public class CheckoutDetail {
     public CheckoutDetail() {
 
     }
-    public CheckoutDetail(CheckoutDetailKey checkOutDetailKey, int quantity, BorrowedBookStatus status, Checkout checkOut, Book book) {
-        this.checkOutDetailKey = checkOutDetailKey;
-        this.quantity = quantity;
-        this.status = status;
-        this.checkOut = checkOut;
-        this.book = book;
-    }
-
     public CheckoutDetail(int quantity, BorrowedBookStatus status, Checkout checkOut, Book book) {
         this.quantity = quantity;
         this.status = status;
@@ -37,14 +29,13 @@ public class CheckoutDetail {
         this.book = book;
     }
 
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("checkoutId")
     @JoinColumn(name = "checkout_id")
     private Checkout checkOut;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @MapsId("bookId")
     @JoinColumn(name = "book_id")
     private Book book;
 

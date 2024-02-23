@@ -73,12 +73,11 @@ public class CheckoutServiceImpl implements CheckoutService {
         checkOut.setStatus(BillStatus.BORROWED);
         for(CheckoutDetailDto book  : checkoutDto.getBooks()){
 
-            CheckoutDetailKey checkOutDetailKey = new CheckoutDetailKey();
             Book book1 = bookRepository.findById(book.getBookId())
                     .orElseThrow(()-> new BookNotFoundException(book.getBookId()));
             if (book1.getQuantity() < book.getQuantity()) throw new BorrowException("Insufficient amount (Book: " + book1.getTitle()+")");
             book1.setQuantity(book1.getQuantity() - book.getQuantity());
-            CheckoutDetail checkOutDetail = new CheckoutDetail(checkOutDetailKey,book.getQuantity(), BorrowedBookStatus.BORROWED, checkOut,book1);
+            CheckoutDetail checkOutDetail = new CheckoutDetail(book.getQuantity(), BorrowedBookStatus.BORROWED, checkOut,book1);
             checkOut.getCheckoutDetails().add(checkOutDetail);
         }
         try {
@@ -114,7 +113,7 @@ public class CheckoutServiceImpl implements CheckoutService {
         if(checkoutDetails == null || checkoutDetails.isEmpty()) throw new IllegalArgumentException();
         boolean bookExist = true;
         for(CheckoutDetail checkOutDetail : checkoutDetails) {
-            if(containBook(bookIds, checkOutDetail.getCheckOutDetailKey().getBookId())
+            if(containBook(bookIds, checkOutDetail.getBook().getId())
                     && checkOutDetail.getStatus() == BorrowedBookStatus.BORROWED) {
                 checkOutDetail.getBook().setQuantity(checkOutDetail.getQuantity()+ checkOutDetail.getBook().getQuantity());
                 checkOutDetail.setStatus(BorrowedBookStatus.RETURNED);

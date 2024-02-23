@@ -285,9 +285,9 @@ public class CheckoutServiceServiceImplTest {
     public void returnBook_Success() {
         List<Long> bookIds = Arrays.asList(1L,2L,3L,4L,5L);
         List<CheckoutDetail> checkoutDetails = Arrays.asList(
-                new CheckoutDetail(new CheckoutDetailKey(1,1),1, BorrowedBookStatus.BORROWED, new Checkout(),new Book()),
-                new CheckoutDetail(new CheckoutDetailKey(2,2),1, BorrowedBookStatus.BORROWED, new Checkout(),new Book()),
-                new CheckoutDetail(new CheckoutDetailKey(3,3),1, BorrowedBookStatus.BORROWED, new Checkout(),new Book())
+                new CheckoutDetail(1, BorrowedBookStatus.BORROWED, new Checkout(),new Book.Builder("asd","asd",2).id(1).build()),
+                new CheckoutDetail(1, BorrowedBookStatus.BORROWED, new Checkout(),new Book.Builder("asd","asd",2).id(2).build()),
+                new CheckoutDetail(1, BorrowedBookStatus.BORROWED, new Checkout(),new Book.Builder("asd","asd",2).id(4).build())
         );
         when(checkoutDetailRepository.findByCheckoutId(anyLong())).thenReturn(checkoutDetails);
 
@@ -299,9 +299,9 @@ public class CheckoutServiceServiceImplTest {
     public void returnBook_BookNotExistInCheckOutDetail_ThrowException() {
         List<Long> bookIds = Arrays.asList(1L,2L,3L,4L,5L);
         List<CheckoutDetail> checkoutDetails = Arrays.asList(
-                new CheckoutDetail(new CheckoutDetailKey(1,8),1, BorrowedBookStatus.BORROWED, new Checkout(),new Book()),
-                new CheckoutDetail(new CheckoutDetailKey(2,7),1, BorrowedBookStatus.BORROWED, new Checkout(),new Book()),
-                new CheckoutDetail(new CheckoutDetailKey(3,6),1, BorrowedBookStatus.BORROWED, new Checkout(),new Book())
+                new CheckoutDetail(1, BorrowedBookStatus.BORROWED, new Checkout(),new Book()),
+                new CheckoutDetail(1, BorrowedBookStatus.BORROWED, new Checkout(),new Book()),
+                new CheckoutDetail(1, BorrowedBookStatus.BORROWED, new Checkout(),new Book())
         );
         when(checkoutDetailRepository.findByCheckoutId(anyLong())).thenReturn(checkoutDetails);
 
