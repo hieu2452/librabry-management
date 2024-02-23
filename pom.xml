@@ -9,8 +9,8 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.demo</groupId>
-	<artifactId>book</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>lb-management</artifactId>
+	<version>0.0.4-SNAPSHOT</version>
 	<name>book</name>
 	<description>a</description>
 	<properties>
@@ -165,19 +165,6 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<image>
-						<name>hieu2452/lb-management:0.0.2</name>
-					</image>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>install</phase>
-						<goals>
-							<goal>build-image</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 
 		</plugins>
