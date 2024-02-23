@@ -15,7 +15,7 @@ import com.demo.book.repository.PublisherRepository;
 import com.demo.book.service.BookService;
 import com.demo.book.utils.BookSpecification;
 import com.demo.book.utils.PageMapper;
-import jakarta.transaction.Transactional;
+import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

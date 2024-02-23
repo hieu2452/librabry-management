@@ -2,7 +2,7 @@ package com.demo.book.entity;
 
 import com.demo.book.entity.enums.BillStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;

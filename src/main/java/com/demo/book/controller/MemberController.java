@@ -3,7 +3,6 @@ package com.demo.book.controller;
 import com.demo.book.entity.Member;
 import com.demo.book.service.AdminService;
 import com.demo.book.service.StaffService;
-import jakarta.transaction.NotSupportedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

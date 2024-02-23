@@ -1,7 +1,8 @@
 package com.demo.book.entity;
 
-import jakarta.persistence.*;
-import jakarta.validation.Valid;
+import javax.persistence.*;
+import javax.validation.Valid;
+
 import lombok.Data;
 
 import java.time.LocalDateTime;

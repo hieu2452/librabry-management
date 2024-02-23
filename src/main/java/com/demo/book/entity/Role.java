@@ -1,6 +1,6 @@
 package com.demo.book.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Data;
 
 import java.util.ArrayList;

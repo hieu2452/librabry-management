@@ -1,8 +1,9 @@
 package com.demo.book.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+
 import lombok.Data;
 
 

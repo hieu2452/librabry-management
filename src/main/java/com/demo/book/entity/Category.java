@@ -1,8 +1,10 @@
 package com.demo.book.entity;
 
-import jakarta.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "categories")

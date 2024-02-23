@@ -15,7 +15,7 @@ import com.demo.book.exception.UserNotFoundException;
 import com.demo.book.repository.*;
 import com.demo.book.service.CheckoutService;
 import com.demo.book.utils.EmailUtils;
-import jakarta.transaction.Transactional;
+import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

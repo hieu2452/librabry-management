@@ -1,7 +1,7 @@
 package com.demo.book.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
+import javax.persistence.*;
+
 import lombok.Data;
 
 import java.io.Serializable;

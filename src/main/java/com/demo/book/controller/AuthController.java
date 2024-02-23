@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -66,7 +67,7 @@ public class AuthController {
         return new ResponseEntity<>(new AuthResponse(loginRequest.getUsername(),token,refreshToken.getToken()), HttpStatus.OK);
     }
     private Map<String, List<String>> mapRole(List<Role> roles){
-        List<String> roleName = roles.stream().map(Role::getRole).toList();
+        List<String> roleName = roles.stream().map(Role::getRole).collect(Collectors.toList());
         Map<String,List<String>> authorities = new HashMap<>();
         authorities.put("role",roleName);
         return authorities;

@@ -6,7 +6,7 @@ import com.demo.book.exception.TokenRefreshException;
 import com.demo.book.repository.RefreshTokenRepository;
 import com.demo.book.repository.StaffRepository;
 import com.demo.book.repository.UserRepository;
-import jakarta.transaction.Transactional;
+import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

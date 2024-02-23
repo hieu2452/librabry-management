@@ -6,13 +6,12 @@ public class UserFactory {
 
     public static UserAbstractFactory getFactory(UserType userType) {
         switch (userType) {
-            case STAFF -> {
+            case STAFF :
                 return new StaffFactory();
-            }
-            case MEMBER -> {
+            case MEMBER :
                 return new MemberFactory();
-            }
-            default -> throw new UnsupportedOperationException("This user is not supported");
+            default :
+                throw new UnsupportedOperationException("This user is not supported");
         }
 
     }

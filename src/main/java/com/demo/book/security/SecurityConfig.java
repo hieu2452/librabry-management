@@ -1,7 +1,5 @@
 package com.demo.book.security;
 
-import com.demo.book.interceptor.RequestFilter;
-import org.apache.coyote.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -15,17 +13,12 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.HandlerExceptionResolver;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
 
 import java.util.Arrays;
 
@@ -35,24 +28,22 @@ public class SecurityConfig {
     private CustomUserDetailService userDetailsService;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
-                .authorizeHttpRequests(req ->
-                        req.requestMatchers("/api/v1/auth/**", "/api-docs/**", "/swagger-ui/**").permitAll()
-                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                                .requestMatchers("/api/auth/member/**").hasAnyRole("ADMIN,LIBRARIAN")
-                                .requestMatchers("/api/auth/**").permitAll()
-                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                                .requestMatchers("/api/book/**").hasAnyRole("LIBRARIAN","ADMIN")
-                                .requestMatchers("/api/category/**").hasAnyRole("LIBRARIAN","ADMIN")
-                                .requestMatchers("/api/bill/**").hasAnyRole("LIBRARIAN","ADMIN")
-                                .requestMatchers(HttpMethod.GET,"/api/book/get-all").hasAnyAuthority("LIBRARIAN_READ")
-                                .anyRequest().authenticated()
-                )
+        http.cors().and().csrf().disable().
+                authorizeRequests()
+                .antMatchers("/api/v1/auth/**", "/api-docs/**", "/swagger-ui/**").permitAll()
+                .antMatchers("/api/admin/**").hasRole("ADMIN")
+                .antMatchers("/api/auth/member/**").hasAnyRole("ADMIN,LIBRARIAN")
+                .antMatchers("/api/auth/**").permitAll()
+                .antMatchers("/api/admin/**").hasRole("ADMIN")
+                .antMatchers("/api/book/**").hasAnyRole("LIBRARIAN","ADMIN")
+                .antMatchers("/api/category/**").hasAnyRole("LIBRARIAN","ADMIN")
+                .antMatchers("/api/bill/**").hasAnyRole("LIBRARIAN","ADMIN")
+                .antMatchers(HttpMethod.GET,"/api/book/get-all").hasAnyAuthority("LIBRARIAN_READ")
+                .anyRequest().authenticated()
+                .and()
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-//                .addFilterBefore(requestFilter(), RequestFilter.class);
         return http.build();
     }
 
@@ -80,10 +71,6 @@ public class SecurityConfig {
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter(exceptionResolver);
-    }
-    @Bean
-    public RequestFilter requestFilter(){
-        return new RequestFilter();
     }
 
 }

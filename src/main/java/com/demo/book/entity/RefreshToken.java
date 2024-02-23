@@ -1,7 +1,7 @@
 package com.demo.book.entity;
 
-import com.demo.book.entity.User;
-import jakarta.persistence.*;
+import javax.persistence.*;
+
 import lombok.Data;
 
 import java.time.Instant;

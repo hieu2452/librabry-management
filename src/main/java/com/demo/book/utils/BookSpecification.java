@@ -3,8 +3,8 @@ package com.demo.book.utils;
 import com.demo.book.domain.params.BookFilter;
 import com.demo.book.entity.Book;
 import com.demo.book.entity.Category;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;
 
 public class BookSpecification {
