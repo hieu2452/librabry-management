@@ -1,7 +1,6 @@
 package com.demo.book.RestApiTest.BookControllerTest;
 
 
-import com.demo.book.adapter.BookTypeAdapter;
 import com.demo.book.controller.BookController;
 import com.demo.book.domain.dto.BookDto;
 import com.demo.book.domain.params.BookFilter;
@@ -47,8 +46,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class BookControllerTest {
     @MockBean
     private BookServiceImpl bookService;
-    @MockBean
-    private BookTypeAdapter bookTypeAdapter;
     @MockBean
     private BookExcelImporter bookExcelImporter;
     @Autowired

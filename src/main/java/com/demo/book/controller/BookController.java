@@ -1,6 +1,5 @@
 package com.demo.book.controller;
 
-import com.demo.book.adapter.BookLanguage;
 import com.demo.book.domain.dto.BookDto;
 import com.demo.book.domain.params.BookFilter;
 import com.demo.book.domain.response.MessageResponse;
@@ -23,8 +22,6 @@ import java.io.IOException;
 public class BookController {
     @Autowired
     private BookService bookService;
-    @Autowired
-    private BookLanguage bookLanguage;
     @Autowired
     private BookExcelImporter bookExcelImporter;
 
