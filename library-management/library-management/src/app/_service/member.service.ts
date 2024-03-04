@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class MemberService {
-  baseUrl = 'http://server:8080/'
+  baseUrl = 'http://localhost:8080/'
 
   constructor(private http: HttpClient) { }
 

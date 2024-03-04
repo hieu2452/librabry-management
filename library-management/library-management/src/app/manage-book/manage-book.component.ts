@@ -25,7 +25,7 @@ export class ManageBookComponent implements OnInit {
   @Input() handle: string | undefined;
   @Output() itemAdded = new EventEmitter();
 
-  paginator: any = [];
+  paginator: any ;
   displayedColumns: string[] = ['id', 'title', 'author', 'category', 'publisher', 'description', 'language', 'quantity', 'addedDate', 'edit'];
   dataSource: any;
   categories: any = [];
@@ -56,6 +56,7 @@ export class ManageBookComponent implements OnInit {
     this.bookService.search(this.bookParam).subscribe({
       next: (books: any) => {
         this.paginator = books;
+        
         this.dataSource = new MatTableDataSource(books.content);
       }
     });

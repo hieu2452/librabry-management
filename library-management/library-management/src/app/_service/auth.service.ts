@@ -12,7 +12,7 @@ export class AuthService {
   private userSource = new BehaviorSubject(null);
   userSource$ = this.userSource.asObservable();
   isLoggedIn = false;
-  baseUrl = 'http://server:8080/'
+  baseUrl = 'http://localhost:8080/'
   private _isRefreshing = false;
 
   constructor(private http: HttpClient, @Inject(PLATFORM_ID) private platformId: any, private router: Router) { }
@@ -63,7 +63,7 @@ export class AuthService {
   }
 
   addTokenHeader(request: HttpRequest<unknown>, accessToken: string) {
-    return request.clone({ headers: request.headers.set('Authorization', `Bearer ${accessToken}`) });
+    return request.clone({ headers: request.headers.set('Authorization', `Bearer   ${accessToken}`) });
   }
 
   updateToken(refreshTokenResposne: any) {

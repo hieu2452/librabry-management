@@ -9,6 +9,7 @@ import com.demo.book.entity.Publisher;
 import com.demo.book.exception.BookNotFoundException;
 import com.demo.book.exception.CategoryNotFoundException;
 import com.demo.book.exception.PublisherNotFoundException;
+import com.demo.book.helper.BookMappingHelper;
 import com.demo.book.repository.BookRepository;
 import com.demo.book.repository.CategoryRepository;
 import com.demo.book.repository.PublisherRepository;
@@ -16,16 +17,25 @@ import com.demo.book.service.BookService;
 import com.demo.book.utils.BookSpecification;
 import com.demo.book.utils.PageMapper;
 import javax.transaction.Transactional;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.redis.core.RedisTemplate;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Service
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -37,11 +47,14 @@ public class BookServiceImpl implements BookService {
     private CategoryRepository categoryRepository;
     @Autowired
     private PublisherRepository publisherRepository;
-
+    @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
+    private RedisTemplate<Object,Object> template;
 
     @Transactional
     @Override
-    public Book createBook(BookDto bookDto){
+    public BookDto createBook(BookDto bookDto){
 
         Category category = categoryRepository.findByCategoryName(bookDto.getCategory()).orElseThrow(CategoryNotFoundException::new);
         Publisher publisher = publisherRepository.findByName(bookDto.getPublisher()).orElseThrow(PublisherNotFoundException::new);
@@ -51,13 +64,13 @@ public class BookServiceImpl implements BookService {
                 .publisher(publisher)
                 .language(bookDto.getLanguage())
                 .build();
-        return bookRepository.save(book);
+        return BookMappingHelper.map(bookRepository.save(book));
 
     }
 
 
     @Override
-    public PageableResponse<Book> findAll(BookFilter bookFilters) {
+    public PageableResponse<BookDto> findAll(BookFilter bookFilters) {
         PageRequest pageable = PageRequest.of(bookFilters.getPageNumber(), bookFilters.getPageSize(), Sort.by(Sort.Direction.DESC,"addedDate"));
         Specification<Book> spec = Specification.where(null);
 
@@ -71,10 +84,20 @@ public class BookServiceImpl implements BookService {
             spec = spec.and(BookSpecification.byLanguage(bookFilters.getLanguage()));
         }
 
-        return PageMapper.mapPageable(bookRepository.findAll(spec,pageable));
+
+        PageableResponse<Book> page = PageMapper.mapPageable(bookRepository.findAll(spec,pageable));
+        List<BookDto> response = page.getContent().stream().map(BookMappingHelper::map)
+                .collect(Collectors.toList());
+        PageableResponse<BookDto> pageResponse = new PageableResponse<>();
+        pageResponse.setContent(response);
+        pageResponse.setTotalPages(page.getTotalPages());
+        pageResponse.setCurrentPage(page.getCurrentPage());
+        pageResponse.setTotalItems(page.getTotalItems());
+
+        return pageResponse;
     }
     @Override
-    public PageableResponse<Book> findByKeyword(BookFilter filter) {
+    public PageableResponse<BookDto> findByKeyword(BookFilter filter) {
         PageRequest pageable = PageRequest.of(filter.getPageNumber(), filter.getPageSize(), Sort.by(Sort.Direction.DESC,"addedDate"));
 
         Specification<Book> spec1 = BookSpecification.byCategory(filter.getKeyword());
@@ -83,21 +106,41 @@ public class BookServiceImpl implements BookService {
         Specification<Book> spec4 = BookSpecification.byAuthor(filter.getKeyword());
         Specification<Book> spec5 = BookSpecification.byLanguage(filter.getKeyword());
 
-        return PageMapper.mapPageable(
-                bookRepository.findAll(
-                        Specification.where(spec1).or(spec2).or(spec3).or(spec4).or(spec5),
-                        pageable));
+        PageableResponse<Book> page = PageMapper.mapPageable(bookRepository
+                .findAll(Specification.where(spec1).or(spec2).or(spec3).or(spec4).or(spec5),pageable));
+        List<BookDto> response = page.getContent().stream().map(BookMappingHelper::map)
+                .collect(Collectors.toList());
+        PageableResponse<BookDto> pageResponse = new PageableResponse<>();
+        pageResponse.setContent(response);
+        pageResponse.setTotalPages(page.getTotalPages());
+        pageResponse.setCurrentPage(page.getCurrentPage());
+        pageResponse.setTotalItems(page.getTotalItems());
+
+        return pageResponse;
     }
-
-
     @Override
-    public Book findById(long id) {
-        Optional<Book> optional = bookRepository.findById(id);
-        return optional.orElseThrow(() -> new BookNotFoundException(id));
+    public BookDto findById(long id) throws JsonProcessingException {
+        if (template.hasKey(id)) {
+            String json = (String) template.opsForValue().get(id);
+            BookDto bookDto = objectMapper.readValue(json, new TypeReference<BookDto>() {});
+
+            return bookDto;
+        } else {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            Book book = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
+            BookDto bookDto = BookMappingHelper.map(book);
+            String json = objectMapper.writeValueAsString(bookDto);
+            template.opsForValue().set(id,json);
+            return bookDto;
+        }
     }
     @Transactional
     @Override
-    public Book update(BookDto bookDto) {
+    public BookDto update(BookDto bookDto) {
         if(bookDto.getId() == 0) throw new IllegalArgumentException("Book id can not be null");
         Category category = categoryRepository.findByCategoryName(bookDto.getCategory()).orElseThrow(CategoryNotFoundException::new);
         Publisher publisher = publisherRepository.findByName(bookDto.getPublisher()).orElseThrow(PublisherNotFoundException::new);
@@ -108,7 +151,7 @@ public class BookServiceImpl implements BookService {
                 .publisher(publisher)
                 .language(bookDto.getLanguage())
                 .build();
-        return bookRepository.save(updatedBook);
+        return BookMappingHelper.map(bookRepository.save(updatedBook));
     }
 
 //    @Override

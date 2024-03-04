@@ -15,6 +15,7 @@ import com.demo.book.repository.PublisherRepository;
 import com.demo.book.service.impl.BookServiceImpl;
 import com.demo.book.utils.BookSpecification;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,9 +56,12 @@ public class BookServiceImplTest {
 
         Category category1 = new Category("Lecture");
         Category category3 = new Category("Math");
+
+        Publisher publisher1 = new Publisher("KD");
+        Publisher publisher2 = new Publisher("LD");
         pageable = PageRequest.of(bookFilters.getPageNumber(), bookFilters.getPageSize(), Sort.by(Sort.Direction.DESC,"addedDate"));
-        books = Arrays.asList(new Book.Builder("book1", "book1", 5).category(category1).build(),
-                new Book.Builder("book3", "book3", 7).category(category3).build());
+        books = Arrays.asList(new Book.Builder("book1", "book1", 5).category(category1).publisher(publisher1).build(),
+                new Book.Builder("book3", "book3", 7).category(category3).publisher(publisher2).build());
     }
 
     @Test
@@ -74,7 +78,7 @@ public class BookServiceImplTest {
         pageableResponse.setTotalPages(page.getTotalPages());
         pageableResponse.setCurrentPage(page.getPageable().getPageNumber());
 
-        PageableResponse<Book> result = bookService.findAll(bookFilters);
+        PageableResponse<BookDto> result = bookService.findAll(bookFilters);
 
         assertEquals(books.size(), result.getContent().size());
         assertEquals(page.getTotalPages(), result.getTotalPages());
@@ -95,7 +99,7 @@ public class BookServiceImplTest {
         pageableResponse.setTotalPages(page.getTotalPages());
         pageableResponse.setCurrentPage(page.getPageable().getPageNumber());
 
-        PageableResponse<Book> result = bookService.findByKeyword(filter);
+        PageableResponse<BookDto> result = bookService.findByKeyword(filter);
 
 
         assertEquals(books.size(), result.getContent().size());
@@ -118,19 +122,22 @@ public class BookServiceImplTest {
         pageableResponse.setTotalPages(page.getTotalPages());
         pageableResponse.setCurrentPage(page.getPageable().getPageNumber());
 
-        PageableResponse<Book> result = bookService.findAll(bookFilters);
+        PageableResponse<BookDto> result = bookService.findAll(bookFilters);
 
         assertEquals(books.size(), result.getContent().size());
-        assertEquals(page.getTotalPages(), result.getTotalPages());
+        assertEquals(pageableResponse.getTotalPages(), result.getTotalPages());
     }
 
     @Test
-    public void whenGetValidId_returnBook() {
-        Book expected = new Book.Builder("book1", "book1", 5).id(22).build();
+    public void whenGetValidId_returnBook() throws JsonProcessingException {
+        Book expected = new Book.Builder("book1", "book1", 5).id(22)
+                .category(new Category(1,"Math"))
+                .publisher(new Publisher(1,"KD"))
+                .build();
 
         when(bookRepository.findById(any(Long.class))).thenReturn(Optional.of(expected));
 
-        Book book = bookService.findById(22);
+        BookDto book = bookService.findById(22);
 
         assertEquals(expected.getId(),book.getId());
 
@@ -206,7 +213,7 @@ public class BookServiceImplTest {
                 .build();
 
         when(bookRepository.save(any(Book.class))).thenReturn(updatedBook);
-        Book result = bookService.update(bookDto);
+        BookDto result = bookService.update(bookDto);
 
         assertEquals(bookDto.getId(),result.getId());
     }
@@ -247,7 +254,7 @@ public class BookServiceImplTest {
                 .build();
 
         when(bookRepository.save(any(Book.class))).thenReturn(createdBook);
-        Book result = bookService.createBook(bookDto);
+        BookDto result = bookService.createBook(bookDto);
 
         assertEquals(bookDto.getId(),result.getId());
     }

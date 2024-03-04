@@ -7,7 +7,7 @@ import { map } from 'rxjs';
   providedIn: 'root'
 })
 export class BookService {
-  baseUrl = 'http://server:8080/'
+  baseUrl = 'http://localhost:8080/'
 
   constructor(private http: HttpClient) { }
 

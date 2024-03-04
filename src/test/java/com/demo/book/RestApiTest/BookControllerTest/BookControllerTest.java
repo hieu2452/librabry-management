@@ -9,14 +9,13 @@ import com.demo.book.entity.Book;
 import com.demo.book.entity.Category;
 import com.demo.book.entity.Publisher;
 import com.demo.book.exception.BookNotFoundException;
+import com.demo.book.helper.BookMappingHelper;
 import com.demo.book.service.impl.BookServiceImpl;
 import com.demo.book.utils.BookExcelImporter;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -25,12 +24,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -70,7 +68,7 @@ public class BookControllerTest {
                 .category(new Category(1,"math"))
                 .publisher(new Publisher(1,"NXB")).build();
 
-        when(bookService.findById(bookId)).thenReturn(book);
+        when(bookService.findById(bookId)).thenReturn(BookMappingHelper.map(book));
 
         mockMvc.perform(get("/api/book/{id}",bookId)).andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(bookId))
@@ -107,10 +105,7 @@ public class BookControllerTest {
 
     @Test
     public void shouldCreateBook() throws Exception {
-        book = new Book.Builder("test","author",4).id(1)
-                .language("Vietnamese")
-                .category(new Category(1,"math"))
-                .publisher(new Publisher(1,"NXB")).build();
+
         BookDto bookDto = new BookDto();
         bookDto.setTitle("test");
         bookDto.setAuthor("author");
@@ -119,7 +114,7 @@ public class BookControllerTest {
         bookDto.setPublisher("nxb");
         bookDto.setQuantity(4);
 
-        when(bookService.createBook(any(BookDto.class))).thenReturn(book);
+        when(bookService.createBook(any(BookDto.class))).thenReturn(bookDto);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/book/create")
                 .content(asJsonString(bookDto))
@@ -150,8 +145,8 @@ public class BookControllerTest {
                         .category(new Category(1,"math"))
                         .publisher(new Publisher(1,"NXB")).build()
         );
-        PageableResponse<Book> response = new PageableResponse<>();
-        response.setContent(books);
+        PageableResponse<BookDto> response = new PageableResponse<>();
+        response.setContent(books.stream().map(BookMappingHelper::map).collect(Collectors.toList()));
         response.setTotalItems(books.size());
         response.setTotalPages(books.size()/bookFilter.getPageSize());
 
@@ -187,8 +182,8 @@ public class BookControllerTest {
                         .category(new Category(1,"math"))
                         .publisher(new Publisher(1,"NXB")).build()
         );
-        PageableResponse<Book> response = new PageableResponse<>();
-        response.setContent(books);
+        PageableResponse<BookDto> response = new PageableResponse<>();
+        response.setContent(books.stream().map(BookMappingHelper::map).collect(Collectors.toList()));
         response.setTotalItems(books.size());
         response.setTotalPages(books.size()/bookFilter.getPageSize());
 
@@ -224,10 +219,7 @@ public class BookControllerTest {
     }
     @Test
     public void shouldUpdateBook() throws Exception {
-        book = new Book.Builder("test1","author",4).id(1)
-                .language("Vietnamese")
-                .category(new Category(1,"math"))
-                .publisher(new Publisher(1,"NXB")).build();
+
         BookDto bookDto = new BookDto();
         bookDto.setTitle("test1");
         bookDto.setAuthor("author");
@@ -236,7 +228,7 @@ public class BookControllerTest {
         bookDto.setPublisher("nxb");
         bookDto.setQuantity(4);
 
-        when(bookService.update(any(BookDto.class))).thenReturn(book);
+        when(bookService.update(any(BookDto.class))).thenReturn(bookDto);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/book/update")
                         .content(asJsonString(bookDto))

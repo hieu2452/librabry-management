@@ -58,8 +58,8 @@ export class BookComponent {
       this.bookForm.patchValue(this.dialogData.data);
       // console.log(this.dialogData.data.category)
       this.selected = this.dialogData.data.category;
-      this.bookForm.controls['category'].setValue(this.dialogData.data.category.categoryName)
-      this.bookForm.controls['publisher'].setValue(this.dialogData.data.publisher.name)
+      this.bookForm.controls['category'].setValue(this.dialogData.data.category)
+      this.bookForm.controls['publisher'].setValue(this.dialogData.data.publisher)
     }
 
 
