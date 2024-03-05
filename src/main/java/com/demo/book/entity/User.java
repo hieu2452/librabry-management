@@ -19,7 +19,7 @@ import java.util.List;
         discriminatorType = DiscriminatorType.STRING)
 @DiscriminatorValue("GENERIC")
 @Data
-public class User implements Serializable {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

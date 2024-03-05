@@ -1,4 +1,4 @@
-package com.demo.book.utils;
+package com.demo.book.helper;
 
 import com.demo.book.domain.response.PageableResponse;
 import org.springframework.data.domain.Page;

@@ -15,6 +15,7 @@ public class BookMappingHelper {
                 .addedDate(book.getAddedDate())
                 .category(book.getCategory().getCategoryName())
                 .publisher(book.getPublisher().getName())
+                .language(book.getLanguage())
                 .build();
 
     }

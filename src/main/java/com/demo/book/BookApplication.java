@@ -1,5 +1,6 @@
 package com.demo.book;
 
+import com.demo.book.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -14,7 +15,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 @EnableMethodSecurity
 @EnableCaching
 public class BookApplication{
-
 	public static void main(String[] args) {
 		SpringApplication.run(BookApplication.class, args);
 	}

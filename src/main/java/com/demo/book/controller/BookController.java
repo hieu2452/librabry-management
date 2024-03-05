@@ -44,7 +44,7 @@ public class BookController {
     }
 
     @GetMapping("")
-    public ResponseEntity<?> getBooks(@ModelAttribute BookFilter bookFilter) {
+    public ResponseEntity<?> getBooks(@ModelAttribute BookFilter bookFilter) throws JsonProcessingException {
         return ResponseEntity.ok(bookService.findAll(bookFilter));
     }
     @GetMapping("search")

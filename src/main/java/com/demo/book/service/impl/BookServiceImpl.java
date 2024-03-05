@@ -13,13 +13,13 @@ import com.demo.book.helper.BookMappingHelper;
 import com.demo.book.repository.BookRepository;
 import com.demo.book.repository.CategoryRepository;
 import com.demo.book.repository.PublisherRepository;
+import com.demo.book.service.BookRedisService;
 import com.demo.book.service.BookService;
 import com.demo.book.utils.BookSpecification;
-import com.demo.book.utils.PageMapper;
+import com.demo.book.helper.PageMapper;
 import javax.transaction.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,14 +27,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Service
@@ -48,10 +46,7 @@ public class BookServiceImpl implements BookService {
     @Autowired
     private PublisherRepository publisherRepository;
     @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
-    private RedisTemplate<Object,Object> template;
-
+    private BookRedisService bookRedisService;
     @Transactional
     @Override
     public BookDto createBook(BookDto bookDto){
@@ -70,31 +65,37 @@ public class BookServiceImpl implements BookService {
 
 
     @Override
-    public PageableResponse<BookDto> findAll(BookFilter bookFilters) {
+    public PageableResponse<BookDto> findAll(BookFilter bookFilters) throws JsonProcessingException {
         PageRequest pageable = PageRequest.of(bookFilters.getPageNumber(), bookFilters.getPageSize(), Sort.by(Sort.Direction.DESC,"addedDate"));
-        Specification<Book> spec = Specification.where(null);
 
-        if(bookFilters.getCategory()!=null && !bookFilters.getCategory().equals("all")) {
-            spec = spec.and(BookSpecification.byCategory(bookFilters.getCategory()));
+        PageableResponse<BookDto> bookResponse = bookRedisService.findAll(bookFilters,pageable);
+
+        if(bookResponse == null) {
+            Specification<Book> spec = Specification.where(null);
+
+            if(bookFilters.getCategory() != null && !bookFilters.getCategory().equals("all")) {
+                spec = spec.and(BookSpecification.byCategory(bookFilters.getCategory()));
+            }
+            if(bookFilters.getPublisher() != null && !bookFilters.getPublisher().equals("all")) {
+                spec = spec.and(BookSpecification.byPublisher(bookFilters.getPublisher()));
+            }
+            if(bookFilters.getLanguage() != null && !bookFilters.getLanguage().equals("all")) {
+                spec = spec.and(BookSpecification.byLanguage(bookFilters.getLanguage()));
+            }
+
+            PageableResponse<Book> page = PageMapper.mapPageable(bookRepository.findAll(spec,pageable));
+            List<BookDto> response = page.getContent().stream().map(BookMappingHelper::map)
+                    .collect(Collectors.toList());
+
+            bookResponse = new PageableResponse<>();
+            bookResponse.setContent(response);
+            bookResponse.setTotalPages(page.getTotalPages());
+            bookResponse.setCurrentPage(page.getCurrentPage());
+            bookResponse.setTotalItems(page.getTotalItems());
+
+            bookRedisService.saveAll(bookResponse,bookFilters,pageable);
         }
-        if(bookFilters.getPublisher()!=null && !bookFilters.getPublisher().equals("all")) {
-            spec = spec.and(BookSpecification.byPublisher(bookFilters.getPublisher()));
-        }
-        if(bookFilters.getLanguage()!=null && !bookFilters.getLanguage().equals("all")) {
-            spec = spec.and(BookSpecification.byLanguage(bookFilters.getLanguage()));
-        }
-
-
-        PageableResponse<Book> page = PageMapper.mapPageable(bookRepository.findAll(spec,pageable));
-        List<BookDto> response = page.getContent().stream().map(BookMappingHelper::map)
-                .collect(Collectors.toList());
-        PageableResponse<BookDto> pageResponse = new PageableResponse<>();
-        pageResponse.setContent(response);
-        pageResponse.setTotalPages(page.getTotalPages());
-        pageResponse.setCurrentPage(page.getCurrentPage());
-        pageResponse.setTotalItems(page.getTotalItems());
-
-        return pageResponse;
+        return bookResponse;
     }
     @Override
     public PageableResponse<BookDto> findByKeyword(BookFilter filter) {
@@ -120,24 +121,42 @@ public class BookServiceImpl implements BookService {
     }
     @Override
     public BookDto findById(long id) throws JsonProcessingException {
-        if (template.hasKey(id)) {
-            String json = (String) template.opsForValue().get(id);
-            BookDto bookDto = objectMapper.readValue(json, new TypeReference<BookDto>() {});
+        BookDto bookDto = bookRedisService.findById(id);
 
-            return bookDto;
-        } else {
+        if(bookDto == null) {
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
             Book book = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
-            BookDto bookDto = BookMappingHelper.map(book);
-            String json = objectMapper.writeValueAsString(bookDto);
-            template.opsForValue().set(id,json);
-            return bookDto;
+            bookDto = BookMappingHelper.map(book);
+            bookRedisService.save(bookDto);
         }
+
+        return bookDto;
     }
+
+//    @Override
+//    public BookDto findById(long id) throws JsonProcessingException {
+//        if (template.hasKey(id)) {
+//            String json = (String) template.opsForValue().get(id);
+//            BookDto bookDto = objectMapper.readValue(json, new TypeReference<BookDto>() {});
+//
+//            return bookDto;
+//        } else {
+//            try {
+//                Thread.sleep(2000);
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
+//            Book book = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
+//            BookDto bookDto = BookMappingHelper.map(book);
+//            String json = objectMapper.writeValueAsString(bookDto);
+//            template.opsForValue().set(id,json);
+//            return bookDto;
+//        }
+//    }
     @Transactional
     @Override
     public BookDto update(BookDto bookDto) {
