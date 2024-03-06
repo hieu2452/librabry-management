@@ -38,9 +38,9 @@ public class BookController {
         return new ResponseEntity<>(new MessageResponse("import book data successfully"),HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/update")
-    public ResponseEntity<?> updateBook(@Valid @RequestBody BookDto bookDto) {
-        return ResponseEntity.ok(bookService.update(bookDto));
+    @PutMapping(value = "/update/{id}")
+    public ResponseEntity<?> updateBook(@Valid @RequestBody BookDto bookDto, @PathVariable long id) {
+        return ResponseEntity.ok(bookService.update(id,bookDto));
     }
 
     @GetMapping("")

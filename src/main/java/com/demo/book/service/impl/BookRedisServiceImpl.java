@@ -8,12 +8,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -33,7 +40,7 @@ public class BookRedisServiceImpl implements BookRedisService {
         String sortDirection = pageRequest.getSort().getOrderFor("addedDate").getDirection()
                 == Sort.Direction.DESC ? "desc" : "asc";
 
-        return String.format("books:%s:%s:%s:%s:%d:%d:%s",category,publisher,language,keyword,pageSize,pageNumber,sortDirection);
+        return String.format("books-lst:%s:%s:%s:%s:%d:%d:%s",category,publisher,language,keyword,pageSize,pageNumber,sortDirection);
     }
 
     @Override
@@ -78,7 +85,30 @@ public class BookRedisServiceImpl implements BookRedisService {
     }
 
     @Override
+    public void deleteCache(long id) {
+        String key = getKey(id);
+        String bookListPattern = "books-lst:*";
+        if(key != null) {
+            redisTemplate.opsForValue().getOperations().delete(key);
+        }
+        deleteKeys(bookListPattern);
+    }
+
+    @Override
     public void clear() {
         Objects.requireNonNull(redisTemplate.getConnectionFactory()).getConnection().flushAll();
+    }
+
+    public void deleteKeys(String pattern) {
+        Cursor<byte[]> cursor = Objects.requireNonNull(redisTemplate.getConnectionFactory()).getConnection()
+                .scan(ScanOptions.scanOptions()
+                        .match(pattern)
+                        .build());
+        while (cursor.hasNext()) {
+            byte[] keyBytes = cursor.next();
+            String key = new String(keyBytes, StandardCharsets.UTF_8);
+            redisTemplate.delete(key);
+        }
+        cursor.close();
     }
 }

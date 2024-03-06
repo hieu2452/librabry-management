@@ -159,18 +159,28 @@ public class BookServiceImpl implements BookService {
 //    }
     @Transactional
     @Override
-    public BookDto update(BookDto bookDto) {
+    public BookDto update(long id,BookDto bookDto) {
         if(bookDto.getId() == 0) throw new IllegalArgumentException("Book id can not be null");
-        Category category = categoryRepository.findByCategoryName(bookDto.getCategory()).orElseThrow(CategoryNotFoundException::new);
-        Publisher publisher = publisherRepository.findByName(bookDto.getPublisher()).orElseThrow(PublisherNotFoundException::new);
-        Book updatedBook = new Book.Builder(bookDto.getTitle(),bookDto.getAuthor(),bookDto.getQuantity())
-                .id(bookDto.getId())
-                .description(bookDto.getDescription())
-                .category(category)
-                .publisher(publisher)
-                .language(bookDto.getLanguage())
-                .build();
-        return BookMappingHelper.map(bookRepository.save(updatedBook));
+        Book oldBook = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
+
+        if(!oldBook.getCategory().getCategoryName().equals(bookDto.getAuthor())) {
+            Category category = categoryRepository.findByCategoryName(bookDto.getCategory()).orElseThrow(CategoryNotFoundException::new);
+            oldBook.setCategory(category);
+        }
+        if(!oldBook.getPublisher().getName().equals(bookDto.getPublisher())) {
+            Publisher publisher = publisherRepository.findByName(bookDto.getPublisher()).orElseThrow(PublisherNotFoundException::new);
+            oldBook.setPublisher(publisher);
+        }
+
+        oldBook.setDescription(bookDto.getDescription());
+        oldBook.setTitle(bookDto.getTitle());
+        oldBook.setAuthor(bookDto.getAuthor());
+        oldBook.setQuantity(bookDto.getQuantity());
+        oldBook.setLanguage(bookDto.getLanguage());
+
+        BookDto updatedBook = BookMappingHelper.map(bookRepository.save(oldBook));
+        bookRedisService.deleteCache(bookDto.getId());
+        return updatedBook;
     }
 
 //    @Override
@@ -183,6 +193,7 @@ public class BookServiceImpl implements BookService {
     public void delete(long id) {
         Book book = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
         bookRepository.delete(book);
+        bookRedisService.deleteCache(id);
     }
 
 }

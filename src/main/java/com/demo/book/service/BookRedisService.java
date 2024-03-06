@@ -15,5 +15,6 @@ public interface BookRedisService {
     PageableResponse<BookDto> findAll(BookFilter bookFilter, PageRequest pageRequest) throws JsonProcessingException;
     void saveAll(PageableResponse<BookDto> bookResponse,BookFilter bookFilter , PageRequest pageRequest) throws JsonProcessingException;
     void save(BookDto bookDto) throws JsonProcessingException;
+    void deleteCache(long id);
     void clear();
 }

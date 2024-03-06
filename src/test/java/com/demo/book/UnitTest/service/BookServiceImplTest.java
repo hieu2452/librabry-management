@@ -65,7 +65,7 @@ public class BookServiceImplTest {
     }
 
     @Test
-    public void findAll_ReturnListOfBooks() {
+    public void findAll_ReturnListOfBooks() throws JsonProcessingException {
         Pageable pageable = PageRequest.of(bookFilters.getPageNumber(), bookFilters.getPageSize(),Sort.by(Sort.Direction.DESC,"addedDate"));
 
         List<Book> books = this.books;
@@ -107,7 +107,7 @@ public class BookServiceImplTest {
     }
 
     @Test
-    public void findAllWithCategoryFilter_ReturnListOfBooks() {
+    public void findAllWithCategoryFilter_ReturnListOfBooks() throws JsonProcessingException {
         bookFilters.setCategory("Math");
         spec = spec.and(BookSpecification.byCategory(bookFilters.getCategory()));
         Pageable pageable = PageRequest.of(bookFilters.getPageNumber(), bookFilters.getPageSize(),Sort.by(Sort.Direction.DESC,"addedDate"));
@@ -155,8 +155,9 @@ public class BookServiceImplTest {
 
     @Test
     public void createBookNonExistCategory_returnNotFound() {
+        long bookId =1;
+        Book oldBook = books.get(0);
         BookDto bookDto = new BookDto();
-        bookDto.setId(1);
         bookDto.setTitle("silent hill");
         bookDto.setAuthor("logan");
         bookDto.setCategory("lecture");
@@ -164,15 +165,17 @@ public class BookServiceImplTest {
         bookDto.setPublisher("kim dong");
 
         when(categoryRepository.findByCategoryName(any(String.class))).thenReturn(Optional.empty());
+        when(bookRepository.findById(any(Long.class))).thenReturn(Optional.of(oldBook));
 
         assertThrowsExactly(CategoryNotFoundException.class,() ->bookService.createBook(bookDto));
-        assertThrowsExactly(CategoryNotFoundException.class,() ->bookService.update(bookDto));
+        assertThrowsExactly(CategoryNotFoundException.class,() ->bookService.update(bookId,bookDto));
     }
 
     @Test
     public void createBookNonExistPublisher_returnNotFound() {
+        long bookId =1;
+        Book oldBook = books.get(0);
         BookDto bookDto = new BookDto();
-        bookDto.setId(1);
         bookDto.setTitle("silent hill");
         bookDto.setAuthor("logan");
         bookDto.setCategory("lecture");
@@ -182,15 +185,18 @@ public class BookServiceImplTest {
         Category category = new Category();
         category.setCategoryName("lecture");
 
+        when(bookRepository.findById(any(Long.class))).thenReturn(Optional.of(oldBook));
         when(publisherRepository.findByName(any(String.class))).thenReturn(Optional.empty());
         when(categoryRepository.findByCategoryName(any(String.class))).thenReturn(Optional.of(category));
 
         assertThrowsExactly(PublisherNotFoundException.class,() ->bookService.createBook(bookDto));
-        assertThrowsExactly(PublisherNotFoundException.class,() ->bookService.update(bookDto));
+        assertThrowsExactly(PublisherNotFoundException.class,() ->bookService.update(bookId,bookDto));
     }
 
     @Test
-    public void updateBook_SuccessfulUpdate_ReturnsUpdatedBook () {
+    public void updateBook_SuccessfulUpdate_ReturnsUpdatedBook () throws JsonProcessingException {
+        long bookId =1;
+        Book oldBook = books.get(0);
         BookDto bookDto = new BookDto();
         bookDto.setId(1);
         bookDto.setTitle("silent hill");
@@ -201,6 +207,7 @@ public class BookServiceImplTest {
 
         Category category = new Category("lecture");
         Publisher publisher = new Publisher("vietnamese");
+        when(bookRepository.findById(any(Long.class))).thenReturn(Optional.of(oldBook));
         when(categoryRepository.findByCategoryName(any(String.class))).thenReturn(Optional.of(category));
         when(publisherRepository.findByName(any(String.class))).thenReturn(Optional.of(publisher));
 
@@ -213,13 +220,16 @@ public class BookServiceImplTest {
                 .build();
 
         when(bookRepository.save(any(Book.class))).thenReturn(updatedBook);
-        BookDto result = bookService.update(bookDto);
+        BookDto result = bookService.update(bookId,bookDto);
 
         assertEquals(bookDto.getId(),result.getId());
     }
 
     @Test
     public void updateBook_NullBookId_ThrowException () {
+        long bookId =1;
+        Book oldBook = books.get(0);
+
         BookDto bookDto = new BookDto();
         bookDto.setTitle("silent hill");
         bookDto.setAuthor("logan");
@@ -227,7 +237,7 @@ public class BookServiceImplTest {
         bookDto.setLanguage("vietnamese");
         bookDto.setPublisher("kim dong");
 
-        assertThrowsExactly(IllegalArgumentException.class,() -> bookService.update(bookDto));
+        assertThrowsExactly(IllegalArgumentException.class,() -> bookService.update(bookId,bookDto));
     }
 
 

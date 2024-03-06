@@ -149,7 +149,7 @@ export class BookComponent {
   edit() {
     var formData = this.bookForm.value;
     var data = { ...formData }
-    this.bookService.updateBook(data).subscribe({
+    this.bookService.updateBook(data.id,data).subscribe({
       next: (response: any) => {
         this.toastr.success("Update book successfully");
         this.dialogRef.close();

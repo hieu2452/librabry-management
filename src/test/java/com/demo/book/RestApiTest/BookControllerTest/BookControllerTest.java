@@ -219,7 +219,7 @@ public class BookControllerTest {
     }
     @Test
     public void shouldUpdateBook() throws Exception {
-
+        long bookId = 1 ;
         BookDto bookDto = new BookDto();
         bookDto.setTitle("test1");
         bookDto.setAuthor("author");
@@ -228,9 +228,9 @@ public class BookControllerTest {
         bookDto.setPublisher("nxb");
         bookDto.setQuantity(4);
 
-        when(bookService.update(any(BookDto.class))).thenReturn(bookDto);
+        when(bookService.update(any(Long.class),any(BookDto.class))).thenReturn(bookDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/book/update")
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/book/update/{id}",bookId)
                         .content(asJsonString(bookDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))

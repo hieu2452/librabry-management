@@ -12,14 +12,14 @@ export class BorrowService {
   }
 
   getBill() {
-    return this.http.get(this.baseUrl + 'api/checkOut')
+    return this.http.get(this.baseUrl + 'api/checkout')
   }
 
   getBillDetail(billId: number) {
-    return this.http.get(this.baseUrl + 'api/checkOut/detail/' + billId);
+    return this.http.get(this.baseUrl + 'api/checkout/detail/' + billId);
   }
 
   borrowBooks(request: any) {
-    return this.http.post(this.baseUrl + 'api/checkOut/create', request);
+    return this.http.post(this.baseUrl + 'api/checkout/create', request);
   }
 }
