@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -31,16 +32,16 @@ import java.time.format.DateTimeFormatter;
 
 @Configuration
 public class RedisConfig {
-    @Value("${redis.host}")
-    private String redisHost;
-
-    @Value("${redis.port}")
-    private int redisPort;
-
-    @Bean
-    public LettuceConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory(new RedisStandaloneConfiguration(redisHost, redisPort));
-    }
+//    @Value("${spring.redis.host}")
+//    private String redisHost;
+//
+//    @Value("${spring.redis.port}")
+//    private int redisPort;
+//
+//    @Bean
+//    public LettuceConnectionFactory redisConnectionFactory() {
+//        return new LettuceConnectionFactory(new RedisStandaloneConfiguration(redisHost, redisPort));
+//    }
 
     @Bean
     @Primary
@@ -64,23 +65,18 @@ public class RedisConfig {
         return RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
     }
 
+
     @Bean
-    public RedisCacheConfiguration cacheConfiguration(RedisSerializationContext.SerializationPair<Object> serializationPair) {
-        return RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(30))
+    public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory, RedisSerializationContext.SerializationPair<Object> serializationPair) {
+        RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofHours(1))
                 .disableCachingNullValues()
                 .serializeValuesWith(serializationPair);
-    }
 
-    @Bean
-    public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
-        return (builder) -> builder
-                .withCacheConfiguration("userAuth",
-                        RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(10)))
-                .withCacheConfiguration("customerCache",
-                        RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(5)));
+        return RedisCacheManager.builder(connectionFactory)
+                .cacheDefaults(config)
+                .build();
     }
-
     @Bean
     public ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();

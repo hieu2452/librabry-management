@@ -97,14 +97,13 @@ public class BookServiceImpl implements BookService {
     public PageableResponse<BookDto> findByKeyword(BookFilter filter) {
         PageRequest pageable = PageRequest.of(filter.getPageNumber(), filter.getPageSize(), Sort.by(Sort.Direction.DESC,"addedDate"));
 
-        Specification<Book> spec1 = BookSpecification.byCategory(filter.getKeyword());
-        Specification<Book> spec2 = BookSpecification.byPublisher(filter.getKeyword());
-        Specification<Book> spec3 = BookSpecification.byPublisher(filter.getKeyword());
-        Specification<Book> spec4 = BookSpecification.byAuthor(filter.getKeyword());
-        Specification<Book> spec5 = BookSpecification.byLanguage(filter.getKeyword());
+        Specification<Book> spec = Specification.where(BookSpecification.byCategory(filter.getKeyword()))
+                .or(BookSpecification.byPublisher(filter.getKeyword()))
+                .or(BookSpecification.byAuthor(filter.getKeyword()))
+                .or(BookSpecification.byLanguage(filter.getKeyword()));
 
         PageableResponse<Book> page = PageMapper.mapPageable(bookRepository
-                .findAll(Specification.where(spec1).or(spec2).or(spec3).or(spec4).or(spec5),pageable));
+                .findAll(spec,pageable));
         List<BookDto> response = page.getContent().stream().map(BookMappingHelper::map)
                 .collect(Collectors.toList());
         PageableResponse<BookDto> pageResponse = new PageableResponse<>();
@@ -115,16 +114,12 @@ public class BookServiceImpl implements BookService {
 
         return pageResponse;
     }
+
     @Override
     public BookDto findById(long id) throws JsonProcessingException {
         BookDto bookDto = bookRedisService.findById(id);
 
         if(bookDto == null) {
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
             Book book = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
             bookDto = BookMappingHelper.map(book);
             bookRedisService.save(bookDto);
@@ -132,6 +127,16 @@ public class BookServiceImpl implements BookService {
 
         return bookDto;
     }
+
+//    @Cacheable(value = "book", key = "#id")
+//    @Override
+//    public BookDto findById(long id) throws JsonProcessingException {
+//
+//        Book book = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
+//        BookDto bookDto = BookMappingHelper.map(book);
+//
+//        return bookDto;
+//    }
 
     @Transactional
     @Override
@@ -141,11 +146,13 @@ public class BookServiceImpl implements BookService {
         Book oldBook = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
 
         if(!oldBook.getCategory().getCategoryName().equals(bookDto.getAuthor())) {
-            Category category = categoryRepository.findByCategoryName(bookDto.getCategory()).orElseThrow(CategoryNotFoundException::new);
+            Category category = categoryRepository.findByCategoryName(bookDto.getCategory())
+                    .orElseThrow(CategoryNotFoundException::new);
             oldBook.setCategory(category);
         }
         if(!oldBook.getPublisher().getName().equals(bookDto.getPublisher())) {
-            Publisher publisher = publisherRepository.findByName(bookDto.getPublisher()).orElseThrow(PublisherNotFoundException::new);
+            Publisher publisher = publisherRepository.findByName(bookDto.getPublisher())
+                    .orElseThrow(PublisherNotFoundException::new);
             oldBook.setPublisher(publisher);
         }
 
