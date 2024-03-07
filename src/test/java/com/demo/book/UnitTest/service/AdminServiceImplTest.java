@@ -1,4 +1,5 @@
 package com.demo.book.UnitTest.service;
+import com.demo.book.domain.dto.StaffDto;
 import com.demo.book.domain.dto.UserDto;
 import com.demo.book.entity.Member;
 import com.demo.book.entity.Role;
@@ -42,7 +43,7 @@ public class AdminServiceImplTest {
 
     @Test
     public void whenCreateLibrarian_Success() {
-        Staff user = new Staff();
+        StaffDto user = new StaffDto();
         user.setUsername("testUser");
         user.setPassword("password");
 
@@ -61,7 +62,7 @@ public class AdminServiceImplTest {
 
     @Test
     public void whenCreateLibrarian_StaffExisted_ThrowException() {
-        Staff user = new Staff();
+        StaffDto user = new StaffDto();
         user.setUsername("testUser");
         user.setPassword("password");
 

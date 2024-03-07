@@ -65,36 +65,32 @@ public class BookServiceImpl implements BookService {
 
 
     @Override
-    public PageableResponse<BookDto> findAll(BookFilter bookFilters) throws JsonProcessingException {
+    public PageableResponse<BookDto> findAll(BookFilter bookFilters) {
         PageRequest pageable = PageRequest.of(bookFilters.getPageNumber(), bookFilters.getPageSize(), Sort.by(Sort.Direction.DESC,"addedDate"));
 
-        PageableResponse<BookDto> bookResponse = bookRedisService.findAll(bookFilters,pageable);
+        PageableResponse<BookDto> bookResponse = null;
 
-        if(bookResponse == null) {
-            Specification<Book> spec = Specification.where(null);
+        Specification<Book> spec = Specification.where(null);
 
-            if(bookFilters.getCategory() != null && !bookFilters.getCategory().equals("all")) {
-                spec = spec.and(BookSpecification.byCategory(bookFilters.getCategory()));
-            }
-            if(bookFilters.getPublisher() != null && !bookFilters.getPublisher().equals("all")) {
-                spec = spec.and(BookSpecification.byPublisher(bookFilters.getPublisher()));
-            }
-            if(bookFilters.getLanguage() != null && !bookFilters.getLanguage().equals("all")) {
-                spec = spec.and(BookSpecification.byLanguage(bookFilters.getLanguage()));
-            }
-
-            PageableResponse<Book> page = PageMapper.mapPageable(bookRepository.findAll(spec,pageable));
-            List<BookDto> response = page.getContent().stream().map(BookMappingHelper::map)
-                    .collect(Collectors.toList());
-
-            bookResponse = new PageableResponse<>();
-            bookResponse.setContent(response);
-            bookResponse.setTotalPages(page.getTotalPages());
-            bookResponse.setCurrentPage(page.getCurrentPage());
-            bookResponse.setTotalItems(page.getTotalItems());
-
-            bookRedisService.saveAll(bookResponse,bookFilters,pageable);
+        if(bookFilters.getCategory() != null && !bookFilters.getCategory().equals("all")) {
+            spec = spec.and(BookSpecification.byCategory(bookFilters.getCategory()));
         }
+        if(bookFilters.getPublisher() != null && !bookFilters.getPublisher().equals("all")) {
+            spec = spec.and(BookSpecification.byPublisher(bookFilters.getPublisher()));
+        }
+        if(bookFilters.getLanguage() != null && !bookFilters.getLanguage().equals("all")) {
+            spec = spec.and(BookSpecification.byLanguage(bookFilters.getLanguage()));
+        }
+        PageableResponse<Book> page = PageMapper.mapPageable(bookRepository.findAll(spec,pageable));
+        List<BookDto> response = page.getContent().stream().map(BookMappingHelper::map)
+                .collect(Collectors.toList());
+
+        bookResponse = new PageableResponse<>();
+        bookResponse.setContent(response);
+        bookResponse.setTotalPages(page.getTotalPages());
+        bookResponse.setCurrentPage(page.getCurrentPage());
+        bookResponse.setTotalItems(page.getTotalItems());
+
         return bookResponse;
     }
     @Override
@@ -137,30 +133,11 @@ public class BookServiceImpl implements BookService {
         return bookDto;
     }
 
-//    @Override
-//    public BookDto findById(long id) throws JsonProcessingException {
-//        if (template.hasKey(id)) {
-//            String json = (String) template.opsForValue().get(id);
-//            BookDto bookDto = objectMapper.readValue(json, new TypeReference<BookDto>() {});
-//
-//            return bookDto;
-//        } else {
-//            try {
-//                Thread.sleep(2000);
-//            } catch (InterruptedException e) {
-//                throw new RuntimeException(e);
-//            }
-//            Book book = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
-//            BookDto bookDto = BookMappingHelper.map(book);
-//            String json = objectMapper.writeValueAsString(bookDto);
-//            template.opsForValue().set(id,json);
-//            return bookDto;
-//        }
-//    }
     @Transactional
     @Override
-    public BookDto update(long id,BookDto bookDto) {
+    public BookDto update(long id,BookDto bookDto) throws JsonProcessingException {
         if(bookDto.getId() == 0) throw new IllegalArgumentException("Book id can not be null");
+
         Book oldBook = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
 
         if(!oldBook.getCategory().getCategoryName().equals(bookDto.getAuthor())) {
@@ -179,7 +156,8 @@ public class BookServiceImpl implements BookService {
         oldBook.setLanguage(bookDto.getLanguage());
 
         BookDto updatedBook = BookMappingHelper.map(bookRepository.save(oldBook));
-        bookRedisService.deleteCache(bookDto.getId());
+        bookRedisService.save(bookDto);
+
         return updatedBook;
     }
 
@@ -192,8 +170,15 @@ public class BookServiceImpl implements BookService {
     @Override
     public void delete(long id) {
         Book book = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
-        bookRepository.delete(book);
-        bookRedisService.deleteCache(id);
+        try {
+            int res = bookRepository.deleteById(id);
+            if(res > 0) {
+                bookRedisService.deleteCache(id);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            log.debug(exception.getMessage());
+        }
     }
 
 }

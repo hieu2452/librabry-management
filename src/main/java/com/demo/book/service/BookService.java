@@ -12,9 +12,9 @@ import java.util.List;
 
 public interface BookService {
     BookDto createBook(BookDto bookDto);
-    PageableResponse<BookDto> findAll(BookFilter bookFilters) throws JsonProcessingException;
+    PageableResponse<BookDto> findAll(BookFilter bookFilters) ;
     BookDto findById(long id) throws JsonProcessingException;
-    BookDto update(long id,BookDto bookDto);
+    BookDto update(long id,BookDto bookDto) throws JsonProcessingException;
 //    List<Book> findByCategory(String type);
     void delete(long id);
     PageableResponse<BookDto> findByKeyword(BookFilter filter);

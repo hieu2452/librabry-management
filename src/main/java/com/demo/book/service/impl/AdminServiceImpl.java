@@ -1,5 +1,6 @@
 package com.demo.book.service.impl;
 
+import com.demo.book.domain.dto.StaffDto;
 import com.demo.book.domain.dto.UserDto;
 import com.demo.book.entity.*;
 import com.demo.book.entity.enums.UserType;
@@ -37,7 +38,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Transactional
     @Override
-    public void createLibrarianUser(Staff user) {
+    public void createLibrarianUser(StaffDto user) {
         if(staffRepository.existsByUsername(user.getUsername())) throw new UserExistsException();
 
         UserAbstractFactory factory = UserFactory.getFactory(UserType.STAFF);
@@ -47,8 +48,8 @@ public class AdminServiceImpl implements AdminService {
 
         staff.setFullName(user.getFullName());
         staff.setAddress(user.getAddress());
-        staff.setDisplayName(user.getDisplayName());
         staff.setAge(user.getAge());
+        staff.setEmail(user.getEmail());
         staff.setUsername(user.getUsername());
         staff.setPhoneNumber(user.getPhoneNumber());
         staff.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -63,7 +64,6 @@ public class AdminServiceImpl implements AdminService {
 
         Member newMember = (Member) factory.createUser();
         newMember.setPhoneNumber(member.getPhoneNumber());
-        newMember.setDisplayName(member.getDisplayName());
         newMember.setFullName(member.getFullName());
         newMember.setEmail(member.getEmail());
         newMember.setAge(member.getAge());

@@ -12,13 +12,15 @@ import java.time.LocalDateTime;
 @Setter
 public class BorrowResponse {
     private LocalDateTime borrowedDate;
+    private LocalDateTime returnedDate;
     private int quantity;
     private BorrowedBookStatus bookStatus;
     private long bookId;
     private String bookTitle;
 
-    public BorrowResponse(LocalDateTime borrowedDate, int quantity, BorrowedBookStatus bookStatus, long bookId, String bookTitle) {
+    public BorrowResponse(LocalDateTime borrowedDate,LocalDateTime returnedDate ,int quantity, BorrowedBookStatus bookStatus, long bookId, String bookTitle) {
         this.borrowedDate = borrowedDate;
+        this.returnedDate = returnedDate;
         this.quantity = quantity;
         this.bookStatus = bookStatus;
         this.bookId = bookId;

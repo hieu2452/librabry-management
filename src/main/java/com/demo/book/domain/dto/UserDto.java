@@ -8,18 +8,18 @@ import lombok.NoArgsConstructor;
 public class UserDto {
     private long id;
     private String userType;
-    private String displayName;
     private int age;
     private String email;
     private String address;
     private String fullName;
+    private String phoneNumber;
     public static class Builder {
         private long id;
         private String userType;
-        private String displayName;
         private int age;
         private String email;
         private String address;
+        private String phoneNumber;
         private String fullName;
         public Builder id(long id) {
             this.id = id;
@@ -29,12 +29,12 @@ public class UserDto {
             this.fullName = fullName;
             return this;
         }
-        public Builder userType(String userType) {
-            this.userType = userType;
+        public Builder phoneNumber(String phoneNumber) {
+            this.phoneNumber = phoneNumber;
             return this;
         }
-        public Builder displayName(String displayName) {
-            this.displayName = displayName;
+        public Builder userType(String userType) {
+            this.userType = userType;
             return this;
         }
         public Builder age(int age) {
@@ -54,17 +54,15 @@ public class UserDto {
             return new UserDto(this);
         }
     }
-    public UserDto(long id, String userType, String displayName, int age) {
+    public UserDto(long id, String userType, int age) {
         this.id = id;
         this.userType = userType;
-        this.displayName = displayName;
         this.age = age;
     }
 
-    public UserDto(long id, String userType, String displayName, int age, String email, String address, String fullName) {
+    public UserDto(long id, String userType, int age, String email, String address, String fullName) {
         this.id = id;
         this.userType = userType;
-        this.displayName = displayName;
         this.age = age;
         this.email = email;
         this.address = address;
@@ -74,10 +72,10 @@ public class UserDto {
     public UserDto(Builder builder){
         this.id = builder.id;
         this.userType = builder.userType;
-        this.displayName = builder.displayName;
         this.age = builder.age;
         this.email = builder.email;
         this.address = builder.address;
+        this.phoneNumber = builder.phoneNumber;
         this.fullName = builder.fullName;
     }
 }

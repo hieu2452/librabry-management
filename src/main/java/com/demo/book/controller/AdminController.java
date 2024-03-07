@@ -1,4 +1,5 @@
 package com.demo.book.controller;
+import com.demo.book.domain.dto.StaffDto;
 import com.demo.book.entity.Staff;
 import com.demo.book.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +14,8 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
-    @PostMapping("/create-librarian")
-    public ResponseEntity<?> createLibrarianUser(@Valid @RequestBody Staff user) {
+    @PostMapping("create-librarian")
+    public ResponseEntity<?> createLibrarianUser(@RequestBody StaffDto user) {
         adminService.createLibrarianUser(user);
         return ResponseEntity.noContent().build();
     }

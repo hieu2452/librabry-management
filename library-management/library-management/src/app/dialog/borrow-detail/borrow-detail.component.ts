@@ -19,7 +19,7 @@ export class BorrowDetailComponent implements OnInit {
   checkOut: any;
   onViewBorrow = new EventEmitter();
   dataSource: any;
-  displayedColumns: string[] = ['bookId', 'bookTitle', 'borrowedDate', 'quantity', 'bookStatus', 'edit'];
+  displayedColumns: string[] = ['bookId', 'bookTitle', 'borrowedDate','returnedDate','quantity', 'bookStatus', 'edit'];
 
   constructor(private borrowService: BorrowService,
     @Inject(MAT_DIALOG_DATA) public dialogData: any,

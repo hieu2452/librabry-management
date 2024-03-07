@@ -73,8 +73,8 @@ public class CheckoutServiceControllerTest {
     public void shouldReturnBillDetailsByBillId() throws Exception {
         long billId = 1L;
         List<BorrowResponse> billDetails = Arrays.asList(
-                new BorrowResponse(LocalDateTime.now(),1, BorrowedBookStatus.BORROWED,1,"test1"),
-                new BorrowResponse(LocalDateTime.now(),1, BorrowedBookStatus.BORROWED,1,"test2")
+                new BorrowResponse(LocalDateTime.now(),LocalDateTime.now(),1, BorrowedBookStatus.BORROWED,1,"test1"),
+                new BorrowResponse(LocalDateTime.now(),LocalDateTime.now(),1, BorrowedBookStatus.BORROWED,1,"test2")
         );
 
         when(billService.findBillDetail(any(Long.class))).thenReturn(billDetails);

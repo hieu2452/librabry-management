@@ -101,7 +101,7 @@ public class CheckoutServiceImpl implements CheckoutService {
     @Override
     public List<BorrowResponse> findBillDetail(long billId) {
         return checkoutDetailRepository.findByCheckoutId(billId).stream()
-                .map(b -> new BorrowResponse(b.getBorrowedDate(),b.getQuantity(),b.getStatus(),b.getBook().getId(),b.getBook().getTitle()))
+                .map(b -> new BorrowResponse(b.getBorrowedDate(),b.getReturnedDate(),b.getQuantity(),b.getStatus(),b.getBook().getId(),b.getBook().getTitle()))
                 .collect(Collectors.toList());
     }
 

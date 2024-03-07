@@ -32,6 +32,7 @@ export class ManageBorrowComponent implements OnInit {
   getBills() {
     this.borrowService.getBill().subscribe({
       next: (respsone: any) => {
+        console.log(respsone)
         this.dataSource = new MatTableDataSource(respsone);
       }
     })

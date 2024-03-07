@@ -39,12 +39,12 @@ public class BookController {
     }
 
     @PutMapping(value = "/update/{id}")
-    public ResponseEntity<?> updateBook(@Valid @RequestBody BookDto bookDto, @PathVariable long id) {
+    public ResponseEntity<?> updateBook(@Valid @RequestBody BookDto bookDto, @PathVariable long id) throws JsonProcessingException {
         return ResponseEntity.ok(bookService.update(id,bookDto));
     }
 
     @GetMapping("")
-    public ResponseEntity<?> getBooks(@ModelAttribute BookFilter bookFilter) throws JsonProcessingException {
+    public ResponseEntity<?> getBooks(@ModelAttribute BookFilter bookFilter){
         return ResponseEntity.ok(bookService.findAll(bookFilter));
     }
     @GetMapping("search")

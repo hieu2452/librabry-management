@@ -2,6 +2,9 @@ package com.demo.book.entity;
 
 import javax.persistence.*;
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -20,17 +23,22 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+    @NotBlank(message = "book title is mandatory")
     private String title;
     private String description;
     private final LocalDateTime addedDate = LocalDateTime.now();
+    @NotBlank(message = "book author is mandatory")
     private String author;
+    @NotBlank(message = "book language is mandatory")
     private String language;
+    @NotNull(message = "book title is mandatory")
+    @Min(1)
     private int quantity;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
-    @Valid
     private Category category;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "publisher_id")
     private Publisher publisher;
