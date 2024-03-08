@@ -121,7 +121,6 @@ public class CheckoutServiceImpl implements CheckoutService {
             }
             bookExist = false;
         }
-
         if (!bookExist) throw new BookNotFoundException("Bill id: " + billId + " books not found");
     }
 

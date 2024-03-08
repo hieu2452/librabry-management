@@ -22,4 +22,8 @@ export class BorrowService {
   borrowBooks(request: any) {
     return this.http.post(this.baseUrl + 'api/checkout/create', request);
   }
+
+  returnBooks(bookIds:any, billId:any) {
+    return this.http.patch(this.baseUrl + 'api/checkout/return/' + billId, bookIds);
+  }
 }

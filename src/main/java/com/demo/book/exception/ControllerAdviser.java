@@ -13,8 +13,10 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class ControllerAdviser extends ResponseEntityExceptionHandler {
@@ -32,25 +34,17 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         Map<String, Object> body = new LinkedHashMap<>();
+        List<String> errors = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
+                .collect(Collectors.toList());
         body.put("timestamp", LocalDateTime.now());
-        body.put("message", ex.getMessage());
-        body.put("status",HttpStatus.UNPROCESSABLE_ENTITY.value());
+        body.put("message", errors);
+        body.put("status",HttpStatus.BAD_REQUEST.value());
 
-        return new ResponseEntity<>(body, HttpStatus.UNPROCESSABLE_ENTITY);
-//        return super.handleMethodArgumentNotValid(ex, headers, status, request);
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
-
-    //    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public ResponseEntity<Object> handleValidateException(
-//            MethodArgumentNotValidException ex, WebRequest request) {
-//
-//        Map<String, Object> body = new LinkedHashMap<>();
-//        body.put("timestamp", LocalDateTime.now());
-//        body.put("message", ex.getMessage());
-//        body.put("status",HttpStatus.BAD_REQUEST.value());
-//
-//        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
-//    }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handleConstraintException(
