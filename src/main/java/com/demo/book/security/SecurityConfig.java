@@ -35,7 +35,7 @@ public class SecurityConfig {
                 .antMatchers("/api/auth/member/**").hasAnyRole("ADMIN,LIBRARIAN")
                 .antMatchers("/api/auth/**").permitAll()
                 .antMatchers("/api/admin/**").hasRole("ADMIN")
-                .antMatchers("/api/book/**").hasAnyRole("LIBRARIAN","ADMIN")
+                .antMatchers("/api/book/**").permitAll()
                 .antMatchers("/api/category/**").hasAnyRole("LIBRARIAN","ADMIN")
                 .antMatchers("/api/bill/**").hasAnyRole("LIBRARIAN","ADMIN")
                 .antMatchers(HttpMethod.GET,"/api/book/get-all").hasAnyAuthority("LIBRARIAN_READ")

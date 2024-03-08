@@ -15,7 +15,7 @@ public class AdminController {
     private AdminService adminService;
 
     @PostMapping("create-librarian")
-    public ResponseEntity<?> createLibrarianUser(@RequestBody StaffDto user) {
+    public ResponseEntity<?> createLibrarianUser(@Valid @RequestBody StaffDto user) {
         adminService.createLibrarianUser(user);
         return ResponseEntity.noContent().build();
     }

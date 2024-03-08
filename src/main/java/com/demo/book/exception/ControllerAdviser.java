@@ -1,7 +1,9 @@
 package com.demo.book.exception;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -27,8 +29,31 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", ex.getMessage());
+        body.put("status",HttpStatus.UNPROCESSABLE_ENTITY.value());
+
+        return new ResponseEntity<>(body, HttpStatus.UNPROCESSABLE_ENTITY);
+//        return super.handleMethodArgumentNotValid(ex, headers, status, request);
+    }
+
+    //    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    public ResponseEntity<Object> handleValidateException(
+//            MethodArgumentNotValidException ex, WebRequest request) {
+//
+//        Map<String, Object> body = new LinkedHashMap<>();
+//        body.put("timestamp", LocalDateTime.now());
+//        body.put("message", ex.getMessage());
+//        body.put("status",HttpStatus.BAD_REQUEST.value());
+//
+//        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+//    }
+
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Object> handleBorrowException(
+    public ResponseEntity<Object> handleConstraintException(
             ConstraintViolationException ex, WebRequest request) {
         Set<ConstraintViolation<?>> violations = ex.getConstraintViolations();
         String message = "";
@@ -65,7 +90,7 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(BookNotFoundException.class)
-    public ResponseEntity<Object> handleUserExists(
+    public ResponseEntity<Object> handleBookNotFound(
             BookNotFoundException ex, WebRequest request) {
 
         Map<String, Object> body = new LinkedHashMap<>();
@@ -76,7 +101,7 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(CategoryNotFoundException.class)
-    public ResponseEntity<Object> handleUserExists(
+    public ResponseEntity<Object> handleCategoryNotFound(
             CategoryNotFoundException ex, WebRequest request) {
 
         Map<String, Object> body = new LinkedHashMap<>();
@@ -87,7 +112,7 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(PublisherNotFoundException.class)
-    public ResponseEntity<Object> handleUserExists(
+    public ResponseEntity<Object> handlePublisherNotFound(
             PublisherNotFoundException ex, WebRequest request) {
 
         Map<String, Object> body = new LinkedHashMap<>();
@@ -109,7 +134,7 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(LibraryCardNotFound.class)
-    public ResponseEntity<Object> handleUserExists(
+    public ResponseEntity<Object> handleLibraryCardNotFound(
             LibraryCardNotFound ex, WebRequest request) {
 
         Map<String, Object> body = new LinkedHashMap<>();
@@ -119,7 +144,7 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Object> handleUserExists(
+    public ResponseEntity<Object> handleArgumentException(
             IllegalArgumentException ex, WebRequest request) {
 
         Map<String, Object> body = new LinkedHashMap<>();

@@ -7,24 +7,24 @@ import com.demo.book.service.BookRedisService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ScanOptions;
+
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
+
 import java.util.concurrent.TimeUnit;
 
 @Service
 public class BookRedisServiceImpl implements BookRedisService {
+    private static final Logger log = LoggerFactory.getLogger(BookRedisServiceImpl.class);
     @Autowired
     private RedisTemplate<Object,Object> redisTemplate;
     @Autowired
@@ -50,13 +50,18 @@ public class BookRedisServiceImpl implements BookRedisService {
 
     @Override
     public BookDto findById(long id) throws JsonProcessingException {
-        String key = getKey(id);
-        String json = (String) redisTemplate.opsForValue().get(key);
+        try {
+            String key = getKey(id);
+            String json = (String) redisTemplate.opsForValue().get(key);
 
-        return json != null ?
-                objectMapper.readValue(json, new TypeReference<BookDto>() {})
-                :
-                null;
+            return json != null ?
+                    objectMapper.readValue(json, new TypeReference<BookDto>() {})
+                    :
+                    null;
+        } catch (RedisConnectionFailureException ex) {
+            log.error("Connect to redis server fail");
+            return null;
+        }
     }
 
     @Override
@@ -79,16 +84,24 @@ public class BookRedisServiceImpl implements BookRedisService {
 
     @Override
     public void save(BookDto bookDto) throws JsonProcessingException {
-        String key = getKey(bookDto.getId());
-        String json = objectMapper.writeValueAsString(bookDto);
-        redisTemplate.opsForValue().set(key,json,20,TimeUnit.MINUTES);
+        try {
+            String key = getKey(bookDto.getId());
+            String json = objectMapper.writeValueAsString(bookDto);
+            redisTemplate.opsForValue().set(key,json,20,TimeUnit.MINUTES);
+        } catch (RedisConnectionFailureException ex) {
+            log.error("Connect to redis server fail");
+        }
     }
 
     @Override
     public void deleteCache(long id) {
-        String key = getKey(id);
-        if(key != null) {
-            redisTemplate.opsForValue().getOperations().delete(key);
+        try {
+            String key = getKey(id);
+            if(key != null) {
+                redisTemplate.opsForValue().getOperations().delete(key);
+            }
+        } catch (RedisConnectionFailureException ex) {
+            log.error("Connect to redis server fail");
         }
     }
 
