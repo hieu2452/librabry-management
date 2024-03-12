@@ -111,12 +111,16 @@ public class CheckoutServiceImpl implements CheckoutService {
         List<CheckoutDetail> checkoutDetails = checkoutDetailRepository.findByCheckoutId(billId);
         if(checkoutDetails == null || checkoutDetails.isEmpty()) throw new IllegalArgumentException();
         boolean bookExist = true;
+        int count = 0;
         for(CheckoutDetail checkOutDetail : checkoutDetails) {
             if(containBook(bookIds, checkOutDetail.getBook().getId())
                     && checkOutDetail.getStatus() == BorrowedBookStatus.BORROWED) {
                 checkOutDetail.getBook().setQuantity(checkOutDetail.getQuantity()+ checkOutDetail.getBook().getQuantity());
                 checkOutDetail.setStatus(BorrowedBookStatus.RETURNED);
                 checkOutDetail.setReturnedDate(LocalDateTime.now());
+                count++;
+                bookExist = true;
+                if(count >= bookIds.size()) break;
                 continue;
             }
             bookExist = false;

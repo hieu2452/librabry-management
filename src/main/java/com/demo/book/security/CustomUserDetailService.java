@@ -14,12 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.hash.HashMapper;
+import org.springframework.data.redis.hash.ObjectHashMapper;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -31,6 +34,7 @@ public class CustomUserDetailService implements UserDetailsService {
     private ObjectMapper objectMapper;
     @Autowired
     private RedisTemplate<Object,Object> template;
+//    HashMapper<Object, byte[], byte[]> mapper = new ObjectHashMapper();
     private final String AUTH_KEY = "auth-";
     @SneakyThrows
     @Override
@@ -40,10 +44,12 @@ public class CustomUserDetailService implements UserDetailsService {
             if(template.hasKey(key)) {
                 String json = (String) template.opsForValue().get(key);
                 UserDetails userDetails;
+
                 userDetails = objectMapper.readValue(json, new TypeReference<Staff>() {});
                 return userDetails;
             } else  {
                 UserDetails userDetails = staffRepository.findByUsername(username);
+//                Map<byte[], byte[]> mappedHash = mapper.toHash(userDetails);
                 template.opsForValue().set(key,objectMapper.writeValueAsString(userDetails),2 ,TimeUnit.MINUTES);
                 return userDetails;
             }
