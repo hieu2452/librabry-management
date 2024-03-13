@@ -30,7 +30,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().
                 authorizeRequests()
-                .antMatchers("/api/v1/auth/**", "/api-docs/**", "/swagger-ui/**").permitAll()
+                .antMatchers("/api/v1/auth/**", "/api-docs/**", "/swagger-ui/**","/api/test/**").permitAll()
                 .antMatchers("/api/admin/**").hasRole("ADMIN")
                 .antMatchers("/api/auth/member/**").hasAnyRole("ADMIN,LIBRARIAN")
                 .antMatchers("/api/auth/**").permitAll()
