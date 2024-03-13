@@ -16,7 +16,9 @@ public class Checkout {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+    @Column(name = "created_date")
     private final LocalDateTime createdDate = LocalDateTime.now();
+    @Column(name = "returned_date")
     private LocalDateTime returnedDate;
     @ManyToOne(fetch = FetchType.EAGER)
     private Member member;

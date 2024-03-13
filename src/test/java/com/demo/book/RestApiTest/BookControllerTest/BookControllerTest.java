@@ -75,8 +75,8 @@ public class BookControllerTest {
                 .andExpect(jsonPath("$.title").value(book.getTitle()))
                 .andExpect(jsonPath("$.author").value(book.getAuthor()))
                 .andExpect(jsonPath("$.quantity").value(book.getQuantity()))
-                .andExpect(jsonPath("$.category").value(book.getCategory()))
-                .andExpect(jsonPath("$.publisher").value(book.getPublisher()))
+                .andExpect(jsonPath("$.category").value(book.getCategory().getCategoryName()))
+                .andExpect(jsonPath("$.publisher").value(book.getPublisher().getName()))
                 .andDo(print());
 
     }

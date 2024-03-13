@@ -14,7 +14,9 @@ public class CheckoutDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+    @Column(name = "borrowed_date")
     private final LocalDateTime borrowedDate = LocalDateTime.now();
+    @Column(name = "returned_date")
     private LocalDateTime returnedDate;
     private int quantity;
     @Enumerated(EnumType.STRING)

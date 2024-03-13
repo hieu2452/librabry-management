@@ -19,13 +19,14 @@ import java.util.List;
 @Entity
 @Table(name = "books")
 @Data
-public class Book {
+public class    Book {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     @NotBlank(message = "book title is mandatory")
     private String title;
     private String description;
+    @Column(name = "added_date")
     private final LocalDateTime addedDate = LocalDateTime.now();
     @NotBlank(message = "book author is mandatory")
     private String author;
