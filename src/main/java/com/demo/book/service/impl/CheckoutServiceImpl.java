@@ -1,5 +1,6 @@
 package com.demo.book.service.impl;
 
+import com.demo.book.config.MessageProducer;
 import com.demo.book.domain.dto.CheckoutDetailDto;
 import com.demo.book.domain.dto.CheckoutDto;
 import com.demo.book.domain.response.BorrowResponse;
@@ -42,6 +43,8 @@ public class CheckoutServiceImpl implements CheckoutService {
     private EmailUtils emailUtils;
     @Autowired
     private ApplicationEventPublisher publisher;
+    @Autowired
+    MessageProducer messageProducer;
 
     @Transactional
     @Override
@@ -83,6 +86,7 @@ public class CheckoutServiceImpl implements CheckoutService {
         try {
             checkoutRepository.save(checkOut);
             if(user.getEmail() != null)
+//                messageProducer.sendMessage("notification",);
                 emailUtils.sendEmail(user.getEmail(),"Borrow book");
             publisher.publishEvent(
                     new NotificationEvent(this,"User : " + user.getFullName() + " - id : " + user.getId()+" borrowed book"));

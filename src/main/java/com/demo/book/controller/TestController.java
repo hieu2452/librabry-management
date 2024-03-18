@@ -1,6 +1,5 @@
 package com.demo.book.controller;
 
-import com.demo.book.config.MessageProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,8 +15,16 @@ public class TestController {
 
     @GetMapping("send")
     public String sendMessage(@RequestParam(defaultValue = "") String message) {
-        kafkaTemplate.send("test-consumer-group-0", message);
+        kafkaTemplate.send("car-2", message);
 
         return message;
     }
+
+    @GetMapping("send-key")
+    public String sendMessageNoKey(@RequestParam(defaultValue = "") String message,@RequestParam(defaultValue = "") String key) {
+        kafkaTemplate.send("car-2", 3,key,message);
+
+        return message;
+    }
+
 }
