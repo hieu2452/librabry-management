@@ -252,33 +252,15 @@ public class CheckoutServiceServiceImplTest {
 
     @Test
     public void containBook_ReturnTrue() {
-        List<Long> bookIds = spy(new ArrayList<>());
-
-        for(long i = 0; i < 5; i++) {
-            bookIds.add(i);
-        }
-
+        List<Long> bookIds = Arrays.asList(1L, 2L, 3L);
         assertTrue(billService.containBook(bookIds,2));
-        assertEquals(5, bookIds.size());
-
-        when(bookIds.size()).thenReturn(100);
-        assertEquals(100,bookIds.size());
     }
 
     @Test
     public void notContainBook_ReturnFalse() {
-        List<Long> bookIds = spy(new ArrayList<>());
-
-        for(long i = 0; i < 5; i++) {
-            bookIds.add(i);
-        }
-
+        List<Long> bookIds = Arrays.asList(1L, 2L, 3L);
         assertFalse(billService.containBook(bookIds,6));
 
-        assertEquals(5, bookIds.size());
-
-        when(bookIds.size()).thenReturn(100);
-        assertEquals(100,bookIds.size());
     }
 
     @Test

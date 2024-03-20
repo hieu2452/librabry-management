@@ -44,7 +44,7 @@ public class CheckoutServiceControllerTest {
 
         when(billService.createBill(checkoutDto)).thenReturn(new MessageResponse("Borrow Successfully"));
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/bill/create")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/checkout/create")
                         .content(asJsonString(checkoutDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -64,7 +64,7 @@ public class CheckoutServiceControllerTest {
 
         when(billService.findAll()).thenReturn(checkOuts);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/bill"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/checkout"))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
@@ -79,7 +79,7 @@ public class CheckoutServiceControllerTest {
 
         when(billService.findBillDetail(any(Long.class))).thenReturn(billDetails);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/bill/detail/{id}",billId))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/checkout/detail/{id}",billId))
                 .andExpect(status().isOk())
                 .andDo(print());
     }

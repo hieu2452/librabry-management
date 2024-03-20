@@ -12,6 +12,7 @@ import com.demo.book.exception.PublisherNotFoundException;
 import com.demo.book.repository.BookRepository;
 import com.demo.book.repository.CategoryRepository;
 import com.demo.book.repository.PublisherRepository;
+import com.demo.book.service.BookRedisService;
 import com.demo.book.service.impl.BookServiceImpl;
 import com.demo.book.utils.BookSpecification;
 
@@ -40,6 +41,8 @@ public class BookServiceImplTest {
     private CategoryRepository categoryRepository;
     @Mock
     private PublisherRepository publisherRepository;
+    @Mock
+    private BookRedisService bookRedisService;
     @InjectMocks
     private BookServiceImpl bookService;
     private Specification<Book> spec;
@@ -158,6 +161,7 @@ public class BookServiceImplTest {
         long bookId =1;
         Book oldBook = books.get(0);
         BookDto bookDto = new BookDto();
+        bookDto.setId(1);
         bookDto.setTitle("silent hill");
         bookDto.setAuthor("logan");
         bookDto.setCategory("lecture");
@@ -176,6 +180,7 @@ public class BookServiceImplTest {
         long bookId =1;
         Book oldBook = books.get(0);
         BookDto bookDto = new BookDto();
+        bookDto.setId(1);
         bookDto.setTitle("silent hill");
         bookDto.setAuthor("logan");
         bookDto.setCategory("lecture");
@@ -284,10 +289,10 @@ public class BookServiceImplTest {
         Book book= new Book.Builder("book1", "book1", 5).id(1L).build();
 
         when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
+        when(bookRepository.deleteById(1L)).thenReturn(1);
 
-        bookService.delete(1L);
-
-        verify(bookRepository,times(1)).delete(book);
+        bookService.delete(book.getId());
+        verify(bookRepository,times(1)).deleteById(book.getId());
 
     }
 

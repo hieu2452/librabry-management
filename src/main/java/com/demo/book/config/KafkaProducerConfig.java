@@ -19,9 +19,11 @@ public class KafkaProducerConfig {
     @Bean
     public ProducerFactory<String, String> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
-        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "172.30.214.45:9092");
+        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "172.30.214.45:9093");
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        configProps.put(ProducerConfig.LINGER_MS_CONFIG, 2000);
+        configProps.put(ProducerConfig.ACKS_CONFIG,"all");
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 
@@ -31,7 +33,7 @@ public class KafkaProducerConfig {
     }
     @Bean
     public KafkaAdmin admin() {
-        return new KafkaAdmin(Map.of(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, "172.30.214.45:9092"));
+        return new KafkaAdmin(Map.of(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, "172.30.214.45:9092,172.30.214.45:9093,172.30.214.45:9094"));
     }
 
     @Bean
